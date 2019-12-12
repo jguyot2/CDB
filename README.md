@@ -262,6 +262,9 @@ Use redux-thunk to make asynchronous action dispatch.
 
 NB: Page's role can also be extended to make the call to the API to hydrate the page on load. For example, you want to display edit page. You need the current data, so you'll want to load it in the first place. You can dispatch an action hydrate your store (copy a portion of the db) in the componentDidMount lifecycle hook.
 
+#### 4.8.3 [VueJS](https://vuejs.org/)
+
+
 ### 4.9. Final refactoring, UX, and project presentation
 The final stage is your production release.
 
@@ -269,6 +272,9 @@ The final stage is your production release.
 This is where you will think UX first, challenge the technical choices of the base page template, and customize it to your standards.
 
 ### 4.9.2. Final Presentation (t0 + 48 days)
+
+Goal: Present a release that can be roll out for users. Keep in mind that your CDB is to replace something manual or based on a Excel Sheet. Your audience is mainly functional not technical.
+
 The presentation will be made with the whole group, on one project of their choice.  
 It consists of 3 parts:  
 The product-presentation, from a user-centered perspective (non-technical). 
