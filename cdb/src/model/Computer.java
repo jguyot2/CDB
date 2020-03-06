@@ -30,36 +30,22 @@ public class Computer {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public Optional<Company> getManufacturer() {
 		return manufacturer;
 	}
 
-	public void setManufacturer(Optional<Company> manufacturer) {
-		this.manufacturer = manufacturer;
-	}
-
 	public Optional<Date> getIntroduction() {
 		return introduction;
 	}
-
-	public void setIntroduction(Optional<Date> introduction) {
-		// TODO:Vérifier l'ordre des dates
-		this.introduction = introduction;
-	}
-
 	
 	public Optional<Date> getDiscontinuation() {
 		return discontinuation;
 		
 	}
-	public void setDiscontinuation(Optional<Date> discontinuation) {
-		// TODO: Vérifier l'ordre des dates 
-		this.discontinuation = discontinuation;
+	
+	@Override
+	public String toString() {
+		
 	}
-	
-	
 }

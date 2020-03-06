@@ -10,16 +10,16 @@ public class DBConnection {
 	private static boolean initialized = false;
 
 	private static final String driverName = "com.mysql.cj.jdbc.Driver";
-	private static final String password = "qwerty1234";
 	private static final String urlDB = "jdbc:mysql://localhost:3306/";
 	private static final String dbName = "computer-database-db";
+	
 	private static final String username = "admincdb";
-
+	private static final String password = "qwerty1234";
+	
 	private DBConnection() {
 	}
 
 	private static void init() {
-		// TODO: Pê virer ça parce que c'est con de l'évaluer plusieurs fois
 		try {
 			Class.forName(driverName).newInstance();
 		} catch (InstantiationException e1) {
