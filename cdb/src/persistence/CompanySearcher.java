@@ -5,6 +5,7 @@ import java.util.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 
 import model.Company;
@@ -29,6 +30,18 @@ public class CompanySearcher {
 	
 	public static List<Company> fetchCompanies(){
 		List<Company> retour = new ArrayList<>();
+		try {
+			Statement stmt = DBConnection.getConnection().createStatement();
+			ResultSet res = stmt.executeQuery(REQUEST_COMPANIES);
+			while(res.next()) {
+				long id = res.getLong("id");
+				String name = res.getString("name");
+				assert(name != null);
+				retour.add(new Company(name, id));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
 		return retour;
 	}
 

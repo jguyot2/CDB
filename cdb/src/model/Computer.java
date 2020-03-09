@@ -36,6 +36,7 @@ public class Computer {
 		this.discontinuation = discontinuation;
 		this.id = 0;
 	}
+	
 	public Computer(String name, 
 			Company manufacturer, 
 			Date introduction, 
