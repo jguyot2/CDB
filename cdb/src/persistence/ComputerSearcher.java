@@ -14,7 +14,7 @@ import model.Computer;
 
 
 /**
- * Classe faisant l'interface entre 
+ * Classe permettant d'effectuer des requêtes sur des Computers
  * @author jguyot2
  *
  */
@@ -136,9 +136,6 @@ public class ComputerSearcher {
 
 			return Optional.of(new Computer(name, company, introduced, discontinued, id));
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return Optional.empty();
-		} catch (NotFoundException e) {
 			e.printStackTrace();
 			return Optional.empty();
 		}

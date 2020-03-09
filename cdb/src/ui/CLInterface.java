@@ -1,5 +1,10 @@
 package ui;
 
+/**
+ * Interface utilisateur permettant l'interaction par ligne de commande
+ * @author jguyot2
+ *
+ */
 public class CLInterface {
 	public static void getCommande() {
 		System.out.println("Entrez la commande: ");

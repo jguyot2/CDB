@@ -2,7 +2,7 @@ package model;
 
 
 /**
- * Classe représentant une entreprise par son nom
+ * Classe représentant une entreprise par son nom + son identifiant sur la base de données
  * @author jguyot2
  *
  */
@@ -32,6 +32,7 @@ public class Company {
 	
 	@Override
 	public String toString() {
-		return "Company(" + String.valueOf(this.name) + ")";
+		String showId = id==0 ? "" : String.valueOf(id)+":";
+		return showId+String.valueOf(this.name) ;
 	}
 }

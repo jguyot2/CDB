@@ -4,6 +4,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
 
+/**
+ * Classe permettant de récupérer la connexion à la base de données. 
+ * @author jguyot2
+ *
+ */
 public class DBConnection {
 
 	private static Connection conn;
@@ -18,6 +23,9 @@ public class DBConnection {
 	
 	private DBConnection() {}
 
+	/**
+	 * Initialisation de la connexion, à appeller une fois au début du programme
+	 */
 	private static void init() {
 		try {
 			Class.forName(driverName).newInstance();
@@ -34,6 +42,12 @@ public class DBConnection {
 		initialized = true;
 	}
 
+	/**
+	 * Fonction pour récupérer la connexion. Si la connexion
+	 * n'est pas initialisée ou est fermée, une nouvelle
+	 * connexion est ouverte.
+	 * @return la connexion à la base de donnée
+	 */
 	public static Connection getConnection() {
 		if (!initialized)
 			init();
