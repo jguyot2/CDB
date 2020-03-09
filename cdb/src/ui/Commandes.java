@@ -1,0 +1,10 @@
+package ui;
+
+public enum Commandes {
+	LIST_COMPUTERS, 
+	LIST_COMPANIES,
+	SHOW_DETAILS, 
+	CREATE_COMPUTER, 
+	UPDATE_COMPUTER, 
+	DELETE_COMPUTER;	
+}

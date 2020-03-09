@@ -16,8 +16,7 @@ public class DBConnection {
 	private static final String username = "admincdb";
 	private static final String password = "qwerty1234";
 	
-	private DBConnection() {
-	}
+	private DBConnection() {}
 
 	private static void init() {
 		try {
@@ -44,7 +43,6 @@ public class DBConnection {
 				conn = DriverManager.getConnection(urlDB + dbName, username, password);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			// Throw exception ? 
 		}
 		return conn;
 	}
