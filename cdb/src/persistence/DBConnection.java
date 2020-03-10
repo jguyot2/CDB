@@ -9,7 +9,7 @@ import java.sql.Connection;
  * @author jguyot2
  *
  */
-public class DBConnection {
+class DBConnection {
 
 	private static Connection conn;
 	private static boolean initialized = false;
