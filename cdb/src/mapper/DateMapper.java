@@ -17,10 +17,18 @@ public class DateMapper {
 	}
 
 	// Format : DD/MM/YYYY
+	/**
+	 * Fonction de conversion d'une chaîne de caractères au format DD/MM/YYYY vers une instance
+	 * de Date
+	 * 
+	 * @param dateRepr la représentation par une chaine de caractères sous la forme DD/MM/YYYY (ou JJ/MM/AAAA en français.
+	 * @return une instance de Date correspondant à la chaîne de caractères donnée en paramètre 
+	 * @throws IllegalArgumentException si la chaîne de caractères est au mauvais format.
+	 */
 	public static Date stringToUtilDate(String dateRepr) throws IllegalArgumentException {
 		if(dateRepr == null || dateRepr.trim().isEmpty())
 			throw new IllegalArgumentException("demande de date à partir d'une chaîne vide");
-		String[] dateArray = dateRepr.split("/");
+		String[] dateArray = dateRepr.trim().split("/");
 		if(dateArray.length != 3)
 			throw new IllegalArgumentException("pas le bon nombre de / ou de champs");
 		

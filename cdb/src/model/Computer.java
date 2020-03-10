@@ -71,6 +71,10 @@ public class Computer {
 		return representation;
 	}
 
+	/**
+	 * Décrit brièvement une instance de Computer
+	 * @return une chaîne contenant l'id et le nom de l'instance courante
+	 */
 	public String getShortDescription() {
 		return "("+this.id+", " + this.name + " )";
 	}

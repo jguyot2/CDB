@@ -13,14 +13,19 @@ import service.CompanyValidator;
 import service.ComputerValidator;
 
 /**
- * Interface utilisateur permettant l'interaction par ligne de commande
+ * Interface utilisateur permettant l'interaction avec la BD par ligne de
+ * commande
  * 
  * @author jguyot2
  *
  */
 public class CLInterface {
+
 	private static Scanner sc = new Scanner(System.in);
 
+	/**
+	 * Affiche une courte description des ordinateurs dans la base de données
+	 */
 	private static void listComputersCommand() {
 		List<Computer> computerList = ComputerValidator.fetchComputerList();
 		for (Computer c : computerList)
@@ -28,6 +33,9 @@ public class CLInterface {
 		System.out.println("-------------------------");
 	}
 
+	/**
+	 * Affiche la liste des entreprises de la base de données
+	 */
 	private static void listCompaniesCommand() {
 		List<Company> companyList = CompanyValidator.findCompaniesList();
 		for (Company c : companyList)
@@ -35,6 +43,10 @@ public class CLInterface {
 		System.out.println("-------------------------");
 	}
 
+	/**
+	 * Affiche une description détaillée d'une instance de Computer d'id entré par
+	 * l'utilisateur
+	 */
 	private static void getComputerDetailsCommand() {
 		System.out.println("Entrez l'identifiant de l'ordinateur recherché");
 		String strComputerId = sc.nextLine();
@@ -42,7 +54,6 @@ public class CLInterface {
 		Optional<Computer> computerOpt = ComputerValidator.fetchComputerById(computerId);
 		if (!computerOpt.isPresent()) {
 			System.out.println("L'ordinateur n'a pas été trouvé dans la BD");
-
 		} else {
 			Computer computer = computerOpt.get();
 			System.out.println(computer);
@@ -50,6 +61,12 @@ public class CLInterface {
 		System.out.println("-------------------------");
 	}
 
+	/**
+	 * Création d'un Computer par l'utilisateur, puis ajout dans la base de données
+	 * si l'utilisateur a pas entré n'importe quoi
+	 * 
+	 * TODO: refactoriser la fonction parce qu'elle est beaucoup trop longue
+	 */
 	private static void createComputerCommand() {
 		System.out.println("Entrez le nom de l'ordinateur");
 		String computerName = sc.nextLine().trim();
@@ -89,6 +106,9 @@ public class CLInterface {
 			System.out.println("L'ordinateur a été créé, et est d'id :" + newIdComputer);
 	}
 
+	/**
+	 * Suppression d'un ordinateur d'id saisi par l'utilisateur
+	 */
 	private static void deleteComputerCommand() {
 		System.out.println("Saisissez l'identifiant du pc à supprimer");
 		String idString = sc.nextLine().trim();
@@ -97,23 +117,31 @@ public class CLInterface {
 			System.out.println("Identifiant invalide.");
 			return;
 		}
-		
+
 		if (ComputerValidator.deleteComputer(id))
 			System.out.println("La ligne devrait être supprimée");
 		else
-			System.out.println("Le computer a pas forcément été supprimé");
-		
+			System.out.println("Le computer a pas été supprimé");
 	}
 
+	/**
+	 * Mise à jour d'un ordinateur dans la base de données
+	 */
 	private static void updateComputerCommand() {
-		
+
 	}
 
+	/**
+	 * Sortie du programme
+	 */
 	private static void exitCommand() {
 		System.out.println("Sortie du programme");
 		System.exit(0);
 	}
 
+	/**
+	 * Affichage du menu
+	 */
 	private static void printMenu() {
 		System.out.println("Entrez la commande: ");
 		System.out.println("0:\t Lister les ordinateurs");
@@ -126,6 +154,11 @@ public class CLInterface {
 		System.out.println("--------------------------------");
 	}
 
+	/**
+	 * Exécution d'une commande donnée en paramètre
+	 * 
+	 * @param commandToExecute La commande à exécuter
+	 */
 	private static void executeCommand(Commandes commandToExecute) {
 		switch (commandToExecute) {
 		case LIST_COMPUTERS:
@@ -154,10 +187,21 @@ public class CLInterface {
 		}
 	}
 
+	/**
+	 * affichage d'une erreur+le message la décrivant
+	 * 
+	 * @param e l'exception ayant provoqué l'erreur
+	 */
 	private static void printErrorMessage(Exception e) {
 		System.out.println("Entrée invalide; " + e.getMessage());
 	}
 
+	/**
+	 * Fonction affichant un menu et exécutant une commande rentrée par l'utilisateur
+	 *
+	 *
+	 *	TODO : Rattraper les exception ailleurs parce que tout rattraper ici c'est assez sale
+	 */
 	public static void getCommande() {
 		printMenu();
 		try {

@@ -19,17 +19,12 @@ import model.Computer;
  *
  */
 public class ComputerSearcher {
-	
-	private static final String QUERY_COMPUTER_LIST = 
-			" SELECT computer.id, computer.name, introduced, discontinued, "
-			+ "company.id, company.name "
-			+ "FROM computer LEFT JOIN company "
-			+ "ON computer.company_id = company.id";
-	
-	private static final String QUERY_COMPUTER_FROM_ID = 
-			"SELECT computer.id, computer.name, introduced, discontinued, "
-			+ "company.id, company.name "
-			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id " 
+
+	private static final String QUERY_COMPUTER_LIST = " SELECT computer.id, computer.name, introduced, discontinued, "
+			+ "company.id, company.name " + "FROM computer LEFT JOIN company " + "ON computer.company_id = company.id";
+
+	private static final String QUERY_COMPUTER_FROM_ID = "SELECT computer.id, computer.name, introduced, discontinued, "
+			+ "company.id, company.name " + "FROM computer LEFT JOIN company ON computer.company_id = company.id "
 			+ "WHERE computer.id = ? ";
 
 	/**
@@ -41,11 +36,8 @@ public class ComputerSearcher {
 	 */
 	public static List<Computer> fetchComputerList() {
 		List<Computer> computerList = new ArrayList<>();
-		Statement stmt;
-		try {
-			stmt = DBConnection.getConnection().createStatement();
+		try (Statement stmt = DBConnection.getConnection().createStatement();) {
 			ResultSet res = stmt.executeQuery(QUERY_COMPUTER_LIST);
-			
 			while (res.next()) {
 				Computer computer = getComputerFromResultSet(res);
 				computerList.add(computer);
@@ -56,12 +48,23 @@ public class ComputerSearcher {
 		return computerList;
 	}
 
+	/**
+	 * Fonction permettant de récupérer une instance de Computer à partir d'une
+	 * ligne de ResultSet à partir de certaines requêtes.
+	 * 
+	 * @param res l'instance de ResultSet résultant d'une requête sur les tables
+	 *            computer et company, qui pointe vers une des lignes renvoyée par
+	 *            la requête
+	 * @return une instance de Computer correspondant à la ligne sur laquelle le
+	 *         curseur de res pointe
+	 * @throws SQLException
+	 */
 	private static Computer getComputerFromResultSet(ResultSet res) throws SQLException {
 		long computerId = res.getLong("computer.id");
 		String computerName = res.getString("computer.name");
 		Date introduced = res.getDate("introduced");
 		Date discontinued = res.getDate("discontinued");
-		
+
 		String companyName = res.getString("company.name");
 		Company company = null;
 
@@ -80,24 +83,26 @@ public class ComputerSearcher {
 	 * 
 	 * @param searchedId L'id de l'ordinateur recherché
 	 * @return une instance de Optional vide si aucun ordinateur de l'id donné n'est
-	 *         présent dans la BD ou qu'une exception SQLException s'est produite
+	 *         présent dans la BD ou qu'une exception SQLException s'est produite/
+	 *         Une instance de Optional contenant le Computer trouvé sinon
 	 */
 	public static Optional<Computer> fetchComputerById(long searchedId) {
-		try {
-			PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_FROM_ID);
+		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_FROM_ID)) {
+			
 			stmt.setLong(1, searchedId);
 			ResultSet res = stmt.executeQuery();
-			if (!res.next()) {
+			if (!res.next()) 
 				return Optional.empty();
-			}
-			Computer comp = getComputerFromResultSet(res);
-			return Optional.of(comp);
+			
+			Computer foundComputer = getComputerFromResultSet(res);
+			return Optional.of(foundComputer);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Optional.empty();
 		}
 	}
 
-	private ComputerSearcher() {}
+	private ComputerSearcher() {
+	}
 
 }

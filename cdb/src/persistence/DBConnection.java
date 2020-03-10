@@ -12,7 +12,7 @@ import java.sql.Connection;
 class DBConnection {
 
 	private static Connection conn;
-	private static boolean initialized = false; 
+	private static boolean driverIsImported = false; 
 
 	private static final String driverName = "com.mysql.cj.jdbc.Driver";
 	private static final String urlDB = "jdbc:mysql://localhost:3306/";
@@ -24,7 +24,7 @@ class DBConnection {
 	private DBConnection() {}
 
 	/**
-	 * Initialisation de la connexion, à appeller une fois au début du programme
+	 * Import du driver, à appeller une fois au début du programme
 	 */
 	private static void init() {
 		try {
@@ -39,7 +39,7 @@ class DBConnection {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		initialized = true;
+		driverIsImported = true;
 	}
 
 	/**
@@ -49,7 +49,7 @@ class DBConnection {
 	 * @return la connexion à la base de donnée
 	 */
 	public static Connection getConnection() {
-		if (!initialized)
+		if (!driverIsImported)
 			init();
 
 		try {

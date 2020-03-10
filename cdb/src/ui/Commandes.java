@@ -13,6 +13,11 @@ public enum Commandes {
 	DELETE_COMPUTER,
 	EXIT;
 	
+	/**
+	 * Fonction associant un entier en paramètre à la commande à exécuter
+	 * @param input l'entier rentré par l'utilisateur 
+	 * @return la commande à exécuter
+	 */
 	public static Commandes getCommandeFromInput(int input) {
 		switch(input) {
 		case 0:
@@ -30,7 +35,7 @@ public enum Commandes {
 		case 6: 
 			return EXIT;
 		default:
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Entier ne correspondant pas à une commande !");
 		}
 	}
 }
