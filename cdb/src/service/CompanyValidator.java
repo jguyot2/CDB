@@ -7,11 +7,11 @@ import model.Company;
 import persistence.CompanySearcher;
 
 public class CompanyValidator {
-	public Optional<Company> findCompanyById(long id){
+	public static Optional<Company> findCompanyById(long id){
 		return CompanySearcher.fetchCompanyById(id);
 	}
 	
-	public List<Company> findCompaniesList(long id){
+	public static List<Company> findCompaniesList(){
 		return CompanySearcher.fetchCompanies();
 	}
 }

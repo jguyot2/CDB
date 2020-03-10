@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,13 +19,18 @@ import model.Computer;
  *
  */
 public class ComputerSearcher {
-	// Pê regarder le Outer Join pour avoir à faire une seule requête
-
-	private static final String QUERY_COMPUTER_LIST = " SELECT computer.id, computer.name, introduced, discontinued, "
-			+ "company.id, company.name " + "FROM computer LEFT JOIN company " + "ON computer.company_id = company.id";
 	
-	private static final String QUERY_COMPUTER_FROM_ID = "SELECT id, name, introduced, discontinued, company_id "
-			+ "FROM computer " + "WHERE computer.id = ? ";
+	private static final String QUERY_COMPUTER_LIST = 
+			" SELECT computer.id, computer.name, introduced, discontinued, "
+			+ "company.id, company.name "
+			+ "FROM computer LEFT JOIN company "
+			+ "ON computer.company_id = company.id";
+	
+	private static final String QUERY_COMPUTER_FROM_ID = 
+			"SELECT computer.id, computer.name, introduced, discontinued, "
+			+ "company.id, company.name "
+			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id " 
+			+ "WHERE computer.id = ? ";
 
 	/**
 	 * Cherche tous les ordinateurs dans la base, et retourne la liste correspondant
@@ -41,7 +45,7 @@ public class ComputerSearcher {
 		try {
 			stmt = DBConnection.getConnection().createStatement();
 			ResultSet res = stmt.executeQuery(QUERY_COMPUTER_LIST);
-			// TODO: une hashMap pour créer moins d'instances de Company
+			
 			while (res.next()) {
 				Computer computer = getComputerFromResultSet(res);
 				computerList.add(computer);
@@ -86,18 +90,8 @@ public class ComputerSearcher {
 			if (!res.next()) {
 				return Optional.empty();
 			}
-			String name = res.getString("name");
-			Company company = null;
-			long company_id = res.getLong("company_id");
-			if (!res.wasNull()) {
-				Optional<Company> opt_company = CompanySearcher.fetchCompanyById(company_id);
-				company = opt_company.orElse(null);
-			}
-			Date introduced = res.getDate("introduced");
-			Date discontinued = res.getDate("discontinued");
-			long id = res.getLong("id");
-
-			return Optional.of(new Computer(name, company, introduced, discontinued, id));
+			Computer comp = getComputerFromResultSet(res);
+			return Optional.of(comp);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Optional.empty();

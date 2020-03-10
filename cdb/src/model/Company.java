@@ -8,7 +8,7 @@ package model;
  */
 public class Company {
 	private final String name;
-	private long id;
+	private long id = 0;
 	
 	public Company(String name) {
 		this.name = name;
@@ -32,7 +32,6 @@ public class Company {
 	
 	@Override
 	public String toString() {
-		String showId = id==0 ? "" : String.valueOf(id)+":";
-		return showId+String.valueOf(this.name) ;
+		return String.valueOf(this.id) + ":" +this.name ;
 	}
 }
