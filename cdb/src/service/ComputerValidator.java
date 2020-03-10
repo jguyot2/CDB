@@ -19,6 +19,7 @@ public class ComputerValidator {
 
 	}
 
+	// Pê mettre des exceptions permettant de préciser la cause du non-update
 	public static boolean updateComputer(long id, Computer newComputervalue) {
 		if(! isValidComputerInstance(newComputervalue))
 			return false;

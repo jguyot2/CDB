@@ -12,7 +12,7 @@ import java.sql.Connection;
 class DBConnection {
 
 	private static Connection conn;
-	private static boolean initialized = false;
+	private static boolean initialized = false; 
 
 	private static final String driverName = "com.mysql.cj.jdbc.Driver";
 	private static final String urlDB = "jdbc:mysql://localhost:3306/";
