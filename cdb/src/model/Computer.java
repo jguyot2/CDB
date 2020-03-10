@@ -83,8 +83,8 @@ public class Computer {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setId(long l) {
+		this.id = l;
 	}
 
 	public void setName(String name) {

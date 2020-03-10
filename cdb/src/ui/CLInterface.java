@@ -117,31 +117,71 @@ public class CLInterface {
 			System.out.println("Identifiant invalide.");
 			return;
 		}
-
-		if (ComputerValidator.deleteComputer(id))
+		if (ComputerValidator.deleteComputer(id) > 0)
 			System.out.println("La ligne devrait être supprimée");
 		else
 			System.out.println("Le computer a pas été supprimé");
 	}
 
-	/**
-	 * Mise à jour d'un ordinateur dans la base de données
-	 */
 	private static void updateComputerCommand() {
+		System.out.println("Entrez l'id de l'ordinateur à modifier");
+		String idString = sc.nextLine().trim();
+		long id = Long.parseLong(idString);
 
+		Optional<Computer> optFoundComputer = ComputerValidator.fetchComputerById(id);
+		if (!optFoundComputer.isPresent()) {
+			System.out.println("Ordinateur non trouvé.");
+			return;
+		}
+		Computer foundComputer = optFoundComputer.get();
+
+		System.out.println("Modification du nom: Ne rien entrer pour ne pas changer, entrer un nom sinon");
+		System.out.println("Nom courant: " + foundComputer.getName());
+		String newName = sc.nextLine().trim();
+		if (!newName.isEmpty())
+			foundComputer.setName(newName);
+		System.out.println("Modification de l'identifiant de l'entreprise: "
+				+ "Ne rien entrer pour ne pas changer, entrer 'NONE' pour supprimer l'entreprise");
+
+		System.out.println("Entreprise courante:" + foundComputer.getManufacturer());
+		String newEnterpriseIdStr = sc.nextLine().trim();
+		if (!newEnterpriseIdStr.isEmpty())
+			if (newEnterpriseIdStr.equals("NONE"))
+				foundComputer.setId(0);
+			else
+				foundComputer.setId(Long.parseLong(newEnterpriseIdStr));
+
+		System.out.println("Entrez la date d'introduction sous forme `JJ/MM/AAAA`: "
+				+ "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
+				+ "pour supprimer cette date");
+		System.out.println("Date d'intro courante: " + foundComputer.getIntroduction());
+
+		String strIntro = sc.nextLine().trim();
+		if (!strIntro.isEmpty())
+			if ("NONE".equals(strIntro))
+				foundComputer.setIntroduction(null);
+			else
+				foundComputer.setIntroduction(mapper.DateMapper.stringToUtilDate(strIntro));
+		System.out.println("Entrez la date de discontinuation sous forme `JJ/MM/AAAA`: "
+				+ "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
+				+ "pour supprimer cette date");
+		System.out.println("Date d'intro courante: " + foundComputer.getDiscontinuation());
+
+		String strDiscontinuation = sc.nextLine().trim();
+		if (!strDiscontinuation.isEmpty())
+			if ("NONE".equals(strDiscontinuation))
+				foundComputer.setDiscontinuation(null);
+			else
+				foundComputer.setDiscontinuation(mapper.DateMapper.stringToUtilDate(strDiscontinuation));
+		
+		ComputerValidator.updateComputer(foundComputer);
 	}
 
-	/**
-	 * Sortie du programme
-	 */
 	private static void exitCommand() {
 		System.out.println("Sortie du programme");
 		System.exit(0);
 	}
 
-	/**
-	 * Affichage du menu
-	 */
 	private static void printMenu() {
 		System.out.println("Entrez la commande: ");
 		System.out.println("0:\t Lister les ordinateurs");
@@ -197,10 +237,12 @@ public class CLInterface {
 	}
 
 	/**
-	 * Fonction affichant un menu et exécutant une commande rentrée par l'utilisateur
+	 * Fonction affichant un menu et exécutant une commande rentrée par
+	 * l'utilisateur
 	 *
 	 *
-	 *	TODO : Rattraper les exception ailleurs parce que tout rattraper ici c'est assez sale
+	 * TODO : Rattraper les exception ailleurs parce que tout rattraper ici c'est
+	 * assez sale
 	 */
 	public static void getCommande() {
 		printMenu();

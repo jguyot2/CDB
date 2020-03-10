@@ -44,11 +44,11 @@ public class ComputerValidator {
 	 *         TODO : Modifier la signature de la fonction, peut-être mettre une
 	 *         exception expliquant la cause du non-update
 	 */
-	public static boolean updateComputer(long id, Computer newComputervalue) {
+	public static int updateComputer(Computer newComputervalue) {
 		if (!isValidComputerInstance(newComputervalue))
-			return false;
+			return 0;
 		else
-			return ComputerUpdater.updateComputerById(id, newComputervalue);
+			return ComputerUpdater.updateComputer(newComputervalue);
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class ComputerValidator {
 	 * @param id
 	 * @return true si la suppression a eu lieu, false sinon
 	 */
-	public static boolean deleteComputer(long id) {
+	public static int deleteComputer(long id) {
 		return ComputerUpdater.deleteComputerById(id);
 	}
 

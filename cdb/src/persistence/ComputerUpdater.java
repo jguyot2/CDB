@@ -26,15 +26,15 @@ public class ComputerUpdater {
 	 * @param id l'identifiant dans la base de l'ordinateur à supprimer
 	 * @return true si la suppression est effective, false si une erreur a eu lieu
 	 */
-	public static boolean deleteComputerById(long id) {
+	public static int deleteComputerById(long id) {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(DELETE_COMPUTER)) {
 			stmt.setLong(1, id);
-			stmt.executeUpdate();
-			return true;
+			return stmt.executeUpdate();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	/**
@@ -44,12 +44,13 @@ public class ComputerUpdater {
 	 * @param id          l'identifiant de l'ordinateur à modifier
 	 * @param newComputer la valeur de l'ordinateur à laquelle on veut faire
 	 *                    correspondre la ligne
-	 * @return true si la mise à jour a eu lieu, false sinon 
+	 * @return 1 si la mise à jour a eu lieu, 0 sinon 
 	 * 
 	 * 
 	 * TODO: changer la signature de la fonction
 	 */
-	public static boolean updateComputerById(long id, Computer newComputer) {
+	public static int updateComputer(Computer newComputer) {
+		long id = newComputer.getId();
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(UPDATE_COMPUTER)) {
 			stmt.setLong(1, id);
 			stmt.setString(2, newComputer.getName());
@@ -60,14 +61,13 @@ public class ComputerUpdater {
 				stmt.setNull(5, java.sql.Types.BIGINT);
 			else
 				stmt.setLong(5, newComputer.getManufacturer().getId());
-			stmt.executeUpdate();
-			// TODO : Récupérer le résultat de si l'update a vraiment mis à jour une ligne
-			return true;
+			return stmt.executeUpdate();
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	/**
