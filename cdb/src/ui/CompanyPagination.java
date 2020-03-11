@@ -38,10 +38,12 @@ public class CompanyPagination {
 	}
 
 	private void printMenu() {
+		System.out.println("--------------------------------");
 		System.out.println("n: afficher la prochaine page");
 		System.out.println("p: afficher la page précédente");
 		System.out.println("e: Sortie de la pagination");
 		System.out.println("c: Afficher la page courante");
+		System.out.println("--------------------------------");
 	}
 
 	PaginationCommand getCommand() {

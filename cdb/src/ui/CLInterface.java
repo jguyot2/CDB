@@ -26,14 +26,12 @@ public class CLInterface {
 		List<Computer> computerList = ComputerValidator.fetchList();
 		for (Computer c : computerList)
 			System.out.println(c.getShortDescription());
-		System.out.println("-------------------------");
 	}
 
 	private static void listCompaniesCommand() {
 		List<Company> companyList = CompanyValidator.fetchList();
 		for (Company c : companyList)
 			System.out.println(c);
-		System.out.println("-------------------------");
 	}
 
 	private static void getComputerDetailsCommand() {
@@ -54,13 +52,10 @@ public class CLInterface {
 			Computer computer = computerOpt.get();
 			System.out.println(computer);
 		}
-		System.out.println("-------------------------");
+		
 	}
 
-	/**
-	 * Création d'un Computer par l'utilisateur, puis ajout dans la base de données
-	 * si l'utilisateur a pas entré n'importe quoi
-	 */
+
 	private static void createComputerCommand() {
 		System.out.println("Entrez le nom de l'ordinateur");
 		String computerName = sc.nextLine().trim();
@@ -121,7 +116,6 @@ public class CLInterface {
 	}
 
 	private static void deleteComputerCommand() {
-
 		System.out.println("Saisissez l'identifiant du pc à supprimer");
 		String idString = sc.nextLine().trim();
 		long id = 0;
@@ -299,5 +293,10 @@ public class CLInterface {
 		} catch (IllegalArgumentException e) {
 			System.out.println("Erreur" + e.getMessage());
 		}
+	}
+	
+	public static void start() {
+		while (true)
+			CLInterface.getCommande();
 	}
 }

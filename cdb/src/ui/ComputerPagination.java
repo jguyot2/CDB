@@ -7,6 +7,7 @@ import model.Computer;
 import service.Pageable;
 
 public class ComputerPagination {
+	
 	private int offset;
 	private final static int nbComputersPerPage = 20;
 	private final static Scanner sc = new Scanner(System.in);
@@ -21,6 +22,7 @@ public class ComputerPagination {
 		for (Computer c : computers)
 			System.out.println(c.getShortDescription());
 	}
+	
 	private void printCurrentPage() {
 		List<Computer> computers = Pageable.getComputerPage(offset, nbComputersPerPage);
 		for (Computer c : computers)
@@ -37,10 +39,12 @@ public class ComputerPagination {
 	}
 
 	private void printMenu() {
+		System.out.println("---------------------------------");
 		System.out.println("n: afficher la prochaine page");
 		System.out.println("p: afficher la page précédente");
 		System.out.println("e: Sortie de la pagination");
 		System.out.println("c: affichage de la page courante");
+		System.out.println("---------------------------------");
 	}
 
 	PaginationCommand getCommand() {
@@ -65,7 +69,6 @@ public class ComputerPagination {
 			PaginationCommand userCommand = page.getCommand();
 			exit = page.executeCommand(userCommand);
 		}
-
 	}
 
 	public boolean executeCommand(PaginationCommand command) {
