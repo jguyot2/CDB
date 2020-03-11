@@ -4,7 +4,7 @@ package ui;
  * @author jguyot2
  *
  */
-public enum Commandes {
+public enum Commands {
 	LIST_COMPUTERS, 
 	LIST_COMPANIES,
 	SHOW_DETAILS, 
@@ -18,7 +18,7 @@ public enum Commandes {
 	 * @param input l'entier rentré par l'utilisateur 
 	 * @return la commande à exécuter
 	 */
-	public static Commandes getCommandeFromInput(int input) {
+	public static Commands getCommandeFromInput(int input) {
 		switch(input) {
 		case 0:
 			return LIST_COMPUTERS;

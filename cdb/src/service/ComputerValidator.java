@@ -8,7 +8,6 @@ import persistence.ComputerSearcher;
 import persistence.ComputerUpdater;
 
 public class ComputerValidator {
-
 	/**
 	 * Fonction déterminant si une instance de Computer est valide, c'est à dire que
 	 * -> Son nom n'est pas 'null' ou une chaîne de caractères vide -> Si elle a une
@@ -79,7 +78,7 @@ public class ComputerValidator {
 	 *         la valeur de l'identifiant recherché sinon
 	 */
 	public static Optional<Computer> fetchComputerById(long id) {
-		return ComputerSearcher.fetchComputerById(id);
+		return ComputerSearcher.fetchById(id);
 	}
 
 	/**
@@ -87,6 +86,10 @@ public class ComputerValidator {
 	 * @return La liste des ordinateurs présents dans la base de données
 	 */
 	public static List<Computer> fetchComputerList() {
-		return ComputerSearcher.fetchComputerList();
+		return ComputerSearcher.fetchList();
+	}
+	
+	public static List<Computer> fetchComputerListWithOffset(int offset, int nbComputers){
+		return ComputerSearcher.fetchWithOffset(offset, nbComputers);
 	}
 }

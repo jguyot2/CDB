@@ -16,7 +16,6 @@ import model.Computer;
  * Classe permettant d'effectuer des requêtes sur des Computers
  * 
  * @author jguyot2
- *
  */
 public class ComputerSearcher {
 
@@ -27,6 +26,10 @@ public class ComputerSearcher {
 			+ "company.id, company.name " + "FROM computer LEFT JOIN company ON computer.company_id = company.id "
 			+ "WHERE computer.id = ? ";
 
+	private static final String QUERY_COMPUTER_WITH_OFFSET = "SELECT computer.id, computer.name, introduced, discontinued, "
+			+ "company.id, company.name " + "FROM computer LEFT JOIN company ON computer.company_id = company.id "
+			+ "ORDER BY computer.id " + "LIMIT ? OFFSET ?";
+
 	/**
 	 * Cherche tous les ordinateurs dans la base, et retourne la liste correspondant
 	 * à ces derniers
@@ -34,7 +37,7 @@ public class ComputerSearcher {
 	 * @return La liste des ordinateurs présents dans la base de données
 	 * @author jguyot2
 	 */
-	public static List<Computer> fetchComputerList() {
+	public static List<Computer> fetchList() {
 		List<Computer> computerList = new ArrayList<>();
 		try (Statement stmt = DBConnection.getConnection().createStatement();) {
 			ResultSet res = stmt.executeQuery(QUERY_COMPUTER_LIST);
@@ -86,14 +89,14 @@ public class ComputerSearcher {
 	 *         présent dans la BD ou qu'une exception SQLException s'est produite/
 	 *         Une instance de Optional contenant le Computer trouvé sinon
 	 */
-	public static Optional<Computer> fetchComputerById(long searchedId) {
+	public static Optional<Computer> fetchById(long searchedId) {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_FROM_ID)) {
-			
+
 			stmt.setLong(1, searchedId);
 			ResultSet res = stmt.executeQuery();
-			if (!res.next()) 
+			if (!res.next())
 				return Optional.empty();
-			
+
 			Computer foundComputer = getComputerFromResultSet(res);
 			return Optional.of(foundComputer);
 		} catch (SQLException e) {
@@ -102,7 +105,24 @@ public class ComputerSearcher {
 		}
 	}
 
-	private ComputerSearcher() {
+	public static List<Computer> fetchWithOffset(int offset, int numberComputers) {
+		List<Computer> computerList = new ArrayList<>();
+		try {
+			PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_WITH_OFFSET);
+			stmt.setInt(1, numberComputers);
+			stmt.setInt(1, offset);
+			ResultSet res = stmt.executeQuery();
+			while (res.next()) {
+				Computer computer = getComputerFromResultSet(res);
+				computerList.add(computer);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return computerList;
 	}
+
+	private ComputerSearcher() {}
+
 
 }

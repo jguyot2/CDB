@@ -30,7 +30,7 @@ public class CLInterface {
 	}
 
 	private static void listCompaniesCommand() {
-		List<Company> companyList = CompanyValidator.findCompaniesList();
+		List<Company> companyList = CompanyValidator.fetchList();
 		for (Company c : companyList)
 			System.out.println(c);
 		System.out.println("-------------------------");
@@ -214,9 +214,10 @@ public class CLInterface {
 					return;
 				}
 		int updated = ComputerValidator.updateComputer(foundComputer);
-		if(updated > 0) {
+		if (updated > 0) {
 			System.out.println("La mise a jour a été effectuée");
-		} else System.out.println("La mise à jour n'a pas eu lieu");
+		} else
+			System.out.println("La mise à jour n'a pas eu lieu");
 	}
 
 	private static void exitCommand() {
@@ -242,7 +243,7 @@ public class CLInterface {
 	 * 
 	 * @param commandToExecute La commande à exécuter
 	 */
-	private static void executeCommand(Commandes commandToExecute) {
+	private static void executeCommand(Commands commandToExecute) {
 		switch (commandToExecute) {
 		case LIST_COMPUTERS:
 			listComputersCommand();
@@ -273,17 +274,23 @@ public class CLInterface {
 	/**
 	 * Fonction affichant un menu et exécutant une commande rentrée par
 	 * l'utilisateur
-	 *
-	 *
-	 * 
 	 */
 	public static void getCommande() {
 		printMenu();
 		String strCommandId = sc.nextLine();
-		int commandId = Integer.parseInt(strCommandId);
-		Commandes commandToExecute = Commandes.getCommandeFromInput(commandId);
+		int commandId = -1;
+		try {
+			commandId = Integer.parseInt(strCommandId);
 
-		executeCommand(commandToExecute);
-
+		} catch (NumberFormatException e) {
+			System.out.println("La commande rentrée est invalide");
+		}
+		
+		try {
+			Commands commandToExecute = Commands.getCommandeFromInput(commandId);
+			executeCommand(commandToExecute);
+		} catch (IllegalArgumentException e) {
+			System.out.println("Erreur" + e.getMessage());
+		}
 	}
 }
