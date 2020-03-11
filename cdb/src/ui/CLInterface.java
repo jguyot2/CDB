@@ -1,7 +1,7 @@
 package ui;
 
 import java.util.Date;
-import java.util.InputMismatchException;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -42,7 +42,7 @@ public class CLInterface {
 		long computerId = 0;
 		try {
 			computerId = Long.parseLong(strComputerId, 10);
-		} catch (InputMismatchException e) {
+		} catch (NumberFormatException e) {
 			System.out.println("Ce qui a été entré ne correspond pas à un identifiant valide");
 			return;
 		}
@@ -76,7 +76,7 @@ public class CLInterface {
 			long companyId = 0;
 			try {
 				companyId = Long.parseLong(strCompanyId);
-			} catch (InputMismatchException e) {
+			} catch (NumberFormatException e) {
 				System.out.println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
 				return;
 			}
@@ -127,7 +127,7 @@ public class CLInterface {
 		long id = 0;
 		try {
 			id = Long.parseLong(idString, 0);
-		} catch (InputMismatchException e) {
+		} catch (NumberFormatException e) {
 			System.out.println("Identifiant invalide");
 			return;
 		}
@@ -145,7 +145,7 @@ public class CLInterface {
 		long id = 0;
 		try {
 			id = Long.parseLong(idString);
-		} catch (InputMismatchException e) {
+		} catch (NumberFormatException e) {
 			System.out.println("La valeur entrée ne correspond pas à un ID. ");
 			return;
 		}
@@ -174,7 +174,7 @@ public class CLInterface {
 				long idComputer = 0;
 				try {
 					idComputer = Long.parseLong(newEnterpriseIdStr);
-				} catch (InputMismatchException e) {
+				} catch (NumberFormatException e) {
 					System.out.println("Id invalide entré, fin de la saisie");
 					return;
 				}
@@ -213,7 +213,10 @@ public class CLInterface {
 					System.out.println("Erreur :" + e.getMessage());
 					return;
 				}
-		ComputerValidator.updateComputer(foundComputer);
+		int updated = ComputerValidator.updateComputer(foundComputer);
+		if(updated > 0) {
+			System.out.println("La mise a jour a été effectuée");
+		} else System.out.println("La mise à jour n'a pas eu lieu");
 	}
 
 	private static void exitCommand() {
