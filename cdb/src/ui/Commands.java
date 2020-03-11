@@ -11,7 +11,9 @@ public enum Commands {
 	CREATE_COMPUTER, 
 	UPDATE_COMPUTER, 
 	DELETE_COMPUTER,
-	EXIT;
+	EXIT,
+	COMPUTER_PAGINATION, 
+	COMPANY_PAGINATION;
 	
 	/**
 	 * Fonction associant un entier en paramètre à la commande à exécuter
@@ -34,6 +36,10 @@ public enum Commands {
 			return DELETE_COMPUTER;
 		case 6: 
 			return EXIT;
+		case 7:
+			return COMPUTER_PAGINATION;
+		case 8: 
+			return COMPANY_PAGINATION;
 		default:
 			throw new IllegalArgumentException("Entier ne correspondant pas à une commande !");
 		}

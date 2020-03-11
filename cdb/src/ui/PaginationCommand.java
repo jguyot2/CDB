@@ -1,6 +1,6 @@
 package ui;
 
-public enum PaginationCommands {
+public enum PaginationCommand {
 	NEXT,
 	PREVIOUS,
 	EXIT;

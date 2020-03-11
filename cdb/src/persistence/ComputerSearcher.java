@@ -70,12 +70,10 @@ public class ComputerSearcher {
 
 		String companyName = res.getString("company.name");
 		Company company = null;
-
 		if (companyName != null) {
 			long companyId = res.getLong("company.id");
 			company = new Company(companyName, companyId);
 		}
-
 		Computer computer = new Computer(computerName, company, introduced, discontinued, computerId);
 
 		return computer;
@@ -91,12 +89,10 @@ public class ComputerSearcher {
 	 */
 	public static Optional<Computer> fetchById(long searchedId) {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_FROM_ID)) {
-
 			stmt.setLong(1, searchedId);
 			ResultSet res = stmt.executeQuery();
 			if (!res.next())
 				return Optional.empty();
-
 			Computer foundComputer = getComputerFromResultSet(res);
 			return Optional.of(foundComputer);
 		} catch (SQLException e) {
@@ -110,7 +106,7 @@ public class ComputerSearcher {
 		try {
 			PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_WITH_OFFSET);
 			stmt.setInt(1, numberComputers);
-			stmt.setInt(1, offset);
+			stmt.setInt(2, offset);
 			ResultSet res = stmt.executeQuery();
 			while (res.next()) {
 				Computer computer = getComputerFromResultSet(res);
@@ -121,8 +117,5 @@ public class ComputerSearcher {
 		}
 		return computerList;
 	}
-
 	private ComputerSearcher() {}
-
-
 }

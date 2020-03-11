@@ -235,6 +235,8 @@ public class CLInterface {
 		System.out.println("4:\t Mise à jour d'un ordinateur");
 		System.out.println("5:\t Suppression d'un ordinateur");
 		System.out.println("6:\t Sortie du programme");
+		System.out.println("7:\t Pagination des ordinateurs");
+		System.out.println("8:\t Pagination des entreprises");
 		System.out.println("--------------------------------");
 	}
 
@@ -265,6 +267,12 @@ public class CLInterface {
 			break;
 		case EXIT:
 			exitCommand();
+			break;
+		case COMPUTER_PAGINATION:
+			ComputerPaginationMenu.paginate();
+			break;
+		case COMPANY_PAGINATION:
+			CompanyPaginationMenu.paginate();
 			break;
 		default:
 			throw new RuntimeException("arrivée dans le default alors que c'est pas censé arriver");

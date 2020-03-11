@@ -37,16 +37,15 @@ public class CompanyPaginationMenu {
 		System.out.println("e: Sortie de la pagination");
 	}
 
-	PaginationCommands getCommand() {
+	PaginationCommand getCommand() {
 		printMenu();
 		String userEntry = sc.nextLine().trim();
 		if ("n".equals(userEntry))
-			return PaginationCommands.NEXT;
+			return PaginationCommand.NEXT;
 		else if ("p".equals(userEntry))
-			return PaginationCommands.PREVIOUS;
+			return PaginationCommand.PREVIOUS;
 		else if ("e".equals(userEntry))
-			return PaginationCommands.EXIT;
-
+			return PaginationCommand.EXIT;
 		System.out.println("Commande invalide.");
 		return getCommand();
 	}
@@ -55,13 +54,12 @@ public class CompanyPaginationMenu {
 		CompanyPaginationMenu page = new CompanyPaginationMenu();
 		boolean exit = false;
 		while (!exit) {
-			PaginationCommands userCommand = page.getCommand();
+			PaginationCommand userCommand = page.getCommand();
 			exit = page.executeCommand(userCommand);
 		}
-
 	}
 
-	public boolean executeCommand(PaginationCommands command) {
+	public boolean executeCommand(PaginationCommand command) {
 		switch (command) {
 		case EXIT:
 			return true;
