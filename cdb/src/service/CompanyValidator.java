@@ -13,7 +13,7 @@ public class CompanyValidator {
 	 * @return une instance de Optional contenant une instance de Company si une ligne correspondante a été trouvée dans la BD
 	 *  ou une instance de Optional vide si aucune entreprise n'a été trouvée
 	 */
-	public static Optional<Company> findCompanyById(long id){
+	public static Optional<Company> findById(long id){
 		return CompanySearcher.fetchById(id);
 	}
 	

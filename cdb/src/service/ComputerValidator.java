@@ -7,6 +7,11 @@ import model.Computer;
 import persistence.ComputerSearcher;
 import persistence.ComputerUpdater;
 
+/**
+ * Classe validant les requêtes/mises à jour avant de les envoyer au paquet persistance
+ * @author jguyot2
+ *
+ */
 public class ComputerValidator {
 	/**
 	 * Fonction déterminant si une instance de Computer est valide, c'est à dire que
@@ -19,7 +24,6 @@ public class ComputerValidator {
 	 * @return true si l'instance est considérée comme valide, false sinon
 	 */
 	public static boolean isValidComputerInstance(Computer computer) {
-
 		if (computer.getName() == null || computer.getName().trim().isEmpty())
 			return false;
 
@@ -77,7 +81,7 @@ public class ComputerValidator {
 	 * @return Optional.empty() si la recherche a échoué, ou un Optional contenant
 	 *         la valeur de l'identifiant recherché sinon
 	 */
-	public static Optional<Computer> fetchComputerById(long id) {
+	public static Optional<Computer> findById(long id) {
 		return ComputerSearcher.fetchById(id);
 	}
 
@@ -85,11 +89,12 @@ public class ComputerValidator {
 	 * Recherche de la liste de tous les ordinateurs présent dans la base de données
 	 * @return La liste des ordinateurs présents dans la base de données
 	 */
-	public static List<Computer> fetchComputerList() {
+	public static List<Computer> fetchList() {
 		return ComputerSearcher.fetchList();
 	}
 	
-	public static List<Computer> fetchComputerListWithOffset(int offset, int nbComputers){
+	
+	public static List<Computer> findListWithOffset(int offset, int nbComputers){
 		return ComputerSearcher.fetchWithOffset(offset, nbComputers);
 	}
 }

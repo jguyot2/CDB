@@ -23,7 +23,7 @@ public class CLInterface {
 	private static Scanner sc = new Scanner(System.in);
 
 	private static void listComputersCommand() {
-		List<Computer> computerList = ComputerValidator.fetchComputerList();
+		List<Computer> computerList = ComputerValidator.fetchList();
 		for (Computer c : computerList)
 			System.out.println(c.getShortDescription());
 		System.out.println("-------------------------");
@@ -47,7 +47,7 @@ public class CLInterface {
 			return;
 		}
 
-		Optional<Computer> computerOpt = ComputerValidator.fetchComputerById(computerId);
+		Optional<Computer> computerOpt = ComputerValidator.findById(computerId);
 		if (!computerOpt.isPresent()) {
 			System.out.println("L'ordinateur n'a pas été trouvé dans la BD");
 		} else {
@@ -80,7 +80,7 @@ public class CLInterface {
 				System.out.println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
 				return;
 			}
-			Optional<Company> companyOpt = CompanyValidator.findCompanyById(companyId);
+			Optional<Company> companyOpt = CompanyValidator.findById(companyId);
 			if (companyOpt.isPresent())
 				company = companyOpt.get();
 			else
@@ -150,7 +150,7 @@ public class CLInterface {
 			return;
 		}
 
-		Optional<Computer> optFoundComputer = ComputerValidator.fetchComputerById(id);
+		Optional<Computer> optFoundComputer = ComputerValidator.findById(id);
 		if (!optFoundComputer.isPresent()) {
 			System.out.println("Ordinateur non trouvé.");
 			return;
@@ -269,10 +269,10 @@ public class CLInterface {
 			exitCommand();
 			break;
 		case COMPUTER_PAGINATION:
-			ComputerPaginationMenu.paginate();
+			ComputerPagination.paginate();
 			break;
 		case COMPANY_PAGINATION:
-			CompanyPaginationMenu.paginate();
+			CompanyPagination.paginate();
 			break;
 		default:
 			throw new RuntimeException("arrivée dans le default alors que c'est pas censé arriver");
@@ -289,7 +289,6 @@ public class CLInterface {
 		int commandId = -1;
 		try {
 			commandId = Integer.parseInt(strCommandId);
-
 		} catch (NumberFormatException e) {
 			System.out.println("La commande rentrée est invalide");
 		}

@@ -38,7 +38,7 @@ public enum Commands {
 			return EXIT;
 		case 7:
 			return COMPUTER_PAGINATION;
-		case 8: 
+		case 8:
 			return COMPANY_PAGINATION;
 		default:
 			throw new IllegalArgumentException("Entier ne correspondant pas à une commande !");
