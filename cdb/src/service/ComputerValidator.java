@@ -40,9 +40,6 @@ public class ComputerValidator {
 	 * @param newComputervalue La valeur à affecter à la ligne
 	 * @return true si la mise à jour a bien eu lieu, false sinon
 	 *
-	 * 
-	 *         TODO : Modifier la signature de la fonction, peut-être mettre une
-	 *         exception expliquant la cause du non-update
 	 */
 	public static int updateComputer(Computer newComputervalue) {
 		if (!isValidComputerInstance(newComputervalue))

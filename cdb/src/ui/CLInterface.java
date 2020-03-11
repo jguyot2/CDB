@@ -17,15 +17,11 @@ import service.ComputerValidator;
  * commande
  * 
  * @author jguyot2
- *
  */
 public class CLInterface {
 
 	private static Scanner sc = new Scanner(System.in);
 
-	/**
-	 * Affiche une courte description des ordinateurs dans la base de données
-	 */
 	private static void listComputersCommand() {
 		List<Computer> computerList = ComputerValidator.fetchComputerList();
 		for (Computer c : computerList)
@@ -33,9 +29,6 @@ public class CLInterface {
 		System.out.println("-------------------------");
 	}
 
-	/**
-	 * Affiche la liste des entreprises de la base de données
-	 */
 	private static void listCompaniesCommand() {
 		List<Company> companyList = CompanyValidator.findCompaniesList();
 		for (Company c : companyList)
@@ -43,14 +36,17 @@ public class CLInterface {
 		System.out.println("-------------------------");
 	}
 
-	/**
-	 * Affiche une description détaillée d'une instance de Computer d'id entré par
-	 * l'utilisateur
-	 */
 	private static void getComputerDetailsCommand() {
 		System.out.println("Entrez l'identifiant de l'ordinateur recherché");
 		String strComputerId = sc.nextLine();
-		long computerId = Long.parseLong(strComputerId);
+		long computerId = 0;
+		try {
+			computerId = Long.parseLong(strComputerId, 10);
+		} catch (InputMismatchException e) {
+			System.out.println("Ce qui a été entré ne correspond pas à un identifiant valide");
+			return;
+		}
+
 		Optional<Computer> computerOpt = ComputerValidator.fetchComputerById(computerId);
 		if (!computerOpt.isPresent()) {
 			System.out.println("L'ordinateur n'a pas été trouvé dans la BD");
@@ -64,39 +60,57 @@ public class CLInterface {
 	/**
 	 * Création d'un Computer par l'utilisateur, puis ajout dans la base de données
 	 * si l'utilisateur a pas entré n'importe quoi
-	 * 
-	 * TODO: refactoriser la fonction parce qu'elle est beaucoup trop longue
 	 */
 	private static void createComputerCommand() {
 		System.out.println("Entrez le nom de l'ordinateur");
 		String computerName = sc.nextLine().trim();
-		System.out.println("Nom entré:" + computerName);
+		System.out.println("Nom entré:'" + computerName + "'");
 
-		System.out.println("Entrez l'identifiant de la compagnie associée");
+		System.out.println("Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
 		String strCompanyId = sc.nextLine().trim();
 		System.out.println("ID entré:" + strCompanyId);
 
 		Company company = null;
+
 		if (!strCompanyId.isEmpty()) {
-			long companyId = Long.parseLong(strCompanyId);
+			long companyId = 0;
+			try {
+				companyId = Long.parseLong(strCompanyId);
+			} catch (InputMismatchException e) {
+				System.out.println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
+				return;
+			}
 			Optional<Company> companyOpt = CompanyValidator.findCompanyById(companyId);
 			if (companyOpt.isPresent())
 				company = companyOpt.get();
+			else
+				System.out.println("Entreprise non trouvée dans la bd");
 		}
 		System.out.println("Company:" + company);
 		System.out.println("Entrez la date d'introduction au format DD/MM/YYYY");
 		String dateStr = sc.nextLine().trim();
 		System.out.println("STR INTRO:" + dateStr);
-
 		Date introduced = null;
 		if (!dateStr.isEmpty())
-			introduced = DateMapper.stringToUtilDate(dateStr);
+			try {
+				introduced = DateMapper.stringToUtilDate(dateStr);
+			} catch (IllegalArgumentException e) {
+				System.out.println(e.getMessage());
+				System.out.println("Fin de la saisie, car date no parsable");
+				return;
+			}
 		System.out.println("Date:" + introduced);
 		System.out.println("Entrez la date d'arrêt de production au format DD/MM/YYYY");
 		String strDiscontinuation = sc.nextLine().trim();
 		Date discontinued = null;
 		if (!strDiscontinuation.isEmpty())
-			discontinued = DateMapper.stringToUtilDate(strDiscontinuation);
+			try {
+				discontinued = DateMapper.stringToUtilDate(strDiscontinuation);
+			} catch (IllegalArgumentException e) {
+				System.out.println("Erreur : " + e.getMessage());
+				System.out.println("Date saisie invalide, fin de l'entrée");
+				return;
+			}
 
 		Computer createdComputer = new Computer(computerName, company, introduced, discontinued);
 		long newIdComputer = ComputerValidator.createComputer(createdComputer);
@@ -106,27 +120,35 @@ public class CLInterface {
 			System.out.println("L'ordinateur a été créé, et est d'id :" + newIdComputer);
 	}
 
-	/**
-	 * Suppression d'un ordinateur d'id saisi par l'utilisateur
-	 */
 	private static void deleteComputerCommand() {
+
 		System.out.println("Saisissez l'identifiant du pc à supprimer");
 		String idString = sc.nextLine().trim();
-		long id = Long.parseLong(idString, 0);
-		if (id == 0) {
-			System.out.println("Identifiant invalide.");
+		long id = 0;
+		try {
+			id = Long.parseLong(idString, 0);
+		} catch (InputMismatchException e) {
+			System.out.println("Identifiant invalide");
 			return;
 		}
+
 		if (ComputerValidator.deleteComputer(id) > 0)
-			System.out.println("La ligne devrait être supprimée");
+			System.out.println("le PC a été supprimé");
 		else
-			System.out.println("Le computer a pas été supprimé");
+			System.out.println("L'ordinateur de n'a pas été supprimé dans la BD");
+
 	}
 
 	private static void updateComputerCommand() {
 		System.out.println("Entrez l'id de l'ordinateur à modifier");
 		String idString = sc.nextLine().trim();
-		long id = Long.parseLong(idString);
+		long id = 0;
+		try {
+			id = Long.parseLong(idString);
+		} catch (InputMismatchException e) {
+			System.out.println("La valeur entrée ne correspond pas à un ID. ");
+			return;
+		}
 
 		Optional<Computer> optFoundComputer = ComputerValidator.fetchComputerById(id);
 		if (!optFoundComputer.isPresent()) {
@@ -148,9 +170,16 @@ public class CLInterface {
 		if (!newEnterpriseIdStr.isEmpty())
 			if (newEnterpriseIdStr.equals("NONE"))
 				foundComputer.setId(0);
-			else
-				foundComputer.setId(Long.parseLong(newEnterpriseIdStr));
-
+			else {
+				long idComputer = 0;
+				try {
+					idComputer = Long.parseLong(newEnterpriseIdStr);
+				} catch (InputMismatchException e) {
+					System.out.println("Id invalide entré, fin de la saisie");
+					return;
+				}
+				foundComputer.setId(idComputer);
+			}
 		System.out.println("Entrez la date d'introduction sous forme `JJ/MM/AAAA`: "
 				+ "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
 				+ "pour supprimer cette date");
@@ -161,7 +190,13 @@ public class CLInterface {
 			if ("NONE".equals(strIntro))
 				foundComputer.setIntroduction(null);
 			else
-				foundComputer.setIntroduction(mapper.DateMapper.stringToUtilDate(strIntro));
+				try {
+					foundComputer.setIntroduction(mapper.DateMapper.stringToUtilDate(strIntro));
+				} catch (IllegalArgumentException e) {
+					System.out.println("Erreur :" + e.getMessage());
+					return;
+				}
+
 		System.out.println("Entrez la date de discontinuation sous forme `JJ/MM/AAAA`: "
 				+ "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
 				+ "pour supprimer cette date");
@@ -172,8 +207,12 @@ public class CLInterface {
 			if ("NONE".equals(strDiscontinuation))
 				foundComputer.setDiscontinuation(null);
 			else
-				foundComputer.setDiscontinuation(mapper.DateMapper.stringToUtilDate(strDiscontinuation));
-		
+				try {
+					foundComputer.setDiscontinuation(mapper.DateMapper.stringToUtilDate(strDiscontinuation));
+				} catch (IllegalArgumentException e) {
+					System.out.println("Erreur :" + e.getMessage());
+					return;
+				}
 		ComputerValidator.updateComputer(foundComputer);
 	}
 
@@ -183,6 +222,7 @@ public class CLInterface {
 	}
 
 	private static void printMenu() {
+		System.out.println("--------------------------------");
 		System.out.println("Entrez la commande: ");
 		System.out.println("0:\t Lister les ordinateurs");
 		System.out.println("1:\t Lister les entreprises");
@@ -228,34 +268,19 @@ public class CLInterface {
 	}
 
 	/**
-	 * affichage d'une erreur+le message la décrivant
-	 * 
-	 * @param e l'exception ayant provoqué l'erreur
-	 */
-	private static void printErrorMessage(Exception e) {
-		System.out.println("Entrée invalide; " + e.getMessage());
-	}
-
-	/**
 	 * Fonction affichant un menu et exécutant une commande rentrée par
 	 * l'utilisateur
 	 *
 	 *
-	 * TODO : Rattraper les exception ailleurs parce que tout rattraper ici c'est
-	 * assez sale
+	 * 
 	 */
 	public static void getCommande() {
 		printMenu();
-		try {
-			String strCommandId = sc.nextLine();
-			int commandId = Integer.parseInt(strCommandId);
-			Commandes commandToExecute = Commandes.getCommandeFromInput(commandId);
+		String strCommandId = sc.nextLine();
+		int commandId = Integer.parseInt(strCommandId);
+		Commandes commandToExecute = Commandes.getCommandeFromInput(commandId);
 
-			executeCommand(commandToExecute);
-		} catch (InputMismatchException e) {
-			printErrorMessage(e);
-		} catch (IllegalArgumentException e) {
-			printErrorMessage(e);
-		}
+		executeCommand(commandToExecute);
+
 	}
 }

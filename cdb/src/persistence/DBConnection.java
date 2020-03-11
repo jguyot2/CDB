@@ -7,7 +7,7 @@ import java.sql.Connection;
 /**
  * Classe permettant de récupérer la connexion à la base de données. 
  * @author jguyot2
- *
+ * 
  */
 class DBConnection {
 
@@ -29,17 +29,21 @@ class DBConnection {
 	private static void init() {
 		try {
 			Class.forName(driverName).newInstance();
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
+			driverIsImported = true;
+			return;
+		} catch (InstantiationException e1) { 
 			e1.printStackTrace();
+			System.err.println(e1.getMessage());
+			throw new DriverImportFailedError();
 		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			System.err.println(e1.getMessage());
+			throw new DriverImportFailedError();
 		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			System.err.println(e1.getMessage());
+			throw new DriverImportFailedError();
 		}
-		driverIsImported = true;
 	}
 
 	/**
@@ -51,13 +55,14 @@ class DBConnection {
 	public static Connection getConnection() {
 		if (!driverIsImported)
 			init();
-
 		try {
 			if (conn == null || conn.isClosed())
 				conn = DriverManager.getConnection(urlDB + dbName, username, password);
+			return conn;
 		} catch (SQLException e) {
+			e.getMessage();
 			e.printStackTrace();
+			throw new CouldNotConnectToDBException();
 		}
-		return conn;
 	}
 }

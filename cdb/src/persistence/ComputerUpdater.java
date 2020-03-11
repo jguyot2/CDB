@@ -47,7 +47,6 @@ public class ComputerUpdater {
 	 * @return 1 si la mise à jour a eu lieu, 0 sinon 
 	 * 
 	 * 
-	 * TODO: changer la signature de la fonction
 	 */
 	public static int updateComputer(Computer newComputer) {
 		long id = newComputer.getId();
@@ -64,7 +63,6 @@ public class ComputerUpdater {
 			return stmt.executeUpdate();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 0;
@@ -95,11 +93,11 @@ public class ComputerUpdater {
 			return keySet.getLong(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.err.print(e.getMessage());
 		}
 		return 0;
 	}
 
-	private ComputerUpdater() {
-	}
+	private ComputerUpdater() {}
 
 }
