@@ -6,10 +6,14 @@ public class Pagination {
 	private final int elemeentsPerPage = 30;
 	
 	public Pagination() {
-		offset = 0;
-		limit = -1;
+		this.offset = 0;
+		this.limit = -1;
 	}
 
+	public Pagination(int limit) {
+		this.offset = 0;
+		this.limit = limit;
+	}
 	public int getOffset() {
 		return offset;
 	}

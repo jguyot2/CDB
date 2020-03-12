@@ -14,6 +14,7 @@ public class CompanyPagination {
 	
 	private CompanyPagination() {
 		this.page = new Pagination();
+		this.page.setLimit(companyPagination.getNunberOfElements());
 	}
 
 	private void printNextPage() {

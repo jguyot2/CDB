@@ -14,6 +14,7 @@ public class ComputerPagination {
 
 	private ComputerPagination() {
 		this.page = new Pagination();
+		this.page.setLimit(computerValidator.getNumberOfElements());
 	}
 
 	private void printNextPage() {

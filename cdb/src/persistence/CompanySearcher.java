@@ -21,9 +21,9 @@ public class CompanySearcher {
 	private static final String REQUEST_COMPANIES = "SELECT name, id FROM company";
 	private static final String REQUEST_SEARCH_BY_ID = "SELECT name, id FROM company WHERE id = ?";
 	private static final String REQUEST_COMPANIES_OFFSET = "SELECT name, id FROM company ORDER BY id LIMIT ? OFFSET ?";
+	private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM company";
 	
-	public CompanySearcher() {
-	}
+	public CompanySearcher() {}
 	
 	/**
 	 * Recherche une compagnie par son identifiant dans la base de données.
@@ -36,9 +36,7 @@ public class CompanySearcher {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(REQUEST_SEARCH_BY_ID)) {
 
 			stmt.setLong(1, searchedId);
-
 			ResultSet res = stmt.executeQuery();
-
 			if (!res.next())
 				return Optional.empty();
 
@@ -94,5 +92,18 @@ public class CompanySearcher {
 			e.printStackTrace();
 		}
 		return ret;
+	}
+	
+	public int getNumberOfElements() {
+		try {
+			Statement stmt = DBConnection.getConnection().createStatement();
+			ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
+			if(res.next())
+				return res.getInt(1);
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return -1;
 	}
 }

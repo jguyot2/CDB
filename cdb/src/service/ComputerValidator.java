@@ -23,7 +23,9 @@ public class ComputerValidator {
 		this.computerSearcher = new ComputerSearcher();
 		this.computerUpdater = new ComputerUpdater();
 	}
-
+	public int getNumberOfElements() {
+		return computerSearcher.getNumberOfElements();
+	}
 	/**
 	 * Fonction déterminant si une instance de Computer est valide, c'est à dire que
 	 * -> Son nom n'est pas 'null' ou une chaîne de caractères vide -> Si elle a une

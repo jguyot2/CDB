@@ -3,7 +3,6 @@ package main;
 import ui.CLInterface;
 
 public class Main {
-	//TODO Dé-staticiser le service et la persistance
 	//TODO optionnel: Créer des interfaces associées
 	//TODO Récupération de la taille de la table lors de la pagination
 	//TODO Utilisation de LocalDate dans la classe Computer

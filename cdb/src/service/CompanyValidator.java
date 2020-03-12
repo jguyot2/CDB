@@ -30,8 +30,11 @@ public class CompanyValidator {
 	public List<Company> fetchList(){
 		return companySearcher.fetchList();
 	}
-	
+	public int getNunberOfElements() {
+		return companySearcher.getNumberOfElements();
+	}
 	public List<Company> fetchWithOffset(Pagination page){
 		return companySearcher.fetchWithOffset(page);
 	}
+	
 }

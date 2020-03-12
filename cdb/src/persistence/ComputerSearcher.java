@@ -31,6 +31,7 @@ public class ComputerSearcher {
 			+ "company.id, company.name " + "FROM computer LEFT JOIN company ON computer.company_id = company.id "
 			+ "ORDER BY computer.id " + "LIMIT ? OFFSET ?";
 
+	private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM computer";
 	/**
 	 * Cherche tous les ordinateurs dans la base, et retourne la liste correspondant
 	 * à ces derniers
@@ -118,6 +119,19 @@ public class ComputerSearcher {
 			e.printStackTrace();
 		}
 		return computerList;
+	}
+	
+	public int getNumberOfElements() {
+		try {
+			Statement stmt = DBConnection.getConnection().createStatement();
+			ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
+			if(res.next())
+				return res.getInt(1);
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return -1;
 	}
 	
 	public ComputerSearcher() {}
