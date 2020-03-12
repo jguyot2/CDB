@@ -4,11 +4,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import mapper.DateMapper;
 import model.Company;
 import model.Computer;
 import model.Pagination;
@@ -32,6 +34,7 @@ public class ComputerSearcher {
 			+ "ORDER BY computer.id " + "LIMIT ? OFFSET ?";
 
 	private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM computer";
+
 	/**
 	 * Cherche tous les ordinateurs dans la base, et retourne la liste correspondant
 	 * à ces derniers
@@ -67,17 +70,26 @@ public class ComputerSearcher {
 	private Computer getComputerFromResultSet(ResultSet res) throws SQLException {
 		long computerId = res.getLong("computer.id");
 		String computerName = res.getString("computer.name");
-		Date introduced = res.getDate("introduced");
-		Date discontinued = res.getDate("discontinued");
+
+		Optional<LocalDate> introducedDateOpt = DateMapper.sqlDateToLocalDate(res.getDate("introduced"));
+		LocalDate introduced = null;
+		if (introducedDateOpt.isPresent())
+			introduced = introducedDateOpt.get();
+
+		Optional<LocalDate> discontinuedDateOpt = DateMapper.sqlDateToLocalDate(res.getDate("discontinued"));
+		LocalDate discontinued = null;
+		if (discontinuedDateOpt.isPresent())
+			discontinued = discontinuedDateOpt.get();
 
 		String companyName = res.getString("company.name");
+		
 		Company company = null;
 		if (companyName != null) {
 			long companyId = res.getLong("company.id");
 			company = new Company(companyName, companyId);
 		}
+		
 		Computer computer = new Computer(computerName, company, introduced, discontinued, computerId);
-
 		return computer;
 	}
 
@@ -104,7 +116,6 @@ public class ComputerSearcher {
 	}
 
 	public List<Computer> fetchWithOffset(Pagination page) {
-		
 		List<Computer> computerList = new ArrayList<>();
 		try {
 			PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_WITH_OFFSET);
@@ -120,12 +131,12 @@ public class ComputerSearcher {
 		}
 		return computerList;
 	}
-	
+
 	public int getNumberOfElements() {
 		try {
 			Statement stmt = DBConnection.getConnection().createStatement();
 			ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
-			if(res.next())
+			if (res.next())
 				return res.getInt(1);
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -133,6 +144,7 @@ public class ComputerSearcher {
 		}
 		return -1;
 	}
-	
-	public ComputerSearcher() {}
+
+	public ComputerSearcher() {
+	}
 }

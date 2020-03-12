@@ -1,6 +1,6 @@
 package model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Classe représentant un ordinateur
@@ -11,8 +11,8 @@ import java.util.Date;
 public class Computer {
 	private String name;
 	private Company manufacturer;
-	private Date introduction;
-	private Date discontinuation;
+	private LocalDate introduction;
+	private LocalDate discontinuation;
 	private long id;
 
 	public Computer() {}
@@ -25,7 +25,7 @@ public class Computer {
 		this.id = 0;
 	}
 
-	public Computer(String name, Company manufacturer, Date introduction, Date discontinuation) {
+	public Computer(String name, Company manufacturer, LocalDate introduction, LocalDate discontinuation) {
 
 		this.name = name;
 		this.manufacturer = manufacturer;
@@ -34,7 +34,7 @@ public class Computer {
 		this.id = 0;
 	}
 
-	public Computer(String name, Company manufacturer, Date introduction, Date discontinuation, long id) {
+	public Computer(String name, Company manufacturer, LocalDate introduction, LocalDate discontinuation, long id) {
 
 		this.name = name;
 		this.manufacturer = manufacturer;
@@ -51,11 +51,11 @@ public class Computer {
 		return manufacturer;
 	}
 
-	public Date getIntroduction() {
+	public LocalDate getIntroduction() {
 		return introduction;
 	}
 
-	public Date getDiscontinuation() {
+	public LocalDate getDiscontinuation() {
 		return discontinuation;
 
 	}
@@ -94,14 +94,11 @@ public class Computer {
 		this.manufacturer = manufacturer;
 	}
 
-	public void setIntroduction(Date introduction) {
+	public void setIntroduction(LocalDate introduction) {
 		this.introduction = introduction;
 	}
 
-	public void setDiscontinuation(Date discontinuation) {
+	public void setDiscontinuation(LocalDate discontinuation) {
 		this.discontinuation = discontinuation;
-	}
-	public void goToNextPage() {
-		
 	}
 }

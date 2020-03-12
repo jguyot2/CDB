@@ -1,5 +1,7 @@
 package ui;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 
 import java.util.List;
@@ -87,11 +89,11 @@ public class CLInterface {
 		System.out.println("Entrez la date d'introduction au format DD/MM/YYYY");
 		String dateStr = sc.nextLine().trim();
 		System.out.println("STR INTRO:" + dateStr);
-		Date introduced = null;
+		LocalDate introduced = null;
 		if (!dateStr.isEmpty())
 			try {
-				introduced = DateMapper.stringToUtilDate(dateStr);
-			} catch (IllegalArgumentException e) {
+				introduced = DateMapper.stringToLocalDate(dateStr);
+			} catch (DateTimeParseException e) {
 				System.out.println(e.getMessage());
 				System.out.println("Fin de la saisie, car date no parsable");
 				return;
@@ -99,11 +101,11 @@ public class CLInterface {
 		System.out.println("Date:" + introduced);
 		System.out.println("Entrez la date d'arrêt de production au format DD/MM/YYYY");
 		String strDiscontinuation = sc.nextLine().trim();
-		Date discontinued = null;
+		LocalDate discontinued = null;
 		if (!strDiscontinuation.isEmpty())
 			try {
-				discontinued = DateMapper.stringToUtilDate(strDiscontinuation);
-			} catch (IllegalArgumentException e) {
+				discontinued = DateMapper.stringToLocalDate(strDiscontinuation);
+			} catch (DateTimeParseException e) {
 				System.out.println("Erreur : " + e.getMessage());
 				System.out.println("Date saisie invalide, fin de l'entrée");
 				return;
@@ -187,8 +189,8 @@ public class CLInterface {
 				foundComputer.setIntroduction(null);
 			else
 				try {
-					foundComputer.setIntroduction(mapper.DateMapper.stringToUtilDate(strIntro));
-				} catch (IllegalArgumentException e) {
+					foundComputer.setIntroduction(DateMapper.stringToLocalDate(strIntro));
+				} catch (DateTimeParseException e) {
 					System.out.println("Erreur :" + e.getMessage());
 					return;
 				}
@@ -204,8 +206,8 @@ public class CLInterface {
 				foundComputer.setDiscontinuation(null);
 			else
 				try {
-					foundComputer.setDiscontinuation(mapper.DateMapper.stringToUtilDate(strDiscontinuation));
-				} catch (IllegalArgumentException e) {
+					foundComputer.setDiscontinuation(DateMapper.stringToLocalDate(strDiscontinuation));
+				} catch (DateTimeParseException e) {
 					System.out.println("Erreur :" + e.getMessage());
 					return;
 				}

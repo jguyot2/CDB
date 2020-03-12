@@ -56,13 +56,13 @@ public class ComputerUpdater {
 			stmt.setLong(1, id);
 			stmt.setString(2, newComputer.getName());
 
-			Optional<java.sql.Date> introDateOpt = DateMapper.utilDateToSqlDate(newComputer.getIntroduction());
+			Optional<java.sql.Date> introDateOpt = DateMapper.localDateToSqlDate(newComputer.getIntroduction());
 			java.sql.Date introDate = null;
 			if (introDateOpt.isPresent())
 				introDate = introDateOpt.get();
 			stmt.setDate(3, introDate);
 
-			Optional<java.sql.Date> discoDateOpt = DateMapper.utilDateToSqlDate(newComputer.getDiscontinuation());
+			Optional<java.sql.Date> discoDateOpt = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation());
 			java.sql.Date discoDate = null;
 			if (discoDateOpt.isPresent())
 				discoDate = discoDateOpt.get();
@@ -94,13 +94,13 @@ public class ComputerUpdater {
 				PreparedStatement.RETURN_GENERATED_KEYS)) {
 			stmt.setString(1, newComputer.getName());
 
-			Optional<java.sql.Date> introDateOpt = DateMapper.utilDateToSqlDate(newComputer.getIntroduction());
+			Optional<java.sql.Date> introDateOpt = DateMapper.localDateToSqlDate(newComputer.getIntroduction());
 			java.sql.Date introDate = null;
 			if (introDateOpt.isPresent())
 				introDate = introDateOpt.get();
 			stmt.setDate(2, introDate);
 
-			Optional<java.sql.Date> discoDateOpt = DateMapper.utilDateToSqlDate(newComputer.getDiscontinuation());
+			Optional<java.sql.Date> discoDateOpt = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation());
 			java.sql.Date discoDate = null;
 			if (discoDateOpt.isPresent())
 				discoDate = discoDateOpt.get();
