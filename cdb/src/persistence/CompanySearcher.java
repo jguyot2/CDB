@@ -104,6 +104,7 @@ public class CompanySearcher {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
+		
 		return -1;
 	}
 }

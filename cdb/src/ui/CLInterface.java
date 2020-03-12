@@ -13,7 +13,9 @@ import mapper.DateMapper;
 import model.Company;
 import model.Computer;
 import service.CompanyValidator;
+import service.ComputerInstanceProblems;
 import service.ComputerValidator;
+import service.InvalidComputerInstanceException;
 
 /**
  * Interface utilisateur permettant l'interaction avec la BD par ligne de
@@ -22,11 +24,11 @@ import service.ComputerValidator;
  * @author jguyot2
  */
 public class CLInterface {
-	
+
 	private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
 	private static ComputerValidator computerValidator = new ComputerValidator();
 	private static CompanyValidator companyValidator = new CompanyValidator();
-	
+
 	private static void listComputersCommand() {
 		List<Computer> computerList = computerValidator.fetchList();
 		for (Computer c : computerList)
@@ -58,19 +60,19 @@ public class CLInterface {
 			System.out.println(computer);
 		}
 	}
-	
+
 	private static void createComputerCommand() {
 		System.out.println("Entrez le nom de l'ordinateur");
-		
+
 		String computerName = sc.nextLine().trim();
 		System.out.println("Nom entré:'" + computerName + "'");
-		
+
 		System.out.println("Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
 		String strCompanyId = sc.nextLine().trim();
 		System.out.println("ID entré:" + strCompanyId);
-		
+
 		Company company = null;
-		
+
 		if (!strCompanyId.isEmpty()) {
 			long companyId = 0;
 			try {
@@ -112,7 +114,16 @@ public class CLInterface {
 			}
 
 		Computer createdComputer = new Computer(computerName, company, introduced, discontinued);
-		long newIdComputer = computerValidator.createComputer(createdComputer);
+		long newIdComputer;
+		try {
+			newIdComputer = computerValidator.createComputer(createdComputer);
+		} catch (InvalidComputerInstanceException e) {
+			System.out.println("Instance incorrecte de Computer crée");
+			for (ComputerInstanceProblems problem : e.getProblems())
+				System.out.println(problem.getExplanation());
+			System.out.println("Fin de la saisie");
+			return;
+		}
 		if (newIdComputer == 0)
 			System.out.println("L'ordinateur n'a pas été enregistré");
 		else
@@ -211,7 +222,16 @@ public class CLInterface {
 					System.out.println("Erreur :" + e.getMessage());
 					return;
 				}
-		int updated = computerValidator.updateComputer(foundComputer);
+		int updated;
+		try {
+			updated = computerValidator.updateComputer(foundComputer);
+		} catch (InvalidComputerInstanceException e) {
+			System.out.println("Instance incorrecte de Computer crée");
+			for (ComputerInstanceProblems problem : e.getProblems())
+				System.out.println(problem.getExplanation());
+			System.out.println("Fin de la saisie");
+			return;
+		}
 		if (updated > 0) {
 			System.out.println("La mise a jour a été effectuée");
 		} else

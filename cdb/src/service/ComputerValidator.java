@@ -1,5 +1,6 @@
 package service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,70 +24,44 @@ public class ComputerValidator {
 		this.computerSearcher = new ComputerSearcher();
 		this.computerUpdater = new ComputerUpdater();
 	}
+
 	public int getNumberOfElements() {
 		return computerSearcher.getNumberOfElements();
 	}
-	/**
-	 * Fonction déterminant si une instance de Computer est valide, c'est à dire que
-	 * -> Son nom n'est pas 'null' ou une chaîne de caractères vide -> Si elle a une
-	 * date d'introduction ainsi qu'une date d'interruption, alors que
-	 * l'introduction soit avant ou le même jour que l'interruption -> Si elle n'a
-	 * pas de date d'introduction, alors il n'y a pas de date d'interruption.
-	 * 
-	 * @param computer l'instance de Computer à valider
-	 * @return true si l'instance est considérée comme valide, false sinon
-	 * 
-	 *         TODO : Changer l'implémentation de cette fonction pour expliciter ce
-	 *         qui pose problème dans l'instance
-	 */
-	public boolean isValidComputerInstance(Computer computer) {
+
+	public List<ComputerInstanceProblems> getComputerInstanceProblems(Computer computer) {
+		List<ComputerInstanceProblems> problems = new ArrayList<>();
+
 		if (computer.getName() == null || computer.getName().trim().isEmpty())
-			return false;
+			problems.add(ComputerInstanceProblems.INVALID_NAME);
 
-		if (computer.getIntroduction() != null) {
-			if (computer.getDiscontinuation() == null)
-				return true;
-			return computer.getIntroduction().compareTo(computer.getDiscontinuation()) <= 0;
-		}
-		return computer.getDiscontinuation() == null;
+		if (computer.getIntroduction() != null)
+			if (computer.getDiscontinuation() != null
+					&& computer.getIntroduction().compareTo(computer.getDiscontinuation()) < 0)
+				problems.add(ComputerInstanceProblems.INVALID_DISCONTINUATION_DATE);
+
+		if (computer.getDiscontinuation() != null)
+			problems.add(ComputerInstanceProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION);
+		return problems;
 	}
 
-	/**
-	 * Fonction permettant la mise à jour de la ligne d'identifiant id pour lui
-	 * donner la valeur correspondant à l'instance de Computer en paramètre
-	 * 
-	 * @param id               l'identifiant de la ligne à modifier
-	 * @param newComputervalue La valeur à affecter à la ligne
-	 * @return true si la mise à jour a bien eu lieu, false sinon
-	 *
-	 */
-	public int updateComputer(Computer newComputervalue) {
-		if (!isValidComputerInstance(newComputervalue))
-			return 0;
-		else
-			return computerUpdater.updateComputer(newComputervalue);
+
+	public int updateComputer(Computer newComputervalue) throws InvalidComputerInstanceException {
+		List<ComputerInstanceProblems> problems = getComputerInstanceProblems(newComputervalue);
+		if (problems.size() > 0)
+			throw new InvalidComputerInstanceException(problems);
+
+		return computerUpdater.updateComputer(newComputervalue);
 	}
 
-	/**
-	 * Fonction supprimant l'instance de Computer possédant la ligne id
-	 * 
-	 * @param id
-	 * @return true si la suppression a eu lieu, false sinon
-	 */
 	public int deleteComputer(long id) {
 		return computerUpdater.deleteComputerById(id);
 	}
 
-	/**
-	 * Ajout d'un ordinateur dans la base de donnée
-	 * 
-	 * @param createdComputer l'instance de Computer à ajouter dans la base
-	 * @return 0 si la création a échoué ou que , l'identifiant de la nouvelle ligne
-	 *         créée dans la base sinon
-	 */
-	public long createComputer(Computer createdComputer) {
-		if (!isValidComputerInstance(createdComputer))
-			return 0;
+	public long createComputer(Computer createdComputer) throws InvalidComputerInstanceException {
+		List<ComputerInstanceProblems> problems = getComputerInstanceProblems(createdComputer);
+		if (problems.size() > 0)
+			throw new InvalidComputerInstanceException(problems);
 		return computerUpdater.createComputer(createdComputer);
 	}
 
