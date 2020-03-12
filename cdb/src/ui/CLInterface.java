@@ -22,15 +22,17 @@ import service.ComputerValidator;
 public class CLInterface {
 	
 	private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
+	private static ComputerValidator computerValidator = new ComputerValidator();
+	private static CompanyValidator companyValidator = new CompanyValidator();
 	
 	private static void listComputersCommand() {
-		List<Computer> computerList = ComputerValidator.fetchList();
+		List<Computer> computerList = computerValidator.fetchList();
 		for (Computer c : computerList)
 			System.out.println(c.getShortDescription());
 	}
 
 	private static void listCompaniesCommand() {
-		List<Company> companyList = CompanyValidator.fetchList();
+		List<Company> companyList = companyValidator.fetchList();
 		for (Company c : companyList)
 			System.out.println(c);
 	}
@@ -46,7 +48,7 @@ public class CLInterface {
 			return;
 		}
 
-		Optional<Computer> computerOpt = ComputerValidator.findById(computerId);
+		Optional<Computer> computerOpt = computerValidator.findById(computerId);
 		if (!computerOpt.isPresent()) {
 			System.out.println("L'ordinateur n'a pas été trouvé dans la BD");
 		} else {
@@ -75,7 +77,7 @@ public class CLInterface {
 				System.out.println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
 				return;
 			}
-			Optional<Company> companyOpt = CompanyValidator.findById(companyId);
+			Optional<Company> companyOpt = companyValidator.findById(companyId);
 			if (companyOpt.isPresent())
 				company = companyOpt.get();
 			else
@@ -108,7 +110,7 @@ public class CLInterface {
 			}
 
 		Computer createdComputer = new Computer(computerName, company, introduced, discontinued);
-		long newIdComputer = ComputerValidator.createComputer(createdComputer);
+		long newIdComputer = computerValidator.createComputer(createdComputer);
 		if (newIdComputer == 0)
 			System.out.println("L'ordinateur n'a pas été enregistré");
 		else
@@ -126,7 +128,7 @@ public class CLInterface {
 			return;
 		}
 
-		if (ComputerValidator.deleteComputer(id) > 0)
+		if (computerValidator.deleteComputer(id) > 0)
 			System.out.println("le PC a été supprimé");
 		else
 			System.out.println("L'ordinateur de n'a pas été supprimé dans la BD");
@@ -144,7 +146,7 @@ public class CLInterface {
 			return;
 		}
 
-		Optional<Computer> optFoundComputer = ComputerValidator.findById(id);
+		Optional<Computer> optFoundComputer = computerValidator.findById(id);
 		if (!optFoundComputer.isPresent()) {
 			System.out.println("Ordinateur non trouvé.");
 			return;
@@ -207,7 +209,7 @@ public class CLInterface {
 					System.out.println("Erreur :" + e.getMessage());
 					return;
 				}
-		int updated = ComputerValidator.updateComputer(foundComputer);
+		int updated = computerValidator.updateComputer(foundComputer);
 		if (updated > 0) {
 			System.out.println("La mise a jour a été effectuée");
 		} else

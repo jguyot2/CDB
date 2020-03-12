@@ -15,8 +15,7 @@ public class Computer {
 	private Date discontinuation;
 	private long id;
 
-	public Computer() {
-	}
+	public Computer() {}
 
 	public Computer(String name) {
 		this.name = name;
@@ -101,5 +100,8 @@ public class Computer {
 
 	public void setDiscontinuation(Date discontinuation) {
 		this.discontinuation = discontinuation;
+	}
+	public void goToNextPage() {
+		
 	}
 }

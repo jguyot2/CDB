@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import model.Company;
 import model.Computer;
+import model.Pagination;
 
 /**
  * Classe permettant d'effectuer des requêtes sur des Computers
@@ -37,7 +38,7 @@ public class ComputerSearcher {
 	 * @return La liste des ordinateurs présents dans la base de données
 	 * @author jguyot2
 	 */
-	public static List<Computer> fetchList() {
+	public List<Computer> fetchList() {
 		List<Computer> computerList = new ArrayList<>();
 		try (Statement stmt = DBConnection.getConnection().createStatement();) {
 			ResultSet res = stmt.executeQuery(QUERY_COMPUTER_LIST);
@@ -62,7 +63,7 @@ public class ComputerSearcher {
 	 *         curseur de res pointe
 	 * @throws SQLException
 	 */
-	private static Computer getComputerFromResultSet(ResultSet res) throws SQLException {
+	private Computer getComputerFromResultSet(ResultSet res) throws SQLException {
 		long computerId = res.getLong("computer.id");
 		String computerName = res.getString("computer.name");
 		Date introduced = res.getDate("introduced");
@@ -87,7 +88,7 @@ public class ComputerSearcher {
 	 *         présent dans la BD ou qu'une exception SQLException s'est produite/
 	 *         Une instance de Optional contenant le Computer trouvé sinon
 	 */
-	public static Optional<Computer> fetchById(long searchedId) {
+	public Optional<Computer> fetchById(long searchedId) {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_FROM_ID)) {
 			stmt.setLong(1, searchedId);
 			ResultSet res = stmt.executeQuery();
@@ -101,12 +102,13 @@ public class ComputerSearcher {
 		}
 	}
 
-	public static List<Computer> fetchWithOffset(int offset, int numberComputers) {
+	public List<Computer> fetchWithOffset(Pagination page) {
+		
 		List<Computer> computerList = new ArrayList<>();
 		try {
 			PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_WITH_OFFSET);
-			stmt.setInt(1, numberComputers);
-			stmt.setInt(2, offset);
+			stmt.setInt(1, page.getElemeentsperpage());
+			stmt.setInt(2, page.getOffset());
 			ResultSet res = stmt.executeQuery();
 			while (res.next()) {
 				Computer computer = getComputerFromResultSet(res);
@@ -117,5 +119,6 @@ public class ComputerSearcher {
 		}
 		return computerList;
 	}
-	private ComputerSearcher() {}
+	
+	public ComputerSearcher() {}
 }

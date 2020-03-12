@@ -3,6 +3,7 @@ package mapper;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Optional;
 
 public class DateMapper {
 
@@ -14,10 +15,10 @@ public class DateMapper {
 	 * @return La date correspondant au paramètre, mais qui est une instance de
 	 *         java.sql.Date
 	 */
-	public static java.sql.Date utilDateToSqlDate(Date date) {
+	public static Optional<java.sql.Date> utilDateToSqlDate(Date date) {
 		if (date == null)
-			return null;
-		return new java.sql.Date(date.getTime());
+			return Optional.empty();
+		return Optional.of(new java.sql.Date(date.getTime()));
 	}
 
 	// Format : DD/MM/YYYY

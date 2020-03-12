@@ -4,28 +4,34 @@ import java.util.List;
 import java.util.Optional;
 
 import model.Company;
+import model.Pagination;
 import persistence.CompanySearcher;
 
 public class CompanyValidator {
+	
+	private CompanySearcher companySearcher;
+	public CompanyValidator() {
+		companySearcher = new CompanySearcher();
+	}
 	/**
 	 * Recherche d'une entreprise à partir de son identifiant
 	 * @param id l'identifiant recherché
 	 * @return une instance de Optional contenant une instance de Company si une ligne correspondante a été trouvée dans la BD
 	 *  ou une instance de Optional vide si aucune entreprise n'a été trouvée
 	 */
-	public static Optional<Company> findById(long id){
-		return CompanySearcher.fetchById(id);
+	public  Optional<Company> findById(long id){
+		return companySearcher.fetchById(id);
 	}
 	
 	/**
 	 * Fonction renvoyant la liste des entreprises présentes dans la BD
 	 * @return La liste des entreprises présentes dans la BD
 	 */
-	public static List<Company> fetchList(){
-		return CompanySearcher.fetchList();
+	public List<Company> fetchList(){
+		return companySearcher.fetchList();
 	}
 	
-	public static List<Company> fetchWithOffset(int offset, int nbOfCompanies){
-		return CompanySearcher.fetchWithOffset(offset, nbOfCompanies);
+	public List<Company> fetchWithOffset(Pagination page){
+		return companySearcher.fetchWithOffset(page);
 	}
 }

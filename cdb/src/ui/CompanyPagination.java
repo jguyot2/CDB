@@ -4,35 +4,35 @@ import java.util.List;
 import java.util.Scanner;
 
 import model.Company;
-import service.Pageable;
+import model.Pagination;
+import service.CompanyValidator;
 
 public class CompanyPagination {
-	private int offset;
-	private final static int nbCompanysPerPage = 20;
+	private Pagination page;
 	private final static Scanner sc = new Scanner(System.in);
-
+	private static CompanyValidator companyPagination = new CompanyValidator();
+	
 	private CompanyPagination() {
-		offset = 0;
+		this.page = new Pagination();
 	}
 
 	private void printNextPage() {
-		List<Company> companys = Pageable.getCompanyPage(offset, nbCompanysPerPage);
+		List<Company> companys = companyPagination.fetchWithOffset(page);
 		for (Company c : companys)
 			System.out.println(c);
-		this.offset += nbCompanysPerPage;
+		this.page.goToNextPage();
 	}
 
 	private void printCurrentPage() {
-		List<Company> companys = Pageable.getCompanyPage(offset, nbCompanysPerPage);
-		for (Company c : companys)
+		List<Company> companys = companyPagination.fetchWithOffset(page);
+			for (Company c : companys)
 			System.out.println(c);
 	}
 
 	private void printPreviousPage() {
-		this.offset -= nbCompanysPerPage;
-		this.offset = this.offset < 0 ? 0 : this.offset;
+		this.page.goToPreviousPage();
 
-		List<Company> companys = Pageable.getCompanyPage(offset, nbCompanysPerPage);
+		List<Company> companys = companyPagination.fetchWithOffset(page);
 		for (Company c : companys)
 			System.out.println(c);
 	}

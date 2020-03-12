@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.Optional;
 
 import model.Company;
+import model.Pagination;
 
 /**
  * Classe utilisée pour les requêtes associées à la table company.
@@ -20,7 +21,10 @@ public class CompanySearcher {
 	private static final String REQUEST_COMPANIES = "SELECT name, id FROM company";
 	private static final String REQUEST_SEARCH_BY_ID = "SELECT name, id FROM company WHERE id = ?";
 	private static final String REQUEST_COMPANIES_OFFSET = "SELECT name, id FROM company ORDER BY id LIMIT ? OFFSET ?";
-
+	
+	public CompanySearcher() {
+	}
+	
 	/**
 	 * Recherche une compagnie par son identifiant dans la base de données.
 	 * 
@@ -28,7 +32,7 @@ public class CompanySearcher {
 	 * @return Optional.empty() si aucune entreprise n'a été trouvée, ou une
 	 *         instance de Optional contenant l'entreprise trouvée sinon
 	 */
-	public static Optional<Company> fetchById(long searchedId) {
+	public Optional<Company> fetchById(long searchedId) {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(REQUEST_SEARCH_BY_ID)) {
 
 			stmt.setLong(1, searchedId);
@@ -55,7 +59,7 @@ public class CompanySearcher {
 	 * 
 	 * @return La liste des entreprises présentes dans la base de données
 	 */
-	public static List<Company> fetchList() {
+	public List<Company> fetchList() {
 
 		List<Company> companiesList = new ArrayList<>();
 
@@ -73,13 +77,13 @@ public class CompanySearcher {
 		return companiesList;
 	}
 
-	public static List<Company> fetchWithOffset(int offset, int companiesPerPage) {
+	public List<Company> fetchWithOffset(Pagination page) {
 		List<Company> ret = new ArrayList<>();
 		try {
 			PreparedStatement stmt = DBConnection.getConnection().prepareStatement(REQUEST_COMPANIES_OFFSET);
 
-			stmt.setInt(1, companiesPerPage);
-			stmt.setInt(2, offset);
+			stmt.setInt(1, page.getElemeentsperpage());
+			stmt.setInt(2, page.getOffset());
 			ResultSet res = stmt.executeQuery();
 			while (res.next()) {
 				long companyId = res.getLong("id");
