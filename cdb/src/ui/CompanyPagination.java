@@ -13,8 +13,7 @@ public class CompanyPagination {
 	private static CompanyValidator companyPagination = new CompanyValidator();
 	
 	private CompanyPagination() {
-		this.page = new Pagination();
-		this.page.setLimit(companyPagination.getNunberOfElements());
+		this.page = new Pagination(companyPagination.getNunberOfElements());
 	}
 
 	private void printNextPage() {
@@ -71,7 +70,7 @@ public class CompanyPagination {
 		}
 	}
 
-	public boolean executeCommand(PaginationCommand command) {
+	private boolean executeCommand(PaginationCommand command) {
 		switch (command) {
 		case EXIT:
 			return true;

@@ -28,15 +28,11 @@ public class ComputerUpdater {
 	 * @param id l'identifiant dans la base de l'ordinateur à supprimer
 	 * @return true si la suppression est effective, false si une erreur a eu lieu
 	 */
-	public int deleteComputerById(long id) {
+	public int deleteComputerById(long id) throws SQLException {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(DELETE_COMPUTER)) {
 			stmt.setLong(1, id);
 			return stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return 0;
+		} 
 	}
 
 	/**
@@ -50,7 +46,7 @@ public class ComputerUpdater {
 	 * 
 	 * 
 	 */
-	public int updateComputer(Computer newComputer) {
+	public int updateComputer(Computer newComputer) throws SQLException {
 		long id = newComputer.getId();
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(UPDATE_COMPUTER)) {
 			stmt.setLong(1, id);
@@ -74,10 +70,7 @@ public class ComputerUpdater {
 				stmt.setLong(5, newComputer.getManufacturer().getId());
 			return stmt.executeUpdate();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
-		return 0;
 	}
 
 	/**
@@ -89,7 +82,7 @@ public class ComputerUpdater {
 	 * @return le nouvel identifiant correspondant à la ligne ajoutée si l'ajout a
 	 *         réussi, 0 si l'ajout a raté
 	 */
-	public long createComputer(Computer newComputer) {
+	public long createComputer(Computer newComputer) throws SQLException {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(CREATE_COMPUTER,
 				PreparedStatement.RETURN_GENERATED_KEYS)) {
 			stmt.setString(1, newComputer.getName());
@@ -117,11 +110,7 @@ public class ComputerUpdater {
 			if (!keySet.next())
 				return 0;
 			return keySet.getLong(1);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.err.print(e.getMessage());
-		}
-		return 0;
+		} 
 	}
 
 	public ComputerUpdater() {

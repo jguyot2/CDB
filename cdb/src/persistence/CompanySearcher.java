@@ -17,7 +17,7 @@ import model.Pagination;
  * @author jguyot2
  *
  */
-public class CompanySearcher {
+public class CompanySearcher implements Searcher<Company> {
 	private static final String REQUEST_COMPANIES = "SELECT name, id FROM company";
 	private static final String REQUEST_SEARCH_BY_ID = "SELECT name, id FROM company WHERE id = ?";
 	private static final String REQUEST_COMPANIES_OFFSET = "SELECT name, id FROM company ORDER BY id LIMIT ? OFFSET ?";
@@ -32,7 +32,7 @@ public class CompanySearcher {
 	 * @return Optional.empty() si aucune entreprise n'a été trouvée, ou une
 	 *         instance de Optional contenant l'entreprise trouvée sinon
 	 */
-	public Optional<Company> fetchById(long searchedId) {
+	public Optional<Company> fetchById(long searchedId) throws SQLException {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(REQUEST_SEARCH_BY_ID)) {
 
 			stmt.setLong(1, searchedId);
@@ -45,10 +45,7 @@ public class CompanySearcher {
 
 			Company foundCompany = new Company(companyName, companyId);
 			return Optional.of(foundCompany);
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
-		return Optional.empty();
 	}
 
 	/**
@@ -57,7 +54,7 @@ public class CompanySearcher {
 	 * 
 	 * @return La liste des entreprises présentes dans la base de données
 	 */
-	public List<Company> fetchList() {
+	public List<Company> fetchList() throws SQLException {
 
 		List<Company> companiesList = new ArrayList<>();
 
@@ -69,16 +66,13 @@ public class CompanySearcher {
 				assert (name != null);
 				companiesList.add(new Company(name, id));
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		} 
 		return companiesList;
 	}
 
-	public List<Company> fetchWithOffset(Pagination page) {
+	public List<Company> fetchWithOffset(Pagination page) throws SQLException {
 		List<Company> ret = new ArrayList<>();
-		try {
-			PreparedStatement stmt = DBConnection.getConnection().prepareStatement(REQUEST_COMPANIES_OFFSET);
+		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(REQUEST_COMPANIES_OFFSET)) {
 
 			stmt.setInt(1, page.getElemeentsperpage());
 			stmt.setInt(2, page.getOffset());
@@ -88,23 +82,16 @@ public class CompanySearcher {
 				String companyName = res.getString("name");
 				ret.add(new Company(companyName, companyId));
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		return ret;
 	}
 	
-	public int getNumberOfElements() {
-		try {
-			Statement stmt = DBConnection.getConnection().createStatement();
+	public int getNumberOfElements() throws SQLException {
+		try (Statement stmt = DBConnection.getConnection().createStatement()){
 			ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
 			if(res.next())
 				return res.getInt(1);
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
 		}
-		
 		return -1;
 	}
 }

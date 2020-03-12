@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +19,7 @@ import model.Pagination;
  * 
  * @author jguyot2
  */
-public class ComputerSearcher {
+public class ComputerSearcher implements Searcher<Computer> {
 
 	private static final String QUERY_COMPUTER_LIST = " SELECT computer.id, computer.name, introduced, discontinued, "
 			+ "company.id, company.name " + "FROM computer LEFT JOIN company " + "ON computer.company_id = company.id";
@@ -42,7 +41,7 @@ public class ComputerSearcher {
 	 * @return La liste des ordinateurs présents dans la base de données
 	 * @author jguyot2
 	 */
-	public List<Computer> fetchList() {
+	public List<Computer> fetchList() throws SQLException {
 		List<Computer> computerList = new ArrayList<>();
 		try (Statement stmt = DBConnection.getConnection().createStatement();) {
 			ResultSet res = stmt.executeQuery(QUERY_COMPUTER_LIST);
@@ -50,9 +49,8 @@ public class ComputerSearcher {
 				Computer computer = getComputerFromResultSet(res);
 				computerList.add(computer);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
+
 		return computerList;
 	}
 
@@ -82,13 +80,13 @@ public class ComputerSearcher {
 			discontinued = discontinuedDateOpt.get();
 
 		String companyName = res.getString("company.name");
-		
+
 		Company company = null;
 		if (companyName != null) {
 			long companyId = res.getLong("company.id");
 			company = new Company(companyName, companyId);
 		}
-		
+
 		Computer computer = new Computer(computerName, company, introduced, discontinued, computerId);
 		return computer;
 	}
@@ -101,7 +99,7 @@ public class ComputerSearcher {
 	 *         présent dans la BD ou qu'une exception SQLException s'est produite/
 	 *         Une instance de Optional contenant le Computer trouvé sinon
 	 */
-	public Optional<Computer> fetchById(long searchedId) {
+	public Optional<Computer> fetchById(long searchedId) throws SQLException {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_FROM_ID)) {
 			stmt.setLong(1, searchedId);
 			ResultSet res = stmt.executeQuery();
@@ -109,16 +107,12 @@ public class ComputerSearcher {
 				return Optional.empty();
 			Computer foundComputer = getComputerFromResultSet(res);
 			return Optional.of(foundComputer);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return Optional.empty();
 		}
 	}
 
-	public List<Computer> fetchWithOffset(Pagination page) {
+	public List<Computer> fetchWithOffset(Pagination page) throws SQLException {
 		List<Computer> computerList = new ArrayList<>();
-		try {
-			PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_WITH_OFFSET);
+		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_WITH_OFFSET)) {
 			stmt.setInt(1, page.getElemeentsperpage());
 			stmt.setInt(2, page.getOffset());
 			ResultSet res = stmt.executeQuery();
@@ -126,21 +120,15 @@ public class ComputerSearcher {
 				Computer computer = getComputerFromResultSet(res);
 				computerList.add(computer);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		return computerList;
 	}
 
-	public int getNumberOfElements() {
-		try {
-			Statement stmt = DBConnection.getConnection().createStatement();
+	public int getNumberOfElements() throws SQLException {
+		try (Statement stmt = DBConnection.getConnection().createStatement()){
 			ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
 			if (res.next())
 				return res.getInt(1);
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
 		}
 		return -1;
 	}

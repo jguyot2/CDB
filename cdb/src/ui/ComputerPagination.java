@@ -13,8 +13,7 @@ public class ComputerPagination {
 	private final static ComputerValidator computerValidator = new ComputerValidator();
 
 	private ComputerPagination() {
-		this.page = new Pagination();
-		this.page.setLimit(computerValidator.getNumberOfElements());
+		this.page = new Pagination(computerValidator.getNumberOfElements());
 	}
 
 	private void printNextPage() {

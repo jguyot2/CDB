@@ -1,5 +1,6 @@
 package service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,11 @@ public class ComputerValidator {
 	}
 
 	public int getNumberOfElements() {
-		return computerSearcher.getNumberOfElements();
+		try {
+			return computerSearcher.getNumberOfElements();
+		} catch (SQLException e) {
+			return -1;
+		}
 	}
 
 	public List<ComputerInstanceProblems> getComputerInstanceProblems(Computer computer) {
@@ -45,24 +50,36 @@ public class ComputerValidator {
 		return problems;
 	}
 
-
 	public int updateComputer(Computer newComputervalue) throws InvalidComputerInstanceException {
 		List<ComputerInstanceProblems> problems = getComputerInstanceProblems(newComputervalue);
 		if (problems.size() > 0)
 			throw new InvalidComputerInstanceException(problems);
-
-		return computerUpdater.updateComputer(newComputervalue);
+		try {
+			return computerUpdater.updateComputer(newComputervalue);
+		} catch (SQLException e) {
+			return -1;
+		}
 	}
 
 	public int deleteComputer(long id) {
-		return computerUpdater.deleteComputerById(id);
+		try {
+			return computerUpdater.deleteComputerById(id);
+		} catch (SQLException e) {
+			return -1;
+		}
 	}
 
 	public long createComputer(Computer createdComputer) throws InvalidComputerInstanceException {
 		List<ComputerInstanceProblems> problems = getComputerInstanceProblems(createdComputer);
 		if (problems.size() > 0)
 			throw new InvalidComputerInstanceException(problems);
-		return computerUpdater.createComputer(createdComputer);
+		try {
+
+			return computerUpdater.createComputer(createdComputer);
+		} catch (SQLException e) {
+
+			return 0;
+		}
 	}
 
 	/**
@@ -73,7 +90,11 @@ public class ComputerValidator {
 	 *         la valeur de l'identifiant recherché sinon
 	 */
 	public Optional<Computer> findById(long id) {
-		return computerSearcher.fetchById(id);
+		try {
+			return computerSearcher.fetchById(id);
+		} catch (SQLException e) {
+			return Optional.empty();
+		}
 	}
 
 	/**
@@ -82,10 +103,18 @@ public class ComputerValidator {
 	 * @return La liste des ordinateurs présents dans la base de données
 	 */
 	public List<Computer> fetchList() {
-		return computerSearcher.fetchList();
+		try {
+			return computerSearcher.fetchList();
+		} catch (SQLException e) {
+			return new ArrayList<>();
+		}
 	}
 
 	public List<Computer> findListWithOffset(Pagination page) {
-		return computerSearcher.fetchWithOffset(page);
+		try {
+			return computerSearcher.fetchWithOffset(page);
+		} catch (SQLException e) {
+			return new ArrayList<>();
+		}
 	}
 }
