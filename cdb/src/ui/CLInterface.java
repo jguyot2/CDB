@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import mapper.DateMapper;
 import model.Company;
@@ -19,9 +20,9 @@ import service.ComputerValidator;
  * @author jguyot2
  */
 public class CLInterface {
-
-	private static Scanner sc = new Scanner(System.in);
-
+	
+	private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
+	
 	private static void listComputersCommand() {
 		List<Computer> computerList = ComputerValidator.fetchList();
 		for (Computer c : computerList)
@@ -52,21 +53,20 @@ public class CLInterface {
 			Computer computer = computerOpt.get();
 			System.out.println(computer);
 		}
-		
 	}
-
-
+	
 	private static void createComputerCommand() {
 		System.out.println("Entrez le nom de l'ordinateur");
+		
 		String computerName = sc.nextLine().trim();
 		System.out.println("Nom entré:'" + computerName + "'");
-
+		
 		System.out.println("Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
 		String strCompanyId = sc.nextLine().trim();
 		System.out.println("ID entré:" + strCompanyId);
-
+		
 		Company company = null;
-
+		
 		if (!strCompanyId.isEmpty()) {
 			long companyId = 0;
 			try {
@@ -286,7 +286,7 @@ public class CLInterface {
 		} catch (NumberFormatException e) {
 			System.out.println("La commande rentrée est invalide");
 		}
-		
+
 		try {
 			Commands commandToExecute = Commands.getCommandeFromInput(commandId);
 			executeCommand(commandToExecute);
@@ -294,7 +294,7 @@ public class CLInterface {
 			System.out.println("Erreur" + e.getMessage());
 		}
 	}
-	
+
 	public static void start() {
 		while (true)
 			CLInterface.getCommande();

@@ -24,7 +24,7 @@ public enum Commands {
 		switch(input) {
 		case 0:
 			return LIST_COMPUTERS;
-		case 1: 
+		case 1:
 			return LIST_COMPANIES;
 		case 2: 
 			return SHOW_DETAILS;
