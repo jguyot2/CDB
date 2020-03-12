@@ -45,7 +45,7 @@ public class ComputerValidator {
 					&& computer.getIntroduction().compareTo(computer.getDiscontinuation()) < 0)
 				problems.add(ComputerInstanceProblems.INVALID_DISCONTINUATION_DATE);
 
-		if (computer.getDiscontinuation() != null)
+		if (computer.getIntroduction() == null && computer.getDiscontinuation() != null)
 			problems.add(ComputerInstanceProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION);
 		return problems;
 	}

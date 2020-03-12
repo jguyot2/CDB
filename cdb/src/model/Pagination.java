@@ -37,7 +37,7 @@ public class Pagination {
 	
 	public void goToNextPage() {
 		this.offset += this.elemeentsPerPage;
-		if(this.limitIsSet())
+		if(this.limitIsSet() && this.offset > this.limit)
 			this.offset = this.limit - 1;
 	}
 	

@@ -17,10 +17,11 @@ public class CompanyPagination {
 	}
 
 	private void printNextPage() {
+		this.page.goToNextPage();
 		List<Company> companys = companyPagination.fetchWithOffset(page);
 		for (Company c : companys)
 			System.out.println(c);
-		this.page.goToNextPage();
+
 	}
 
 	private void printCurrentPage() {
