@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * 
+ * @author jguyot2
+ */
 public class DTOComputer {
 
 	private String name;

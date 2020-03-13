@@ -12,7 +12,7 @@ import java.util.Optional;
 import mapper.DateMapper;
 import model.Company;
 import model.Computer;
-import model.Pagination;
+import model.Page;
 
 /**
  * Classe permettant d'effectuer des requêtes sur des Computers
@@ -110,7 +110,10 @@ public class ComputerSearcher implements Searcher<Computer> {
 		}
 	}
 
-	public List<Computer> fetchWithOffset(Pagination page) throws SQLException {
+	/**
+	 * Renvoie la liste des Computer "compris" dans la page en paramètre
+	 */
+	public List<Computer> fetchWithOffset(Page page) throws SQLException {
 		List<Computer> computerList = new ArrayList<>();
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_WITH_OFFSET)) {
 			stmt.setInt(1, page.getElemeentsperpage());
@@ -123,7 +126,9 @@ public class ComputerSearcher implements Searcher<Computer> {
 		}
 		return computerList;
 	}
-
+/**
+ * Renvoie le nombre d'ordinateurs dans la bd
+ */
 	public int getNumberOfElements() throws SQLException {
 		try (Statement stmt = DBConnection.getConnection().createStatement()){
 			ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);

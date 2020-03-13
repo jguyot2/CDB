@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.Optional;
 
 import model.Company;
-import model.Pagination;
+import model.Page;
 
 /**
  * Classe utilisée pour les requêtes associées à la table company.
@@ -70,7 +70,10 @@ public class CompanySearcher implements Searcher<Company> {
 		return companiesList;
 	}
 
-	public List<Company> fetchWithOffset(Pagination page) throws SQLException {
+	/**
+	 *  Recherche une "page" de la liste des entreprises, page déterminée par le paramètre
+	 */
+	public List<Company> fetchWithOffset(Page page) throws SQLException {
 		List<Company> ret = new ArrayList<>();
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(REQUEST_COMPANIES_OFFSET)) {
 
@@ -86,6 +89,9 @@ public class CompanySearcher implements Searcher<Company> {
 		return ret;
 	}
 	
+	/**
+	 * renvoie la taille de la table
+	 */
 	public int getNumberOfElements() throws SQLException {
 		try (Statement stmt = DBConnection.getConnection().createStatement()){
 			ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);

@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.Scanner;
 
 import model.Computer;
-import model.Pagination;
+import model.Page;
 import service.ComputerValidator;
 
 public class ComputerPagination {
-	private Pagination page;
+	private Page page;
 	private final static Scanner sc = new Scanner(System.in);
 	private final static ComputerValidator computerValidator = new ComputerValidator();
 
 	private ComputerPagination() {
-		this.page = new Pagination(computerValidator.getNumberOfElements());
+		this.page = new Page(computerValidator.getNumberOfElements());
 	}
 
 	private void printNextPage() {

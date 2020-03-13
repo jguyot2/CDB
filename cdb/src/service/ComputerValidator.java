@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import model.Computer;
-import model.Pagination;
+import model.Page;
 import persistence.ComputerSearcher;
 import persistence.ComputerUpdater;
 
@@ -26,6 +26,7 @@ public class ComputerValidator {
 		this.computerUpdater = new ComputerUpdater();
 	}
 
+	
 	public int getNumberOfElements() {
 		try {
 			return computerSearcher.getNumberOfElements();
@@ -50,6 +51,12 @@ public class ComputerValidator {
 		return problems;
 	}
 
+	/**
+	 * Mise à jour de l'instance de Computer donnée
+	 * @param newComputervalue la nouvelle valeur de l'instance
+	 * @return -1 si exception lors de la requête, 0 si pas de mise à jour, ou 1 si la mise à jour a eu lieu
+	 * @throws InvalidComputerInstanceException Si l'instance en paramètre n'est pas valide
+	 */
 	public int updateComputer(Computer newComputervalue) throws InvalidComputerInstanceException {
 		List<ComputerInstanceProblems> problems = getComputerInstanceProblems(newComputervalue);
 		if (problems.size() > 0)
@@ -61,6 +68,7 @@ public class ComputerValidator {
 		}
 	}
 
+	
 	public int deleteComputer(long id) {
 		try {
 			return computerUpdater.deleteComputerById(id);
@@ -69,6 +77,12 @@ public class ComputerValidator {
 		}
 	}
 
+	/**
+	 * 
+	 * @param createdComputer
+	 * @return 0 si la création n'a pas pu se faire dans la BD, ou le nouvel identifiant qui vient d'être créé
+	 * @throws InvalidComputerInstanceException si l'instance en paramètre
+	 */
 	public long createComputer(Computer createdComputer) throws InvalidComputerInstanceException {
 		List<ComputerInstanceProblems> problems = getComputerInstanceProblems(createdComputer);
 		if (problems.size() > 0)
@@ -83,7 +97,7 @@ public class ComputerValidator {
 	}
 
 	/**
-	 * Recherche d'une instance de Computer dans base
+	 * Recherche d'une instance de Computer dans la base
 	 * 
 	 * @param id l'identifiant du computer recherché dans la base de donné
 	 * @return Optional.empty() si la recherche a échoué, ou un Optional contenant
@@ -110,7 +124,7 @@ public class ComputerValidator {
 		}
 	}
 
-	public List<Computer> findListWithOffset(Pagination page) {
+	public List<Computer> findListWithOffset(Page page) {
 		try {
 			return computerSearcher.fetchWithOffset(page);
 		} catch (SQLException e) {

@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.Scanner;
 
 import model.Company;
-import model.Pagination;
+import model.Page;
 import service.CompanyValidator;
 
 public class CompanyPagination {
-	private Pagination page;
+	private Page page;
 	private final static Scanner sc = new Scanner(System.in);
 	private static CompanyValidator companyPagination = new CompanyValidator();
 	
 	private CompanyPagination() {
-		this.page = new Pagination(companyPagination.getNunberOfElements());
+		this.page = new Page(companyPagination.getNunberOfElements());
 	}
 
 	private void printNextPage() {

@@ -1,16 +1,22 @@
 package model;
 
-public class Pagination {
+/**
+ * Classe permettant la pagination. 
+ * Garde l'identifiant 
+ * @author jguyot2
+ *
+ */
+public class Page {
 	private int offset;
 	private int limit;
 	private final int elemeentsPerPage = 30;
 	
-	public Pagination() {
+	public Page() {
 		this.offset = 0;
 		this.limit = -1;
 	}
 
-	public Pagination(int limit) {
+	public Page(int limit) {
 		this.offset = 0;
 		this.limit = limit;
 	}

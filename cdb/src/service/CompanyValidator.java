@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import model.Company;
-import model.Pagination;
+import model.Page;
 import persistence.CompanySearcher;
 
 public class CompanyValidator {
@@ -54,7 +54,7 @@ public class CompanyValidator {
 		}
 	}
 
-	public List<Company> fetchWithOffset(Pagination page) {
+	public List<Company> fetchWithOffset(Page page) {
 		try {
 			return companySearcher.fetchWithOffset(page);
 		} catch (SQLException e) {
