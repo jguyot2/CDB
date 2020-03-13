@@ -60,7 +60,7 @@ public class DTOComputer {
 
 	public void setDiscontinuationDate(String discontinuationDate) {
 		this.discontinuationDate = discontinuationDate;
-	}	
+	}
 	
 	
 }
