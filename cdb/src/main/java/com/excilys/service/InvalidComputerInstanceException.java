@@ -3,7 +3,6 @@ package com.excilys.service;
 import java.util.List;
 
 public class InvalidComputerInstanceException extends Exception {
-	
 	private static final long serialVersionUID = 1L;
 	private List<ComputerInstanceProblems> problems;
 	
@@ -14,4 +13,6 @@ public class InvalidComputerInstanceException extends Exception {
 	public List<ComputerInstanceProblems> getProblems(){
 		return this.problems;
 	}
+	
+	// TODO : redéfinition de la méthode getMessage();
 }

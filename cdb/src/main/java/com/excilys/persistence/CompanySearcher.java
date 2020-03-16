@@ -8,8 +8,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.model.Company;
 import com.excilys.model.Page;
+import com.excilys.service.CompanyValidator;
 
 /**
  * Classe utilisée pour les requêtes associées à la table company.
@@ -18,6 +22,8 @@ import com.excilys.model.Page;
  *
  */
 public class CompanySearcher implements Searcher<Company> {
+	private static final Logger logger = LoggerFactory.getLogger(CompanySearcher.class);
+	
 	private static final String REQUEST_COMPANIES = "SELECT name, id FROM company";
 	private static final String REQUEST_SEARCH_BY_ID = "SELECT name, id FROM company WHERE id = ?";
 	private static final String REQUEST_COMPANIES_OFFSET = "SELECT name, id FROM company ORDER BY id LIMIT ? OFFSET ?";
@@ -34,13 +40,15 @@ public class CompanySearcher implements Searcher<Company> {
 	 */
 	public Optional<Company> fetchById(long searchedId) throws SQLException {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(REQUEST_SEARCH_BY_ID)) {
-
 			stmt.setLong(1, searchedId);
 			ResultSet res = stmt.executeQuery();
-			if (!res.next())
+			if (!res.next()) {
+				logger.debug("fetchById: La recherche n'a donné aucun résultat pour l'id" + searchedId);
 				return Optional.empty();
-
+			}
+			
 			Integer companyId = new Integer(res.getInt("id"));
+			
 			String companyName = res.getString("name");
 
 			Company foundCompany = new Company(companyName, companyId);
@@ -55,9 +63,7 @@ public class CompanySearcher implements Searcher<Company> {
 	 * @return La liste des entreprises présentes dans la base de données
 	 */
 	public List<Company> fetchList() throws SQLException {
-
 		List<Company> companiesList = new ArrayList<>();
-
 		try (Statement stmt = DBConnection.getConnection().createStatement()) {
 			ResultSet res = stmt.executeQuery(REQUEST_COMPANIES);
 			while (res.next()) {
@@ -66,7 +72,7 @@ public class CompanySearcher implements Searcher<Company> {
 				assert (name != null);
 				companiesList.add(new Company(name, id));
 			}
-		} 
+		}
 		return companiesList;
 	}
 
@@ -76,7 +82,6 @@ public class CompanySearcher implements Searcher<Company> {
 	public List<Company> fetchWithOffset(Page page) throws SQLException {
 		List<Company> ret = new ArrayList<>();
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(REQUEST_COMPANIES_OFFSET)) {
-
 			stmt.setInt(1, page.getElemeentsperpage());
 			stmt.setInt(2, page.getOffset());
 			ResultSet res = stmt.executeQuery();
@@ -98,6 +103,7 @@ public class CompanySearcher implements Searcher<Company> {
 			if(res.next())
 				return res.getInt(1);
 		}
-		return -1;
+		logger.error("La récupération du nombre d'éléments a raté");
+		return -1; // TODO : Lancer une exception dans ce cas
 	}
 }

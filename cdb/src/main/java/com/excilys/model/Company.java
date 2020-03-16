@@ -3,13 +3,13 @@ package com.excilys.model;
 
 /**
  * Classe représentant une entreprise par son nom + son identifiant sur la base de données
+ *
  * @author jguyot2
  *
  */
 public class Company {
 	private final String name;
 	private long id = 0;
-	
 	public Company(String name) {
 		this.name = name;
 	}

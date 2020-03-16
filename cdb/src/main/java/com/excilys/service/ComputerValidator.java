@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.log4j.spi.LoggingEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.model.Computer;
 import com.excilys.model.Page;
 import com.excilys.persistence.ComputerSearcher;
@@ -18,6 +22,8 @@ import com.excilys.persistence.ComputerUpdater;
  *
  */
 public class ComputerValidator {
+	private static final Logger logger = LoggerFactory.getLogger(ComputerValidator.class);
+
 	ComputerSearcher computerSearcher;
 	ComputerUpdater computerUpdater;
 
@@ -26,11 +32,11 @@ public class ComputerValidator {
 		this.computerUpdater = new ComputerUpdater();
 	}
 
-	
 	public int getNumberOfElements() {
 		try {
 			return computerSearcher.getNumberOfElements();
 		} catch (SQLException e) {
+			logger.error("getNumberOfElements : " + e.getMessage(), e);
 			return -1;
 		}
 	}
@@ -53,45 +59,56 @@ public class ComputerValidator {
 
 	/**
 	 * Mise à jour de l'instance de Computer donnée
+	 * 
 	 * @param newComputervalue la nouvelle valeur de l'instance
-	 * @return -1 si exception lors de la requête, 0 si pas de mise à jour, ou 1 si la mise à jour a eu lieu
-	 * @throws InvalidComputerInstanceException Si l'instance en paramètre n'est pas valide
+	 * @return -1 si exception lors de la requête, 0 si pas de mise à jour, ou 1 si
+	 *         la mise à jour a eu lieu
+	 * @throws InvalidComputerInstanceException Si l'instance en paramètre n'est pas
+	 *                                          valide
 	 */
 	public int updateComputer(Computer newComputervalue) throws InvalidComputerInstanceException {
 		List<ComputerInstanceProblems> problems = getComputerInstanceProblems(newComputervalue);
-		if (problems.size() > 0)
+
+		if (problems.size() > 0) {
+			logger.debug("Mise à jour incorrecte du PC");
 			throw new InvalidComputerInstanceException(problems);
+		}
+
 		try {
 			return computerUpdater.updateComputer(newComputervalue);
 		} catch (SQLException e) {
-			return -1;
+			logger.error("updateComputer :" + e.getMessage(), e);
+			return -1; // TODO: gestion propre des erreurs ici
 		}
 	}
 
-	
 	public int deleteComputer(long id) {
 		try {
 			return computerUpdater.deleteComputerById(id);
 		} catch (SQLException e) {
-			return -1;
+			logger.error("deleteComputer :" + e.getMessage(), e);
+			return -1; // TODO : gestion propre des erreurs
 		}
 	}
 
 	/**
 	 * 
 	 * @param createdComputer
-	 * @return 0 si la création n'a pas pu se faire dans la BD, ou le nouvel identifiant qui vient d'être créé
+	 * @return 0 si la création n'a pas pu se faire dans la BD, ou le nouvel
+	 *         identifiant qui vient d'être créé
 	 * @throws InvalidComputerInstanceException si l'instance en paramètre
 	 */
 	public long createComputer(Computer createdComputer) throws InvalidComputerInstanceException {
 		List<ComputerInstanceProblems> problems = getComputerInstanceProblems(createdComputer);
-		if (problems.size() > 0)
+		if (problems.size() > 0) {
+			logger.debug("createComputer : instance invalide");
 			throw new InvalidComputerInstanceException(problems);
+		}
+		
 		try {
-
 			return computerUpdater.createComputer(createdComputer);
 		} catch (SQLException e) {
-
+			logger.error("createComputer :" + e.getMessage(), e);
 			return 0;
 		}
 	}
@@ -107,6 +124,7 @@ public class ComputerValidator {
 		try {
 			return computerSearcher.fetchById(id);
 		} catch (SQLException e) {
+			logger.error("findbyId(id = " + id + "): " + e.getMessage(), e);
 			return Optional.empty();
 		}
 	}
@@ -120,6 +138,7 @@ public class ComputerValidator {
 		try {
 			return computerSearcher.fetchList();
 		} catch (SQLException e) {
+			logger.error("fetchlist: " + e.getMessage(), e);
 			return new ArrayList<>();
 		}
 	}
@@ -128,6 +147,7 @@ public class ComputerValidator {
 		try {
 			return computerSearcher.fetchWithOffset(page);
 		} catch (SQLException e) {
+			logger.error("fetchListWithOffset: " + e.getMessage(), e);
 			return new ArrayList<>();
 		}
 	}

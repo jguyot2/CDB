@@ -5,6 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.mapper.DateMapper;
 import com.excilys.model.Computer;
 
@@ -21,18 +24,14 @@ public class ComputerUpdater {
 
 	private static final String CREATE_COMPUTER = "INSERT INTO computer(name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 
+	private static final Logger logger = LoggerFactory.getLogger(ComputerUpdater.class);
+	
 
-	/**
-	 * Supprime un ordinateur donné de la base à partir de son identifiant
-	 * 
-	 * @param id l'identifiant dans la base de l'ordinateur à supprimer
-	 * @return true si la suppression est effective, false si une erreur a eu lieu
-	 */
 	public int deleteComputerById(long id) throws SQLException {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(DELETE_COMPUTER)) {
 			stmt.setLong(1, id);
 			return stmt.executeUpdate();
-		} 
+		}
 	}
 
 	/**
@@ -48,6 +47,7 @@ public class ComputerUpdater {
 	 */
 	public int updateComputer(Computer newComputer) throws SQLException {
 		long id = newComputer.getId();
+		
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(UPDATE_COMPUTER)) {
 			stmt.setLong(1, id);
 			stmt.setString(2, newComputer.getName());
@@ -69,7 +69,6 @@ public class ComputerUpdater {
 			else
 				stmt.setLong(5, newComputer.getManufacturer().getId());
 			return stmt.executeUpdate();
-
 		}
 	}
 

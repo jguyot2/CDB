@@ -172,7 +172,7 @@ public class CLInterface {
 			foundComputer.setName(newName);
 		System.out.println("Modification de l'identifiant de l'entreprise: "
 				+ "Ne rien entrer pour ne pas changer, entrer 'NONE' pour supprimer l'entreprise");
-
+ 
 		System.out.println("Entreprise courante:" + foundComputer.getManufacturer());
 		String newEnterpriseIdStr = sc.nextLine().trim();
 		if (!newEnterpriseIdStr.isEmpty())

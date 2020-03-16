@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.mapper.DateMapper;
 import com.excilys.model.Company;
 import com.excilys.model.Computer;
@@ -20,6 +23,7 @@ import com.excilys.model.Page;
  * @author jguyot2
  */
 public class ComputerSearcher implements Searcher<Computer> {
+	private static final Logger logger = LoggerFactory.getLogger(ComputerSearcher.class);
 
 	private static final String QUERY_COMPUTER_LIST = " SELECT computer.id, computer.name, introduced, discontinued, "
 			+ "company.id, company.name " + "FROM computer LEFT JOIN company " + "ON computer.company_id = company.id";
@@ -50,7 +54,6 @@ public class ComputerSearcher implements Searcher<Computer> {
 				computerList.add(computer);
 			}
 		}
-
 		return computerList;
 	}
 
@@ -103,8 +106,10 @@ public class ComputerSearcher implements Searcher<Computer> {
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_FROM_ID)) {
 			stmt.setLong(1, searchedId);
 			ResultSet res = stmt.executeQuery();
-			if (!res.next())
-				return Optional.empty();
+			if (!res.next()) {
+				logger.debug("La recherche avec l'id " + searchedId + " n'a renvoyé aucun résultat");
+				return Optional.empty();	
+			}
 			Computer foundComputer = getComputerFromResultSet(res);
 			return Optional.of(foundComputer);
 		}
@@ -114,7 +119,9 @@ public class ComputerSearcher implements Searcher<Computer> {
 	 * Renvoie la liste des Computer "compris" dans la page en paramètre
 	 */
 	public List<Computer> fetchWithOffset(Page page) throws SQLException {
+		
 		List<Computer> computerList = new ArrayList<>();
+		
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_WITH_OFFSET)) {
 			stmt.setInt(1, page.getElemeentsperpage());
 			stmt.setInt(2, page.getOffset());
@@ -126,16 +133,18 @@ public class ComputerSearcher implements Searcher<Computer> {
 		}
 		return computerList;
 	}
-/**
- * Renvoie le nombre d'ordinateurs dans la bd
- */
+
+	/**
+	 * Renvoie le nombre d'ordinateurs dans la bd
+	 */
 	public int getNumberOfElements() throws SQLException {
-		try (Statement stmt = DBConnection.getConnection().createStatement()){
+		try (Statement stmt = DBConnection.getConnection().createStatement()) {
 			ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
 			if (res.next())
 				return res.getInt(1);
 		}
-		return -1;
+		logger.error("Récupération de la taille : Pas de résultat correct");
+		return -1; // TODO : lancer une exception dans ce cas
 	}
 
 	public ComputerSearcher() {
