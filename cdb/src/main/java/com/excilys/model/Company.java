@@ -3,13 +3,14 @@ package com.excilys.model;
 
 /**
  * Classe représentant une entreprise par son nom + son identifiant sur la base de données
- *
+ * 
  * @author jguyot2
- *
+ * 
  */
 public class Company {
 	private final String name;
 	private long id = 0;
+	
 	public Company(String name) {
 		this.name = name;
 	}
@@ -22,11 +23,11 @@ public class Company {
 	public String getName() {
 		return this.name;
 	}
-
+	
 	public long getId() {
 		return id;
 	}
-
+	
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -34,5 +35,14 @@ public class Company {
 	@Override
 	public String toString() {
 		return String.valueOf(this.id) + ":" +this.name ;
+	}
+	
+	public boolean equals(Company other) {
+		if(other == null) 
+			return false;
+		if(this == other)
+			return true;
+		
+		return Computer.testEquals(this.name, other.name); // Ajouter l'identifiant ? 
 	}
 }

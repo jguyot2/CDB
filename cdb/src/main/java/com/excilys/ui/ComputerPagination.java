@@ -18,20 +18,20 @@ public class ComputerPagination {
 
 	private void printNextPage() {
 		this.page.goToNextPage();
-		List<Computer> computers = computerValidator.findListWithOffset(page);
+		List<Computer> computers = computerValidator.fetchWithOffset(page);
 		for (Computer c : computers)
 			System.out.println(c.getShortDescription());
 	}
 
 	private void printCurrentPage() {
-		List<Computer> computers = computerValidator.findListWithOffset(page);
+		List<Computer> computers = computerValidator.fetchWithOffset(page);
 		for (Computer c : computers)
 			System.out.println(c);
 	}
 
 	private void printPreviousPage() {
 		this.page.goToPreviousPage();
-		List<Computer> computers = computerValidator.findListWithOffset(page);
+		List<Computer> computers = computerValidator.fetchWithOffset(page);
 		for (Computer c : computers)
 			System.out.println(c);
 	}

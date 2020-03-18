@@ -9,13 +9,23 @@ package com.excilys.model;
 public class Page {
 	private int offset;
 	private int limit;
-	private final int elemeentsPerPage = 30;
+	private int elemeentsPerPage = 30;
 	
 	public Page() {
 		this.offset = 0;
 		this.limit = -1;
 	}
-
+	
+	public void setElementsPerPage(int newElementsPerPage) {
+		this.elemeentsPerPage = newElementsPerPage;
+	}
+	/**
+	 * Création d'une page sur un ensemble contenant <limit> éléments. 
+	 * 
+	 * @param limit
+	 * 
+	 * TODO: vérifier si c'est cohérent de garder cette limite, e.g en cas de changement de la table
+	 */
 	public Page(int limit) {
 		this.offset = 0;
 		this.limit = limit;

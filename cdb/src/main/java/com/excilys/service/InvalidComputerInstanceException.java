@@ -13,6 +13,4 @@ public class InvalidComputerInstanceException extends Exception {
 	public List<ComputerInstanceProblems> getProblems(){
 		return this.problems;
 	}
-	
-	// TODO : redéfinition de la méthode getMessage();
 }

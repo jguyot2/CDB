@@ -3,7 +3,6 @@ package com.excilys.ui;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -93,7 +92,10 @@ public class CLInterface {
 		LocalDate introduced = null;
 		if (!dateStr.isEmpty())
 			try {
-				introduced = DateMapper.stringToLocalDate(dateStr);
+				Optional<LocalDate> introducedOpt = DateMapper.stringToLocalDate(dateStr); 
+				if(introducedOpt.isPresent())
+					introduced = introducedOpt.get();
+				else return;
 			} catch (DateTimeParseException e) {
 				System.out.println(e.getMessage());
 				System.out.println("Fin de la saisie, car date no parsable");
@@ -105,7 +107,10 @@ public class CLInterface {
 		LocalDate discontinued = null;
 		if (!strDiscontinuation.isEmpty())
 			try {
-				discontinued = DateMapper.stringToLocalDate(strDiscontinuation);
+				Optional<LocalDate> discontinuedOpt = DateMapper.stringToLocalDate(strDiscontinuation);
+				if (!discontinuedOpt.isPresent())
+					return;
+				discontinued = discontinuedOpt.get();
 			} catch (DateTimeParseException e) {
 				System.out.println("Erreur : " + e.getMessage());
 				System.out.println("Date saisie invalide, fin de l'entrée");
@@ -172,7 +177,7 @@ public class CLInterface {
 			foundComputer.setName(newName);
 		System.out.println("Modification de l'identifiant de l'entreprise: "
 				+ "Ne rien entrer pour ne pas changer, entrer 'NONE' pour supprimer l'entreprise");
- 
+
 		System.out.println("Entreprise courante:" + foundComputer.getManufacturer());
 		String newEnterpriseIdStr = sc.nextLine().trim();
 		if (!newEnterpriseIdStr.isEmpty())
@@ -197,13 +202,13 @@ public class CLInterface {
 		if (!strIntro.isEmpty())
 			if ("NONE".equals(strIntro))
 				foundComputer.setIntroduction(null);
-			else
-				try {
-					foundComputer.setIntroduction(DateMapper.stringToLocalDate(strIntro));
-				} catch (DateTimeParseException e) {
-					System.out.println("Erreur :" + e.getMessage());
+			else {
+				Optional<LocalDate> introDateOpt = DateMapper.stringToLocalDate(strIntro);
+				if (!introDateOpt.isPresent()) {
 					return;
 				}
+				foundComputer.setIntroduction(introDateOpt.get());
+			}
 
 		System.out.println("Entrez la date de discontinuation sous forme `JJ/MM/AAAA`: "
 				+ "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
@@ -214,13 +219,13 @@ public class CLInterface {
 		if (!strDiscontinuation.isEmpty())
 			if ("NONE".equals(strDiscontinuation))
 				foundComputer.setDiscontinuation(null);
-			else
-				try {
-					foundComputer.setDiscontinuation(DateMapper.stringToLocalDate(strDiscontinuation));
-				} catch (DateTimeParseException e) {
-					System.out.println("Erreur :" + e.getMessage());
+			else {
+				Optional<LocalDate> localDateOpt = DateMapper.stringToLocalDate(strDiscontinuation);
+				if (!localDateOpt.isPresent())
 					return;
-				}
+
+				foundComputer.setDiscontinuation(localDateOpt.get());
+			}
 		int updated;
 		try {
 			updated = computerValidator.updateComputer(foundComputer);
@@ -262,7 +267,7 @@ public class CLInterface {
 	 * 
 	 * @param commandToExecute La commande à exécuter
 	 */
-	private static void executeCommand(Commands commandToExecute) {
+	private static void executeCommand(CLICommand commandToExecute) {
 		switch (commandToExecute) {
 		case LIST_COMPUTERS:
 			listComputersCommand();
@@ -311,7 +316,7 @@ public class CLInterface {
 		}
 
 		try {
-			Commands commandToExecute = Commands.getCommandeFromInput(commandId);
+			CLICommand commandToExecute = CLICommand.getCommandeFromInput(commandId);
 			executeCommand(commandToExecute);
 		} catch (IllegalArgumentException e) {
 			System.out.println("Erreur" + e.getMessage());
@@ -319,7 +324,6 @@ public class CLInterface {
 	}
 
 	public static void start() {
-		System.out.println("POUETE");
 		while (true)
 			CLInterface.getCommande();
 	}

@@ -27,7 +27,8 @@ public class ComputerUpdater {
 	private static final Logger logger = LoggerFactory.getLogger(ComputerUpdater.class);
 	
 
-	public int deleteComputerById(long id) throws SQLException {
+	public int deleteById(long id) throws SQLException {
+		logger.info("Suppression du pc d'id : " + id);
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(DELETE_COMPUTER)) {
 			stmt.setLong(1, id);
 			return stmt.executeUpdate();
@@ -46,6 +47,7 @@ public class ComputerUpdater {
 	 * 
 	 */
 	public int updateComputer(Computer newComputer) throws SQLException {
+		logger.info("Mise à jour de l'instance de Computer suivante " + newComputer.toString());
 		long id = newComputer.getId();
 		
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(UPDATE_COMPUTER)) {
@@ -82,6 +84,7 @@ public class ComputerUpdater {
 	 *         réussi, 0 si l'ajout a raté
 	 */
 	public long createComputer(Computer newComputer) throws SQLException {
+		logger.info("Création de l'instance de Computer suivante: " + newComputer);
 		try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(CREATE_COMPUTER,
 				PreparedStatement.RETURN_GENERATED_KEYS)) {
 			stmt.setString(1, newComputer.getName());
@@ -106,13 +109,16 @@ public class ComputerUpdater {
 			stmt.executeUpdate();
 
 			ResultSet keySet = stmt.getGeneratedKeys();
-			if (!keySet.next())
+			if (!keySet.next()) {
+				logger.error("Pas de PC créé");
 				return 0;
+			}
 			return keySet.getLong(1);
 		} 
 	}
 
 	public ComputerUpdater() {
 	}
+
 
 }

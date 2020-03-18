@@ -4,7 +4,7 @@ package com.excilys.ui;
  * @author jguyot2
  *
  */
-public enum Commands {
+public enum CLICommand {
 	LIST_COMPUTERS, 
 	LIST_COMPANIES,
 	SHOW_DETAILS, 
@@ -12,7 +12,7 @@ public enum Commands {
 	UPDATE_COMPUTER, 
 	DELETE_COMPUTER,
 	EXIT,
-	COMPUTER_PAGINATION, 
+	COMPUTER_PAGINATION,
 	COMPANY_PAGINATION;
 	
 	/**
@@ -20,7 +20,7 @@ public enum Commands {
 	 * @param input l'entier rentré par l'utilisateur 
 	 * @return la commande à exécuter
 	 */
-	public static Commands getCommandeFromInput(int input) {
+	public static CLICommand getCommandeFromInput(int input) {
 		switch(input) {
 		case 0:
 			return LIST_COMPUTERS;

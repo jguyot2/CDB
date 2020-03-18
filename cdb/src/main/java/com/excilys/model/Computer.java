@@ -27,7 +27,6 @@ public class Computer {
 	}
 
 	public Computer(String name, Company manufacturer, LocalDate introduction, LocalDate discontinuation) {
-
 		this.name = name;
 		this.manufacturer = manufacturer;
 		this.introduction = introduction;
@@ -36,7 +35,6 @@ public class Computer {
 	}
 
 	public Computer(String name, Company manufacturer, LocalDate introduction, LocalDate discontinuation, long id) {
-
 		this.name = name;
 		this.manufacturer = manufacturer;
 		this.introduction = introduction;
@@ -102,5 +100,21 @@ public class Computer {
 
 	public void setDiscontinuation(LocalDate discontinuation) {
 		this.discontinuation = discontinuation;
+	}
+	
+	public static boolean testEquals(Object obj1, Object obj2) {
+	    return (obj1 == null ? obj2 == null : obj1.equals(obj2));
+	}
+	
+	public boolean equals(Computer other) { 
+		if(other == null)
+			return false;
+		else if(this == other)
+			return true;
+		
+		return testEquals(this.name, other.name)
+		&& testEquals(this.introduction, other.introduction)
+		&& testEquals(this.discontinuation, other.discontinuation)
+		&& testEquals(this.manufacturer, other.manufacturer);
 	}
 }

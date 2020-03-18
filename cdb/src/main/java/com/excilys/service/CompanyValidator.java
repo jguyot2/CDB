@@ -12,15 +12,19 @@ import com.excilys.model.Company;
 import com.excilys.model.Page;
 import com.excilys.persistence.CompanySearcher;
 
-public class CompanyValidator {
+public class CompanyValidator implements SearchValidator<Company> {
 	private Logger logger = LoggerFactory.getLogger(CompanyValidator.class);
 	
 	private CompanySearcher companySearcher;
 
+	public void setCompanySearcher(CompanySearcher newCompanySearcher) {
+		this.companySearcher = newCompanySearcher;
+	}
+	
 	public CompanyValidator() {
 		companySearcher = new CompanySearcher();
 	}
-
+	
 	/**
 	 * Recherche d'une entreprise à partir de son identifiant
 	 * 
@@ -37,7 +41,7 @@ public class CompanyValidator {
 			return Optional.empty();
 		}
 	}
-
+	
 	/**
 	 * Fonction renvoyant la liste des entreprises présentes dans la BD
 	 * @return La liste des entreprises présentes dans la BD
@@ -51,12 +55,12 @@ public class CompanyValidator {
 		}
 	}
 
-	public int getNunberOfElements() {
+	public int getNumberOfElements() {
 		try {
 			return companySearcher.getNumberOfElements();
 		} catch (SQLException e) {
 			logger.error("getNbOfElements : " + e.getMessage(), e);
-			return -1; // TODO : Gestion propre de ce cas
+			return -1; // TODO : Gestion propre de ce cas (renvoi d'une exception appropriée)
 		}
 	}
 

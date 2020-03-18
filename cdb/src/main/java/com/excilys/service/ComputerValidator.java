@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.log4j.spi.LoggingEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,19 +18,28 @@ import com.excilys.persistence.ComputerUpdater;
  * persistance
  * 
  * @author jguyot2
- *
  */
-public class ComputerValidator {
+public class ComputerValidator implements SearchValidator<Computer> {
 	private static final Logger logger = LoggerFactory.getLogger(ComputerValidator.class);
 
-	ComputerSearcher computerSearcher;
-	ComputerUpdater computerUpdater;
+	private ComputerSearcher computerSearcher;
+	private ComputerUpdater computerUpdater;
 
 	public ComputerValidator() {
 		this.computerSearcher = new ComputerSearcher();
 		this.computerUpdater = new ComputerUpdater();
 	}
-
+	
+	public ComputerValidator(ComputerSearcher computerSearcher, ComputerUpdater computerUpdater) {
+		this.computerSearcher = computerSearcher;
+		this.computerUpdater = computerUpdater;
+	}
+	
+	public void setComputerSearcher(ComputerSearcher newComputerSearcher, ComputerUpdater newComputerUpdater) {
+		this.computerSearcher = newComputerSearcher;
+		this.computerUpdater = newComputerUpdater;
+	}
+	
 	public int getNumberOfElements() {
 		try {
 			return computerSearcher.getNumberOfElements();
@@ -41,7 +49,7 @@ public class ComputerValidator {
 		}
 	}
 
-	public List<ComputerInstanceProblems> getComputerInstanceProblems(Computer computer) {
+	private List<ComputerInstanceProblems> getComputerInstanceProblems(Computer computer) {
 		List<ComputerInstanceProblems> problems = new ArrayList<>();
 
 		if (computer.getName() == null || computer.getName().trim().isEmpty())
@@ -49,7 +57,7 @@ public class ComputerValidator {
 
 		if (computer.getIntroduction() != null)
 			if (computer.getDiscontinuation() != null
-					&& computer.getIntroduction().compareTo(computer.getDiscontinuation()) < 0)
+					&& computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0)
 				problems.add(ComputerInstanceProblems.INVALID_DISCONTINUATION_DATE);
 
 		if (computer.getIntroduction() == null && computer.getDiscontinuation() != null)
@@ -84,7 +92,7 @@ public class ComputerValidator {
 
 	public int deleteComputer(long id) {
 		try {
-			return computerUpdater.deleteComputerById(id);
+			return computerUpdater.deleteById(id);
 		} catch (SQLException e) {
 			logger.error("deleteComputer :" + e.getMessage(), e);
 			return -1; // TODO : gestion propre des erreurs
@@ -104,7 +112,7 @@ public class ComputerValidator {
 			logger.debug("createComputer : instance invalide");
 			throw new InvalidComputerInstanceException(problems);
 		}
-		
+
 		try {
 			return computerUpdater.createComputer(createdComputer);
 		} catch (SQLException e) {
@@ -143,7 +151,7 @@ public class ComputerValidator {
 		}
 	}
 
-	public List<Computer> findListWithOffset(Page page) {
+	public List<Computer> fetchWithOffset(Page page) {
 		try {
 			return computerSearcher.fetchWithOffset(page);
 		} catch (SQLException e) {

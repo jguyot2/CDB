@@ -1,5 +1,4 @@
 package com.excilys.persistence;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.PreparedStatement;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.model.Company;
 import com.excilys.model.Page;
-import com.excilys.service.CompanyValidator;
 
 /**
  * Classe utilisée pour les requêtes associées à la table company.
@@ -46,11 +44,8 @@ public class CompanySearcher implements Searcher<Company> {
 				logger.debug("fetchById: La recherche n'a donné aucun résultat pour l'id" + searchedId);
 				return Optional.empty();
 			}
-			
 			Integer companyId = new Integer(res.getInt("id"));
-			
 			String companyName = res.getString("name");
-
 			Company foundCompany = new Company(companyName, companyId);
 			return Optional.of(foundCompany);
 		}
@@ -77,7 +72,7 @@ public class CompanySearcher implements Searcher<Company> {
 	}
 
 	/**
-	 *  Recherche une "page" de la liste des entreprises, page déterminée par le paramètre
+	 *  Recherche une "page" de la liste des entreprises, en fonction du paramètre
 	 */
 	public List<Company> fetchWithOffset(Page page) throws SQLException {
 		List<Company> ret = new ArrayList<>();
@@ -102,8 +97,8 @@ public class CompanySearcher implements Searcher<Company> {
 			ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
 			if(res.next())
 				return res.getInt(1);
+			logger.error("La récupération du nombre d'éléments a raté");
+			return -1; // TODO : Gestion de ce cas 
 		}
-		logger.error("La récupération du nombre d'éléments a raté");
-		return -1; // TODO : Lancer une exception dans ce cas
 	}
 }

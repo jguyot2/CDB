@@ -13,7 +13,7 @@ public class CompanyPagination {
 	private static CompanyValidator companyPagination = new CompanyValidator();
 	
 	private CompanyPagination() {
-		this.page = new Page(companyPagination.getNunberOfElements());
+		this.page = new Page(companyPagination.getNumberOfElements());
 	}
 
 	private void printNextPage() {
@@ -21,7 +21,6 @@ public class CompanyPagination {
 		List<Company> companys = companyPagination.fetchWithOffset(page);
 		for (Company c : companys)
 			System.out.println(c);
-
 	}
 
 	private void printCurrentPage() {
@@ -32,7 +31,6 @@ public class CompanyPagination {
 
 	private void printPreviousPage() {
 		this.page.goToPreviousPage();
-
 		List<Company> companys = companyPagination.fetchWithOffset(page);
 		for (Company c : companys)
 			System.out.println(c);

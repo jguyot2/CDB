@@ -59,14 +59,14 @@ public class ComputerSearcher implements Searcher<Computer> {
 
 	/**
 	 * Fonction permettant de récupérer une instance de Computer à partir d'une
-	 * ligne de ResultSet à partir de certaines requêtes.
+	 * ligne de ResultSet à partir de requêtes comportant un schéma défini.
 	 * 
 	 * @param res l'instance de ResultSet résultant d'une requête sur les tables
 	 *            computer et company, qui pointe vers une des lignes renvoyée par
 	 *            la requête
 	 * @return une instance de Computer correspondant à la ligne sur laquelle le
 	 *         curseur de res pointe
-	 * @throws SQLException
+	 * @throws SQLException 
 	 */
 	private Computer getComputerFromResultSet(ResultSet res) throws SQLException {
 		long computerId = res.getLong("computer.id");
@@ -135,7 +135,7 @@ public class ComputerSearcher implements Searcher<Computer> {
 	}
 
 	/**
-	 * Renvoie le nombre d'ordinateurs dans la bd
+	 * Renvoie le nombre d'ordinateurs dans la base
 	 */
 	public int getNumberOfElements() throws SQLException {
 		try (Statement stmt = DBConnection.getConnection().createStatement()) {
@@ -144,9 +144,9 @@ public class ComputerSearcher implements Searcher<Computer> {
 				return res.getInt(1);
 		}
 		logger.error("Récupération de la taille : Pas de résultat correct");
-		return -1; // TODO : lancer une exception dans ce cas
+		return -1; // TODO : lancer une exception dans ce cas 
 	}
-
+	
 	public ComputerSearcher() {
 	}
 }

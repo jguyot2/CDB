@@ -4,7 +4,7 @@ package com.excilys.model;
  * 
  * @author jguyot2
  */
-public class DTOComputer {
+public class ComputerDTO {
 
 	private String name;
 	private String strId;
@@ -12,7 +12,7 @@ public class DTOComputer {
 	private String introductionDate;
 	private String discontinuationDate;
 	
-	public DTOComputer(String name, String strId, String strEntrepriseId, String introductionDate,
+	public ComputerDTO(String name, String strId, String strEntrepriseId, String introductionDate,
 			String discontinuationDate) {
 		super();
 		this.name = name;
@@ -25,7 +25,7 @@ public class DTOComputer {
 	public String getName() {
 		return name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -61,6 +61,4 @@ public class DTOComputer {
 	public void setDiscontinuationDate(String discontinuationDate) {
 		this.discontinuationDate = discontinuationDate;
 	}
-	
-	
 }
