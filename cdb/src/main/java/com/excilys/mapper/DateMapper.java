@@ -1,5 +1,6 @@
 package com.excilys.mapper;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -21,16 +22,15 @@ public class DateMapper {
 	public static Optional<LocalDate> sqlDateToLocalDate(java.sql.Date sqlDate) {
 		if (sqlDate == null)
 			return Optional.empty();
-		return Optional.of(LocalDate.of(sqlDate.getYear() + 1900, sqlDate.getMonth() + 1, sqlDate.getDay() + 1));
+		return Optional.of(LocalDate.of(sqlDate.getYear() + 1900, sqlDate.getMonth() + 1, sqlDate.getDate()));
 	}
 
-	@SuppressWarnings("deprecation")
-	public static Optional<java.sql.Date> localDateToSqlDate(LocalDate localDate) {
+	public static Optional<Date> localDateToSqlDate(LocalDate localDate) {
 		if (localDate == null)
 			return Optional.empty();
 		else
-			return Optional.of(new java.sql.Date(localDate.getYear() - 1900, localDate.getMonthValue(),
-					localDate.getDayOfMonth()));
+			return Optional.of(Date.valueOf(localDate));
+	
 	}
 
 	/**
@@ -42,6 +42,8 @@ public class DateMapper {
 	 * @throws DateTimeParseException si la date n'est pas au bon format
 	 */
 	public static Optional<LocalDate> stringToLocalDate(String dateRepr) {
+		if(dateRepr == null)
+			return Optional.empty();
 		logger.info("string to date appellée : str=" + dateRepr);
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		try {
