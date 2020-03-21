@@ -6,8 +6,5 @@ package com.excilys.ui;
  * @author jguyot2
  */
 public enum PaginationCommand {
-	NEXT,
-	PREVIOUS,
-	EXIT, 
-	CURRENT;
+    NEXT, PREVIOUS, EXIT, CURRENT;
 }

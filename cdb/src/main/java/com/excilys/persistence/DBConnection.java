@@ -15,130 +15,193 @@ import java.io.IOException;
 
 /**
  * Classe permettant de récupérer la connexion à la base de données.
- * 
+ *
  * @author jguyot2
- * 
+ *
  */
-public class DBConnection {
+public final class DBConnection {
+    /** Instance unique de la connexion à la base. */
+    private static DBConnection dbConnInstance;
+    /** */
+    private static final String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
 
-	private Connection conn;
-	private static DBConnection dbConnInstance;
+    /** */
+    private static final String URL_DB = "jdbc:mysql://localhost:3306/";
+    /** */
+    private static final String USERNAME = "admincdb";
+    /** */
+    private static final String PASSWORD = "qwerty1234";
+    /** */
+    private static final String DB_NAME = "computer-database-db";
 
-	private static final String driverName = "com.mysql.cj.jdbc.Driver";
-	private static final String urlDB = "jdbc:mysql://localhost:3306/";
-	private static final String username = "admincdb";
-	private static final String password = "qwerty1234";
+    /** */
+    private static final String TEST_DB_NAME = "computer-database-db-test";
+    /** */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(ComputerUpdater.class);
 
-	private static final String baseDBName = "computer-database-db";
-	private static final String testDBName = "computer-database-db-test";
+    /** */
+    private static final String PATH_SQL_REINIT_FILE =
+            "/home/jguyot2/cdb/sql_scripts/script-reinit-db-test.sql";
 
-	private static final Logger logger = LoggerFactory.getLogger(ComputerUpdater.class);
+    /** */
+    private static boolean testMode = false;
 
-	private final String dbName;
-	private static boolean testMode = false;
+    /**
+     * @return l'instance courante de la connexion à la base.
+     **/
+    public static DBConnection getConnection() {
+        if (dbConnInstance == null || dbConnInstance.isClosed()) {
+            dbConnInstance = new DBConnection();
+        }
+        return dbConnInstance;
+    }
 
-	public boolean inTestMode() {
-		return testMode;
-	}
+    /**
+     * Rentrée en mode «test»: Les connexions se font sur une autre base
+     * de données.
+     * @param isInTestMode à true pour rentrer en mode de test, à false sinon.
+     */
+    public static void setTestMode(final boolean isInTestMode) {
+        LOG.info("test <- " + isInTestMode);
+        DBConnection.testMode = isInTestMode;
+    }
 
-	private DBConnection() {
-		logger.info("Instanciation");
-		if (testMode)
-			dbName = testDBName;
-		else
-			dbName = baseDBName;
-		init();
-	}
+    /** */
+    private Connection conn;
 
-	public static final void setTestMode(boolean testMode) {
-		logger.info("test <- " + testMode);
-		DBConnection.testMode = testMode;
-	}
+    /** */
+    private final String dbName;
 
-	private void init() {
-		logger.info("import du driver JDBC");
-		try {
-			Class.forName(driverName).newInstance();
-			conn = DriverManager.getConnection(urlDB + dbName, username, password);
-		} catch (InstantiationException e1) {
-			e1.printStackTrace();
-			logger.error("init : " + e1.getMessage(), e1);
-			throw new DriverImportFailedError();
-		} catch (IllegalAccessException e1) {
-			e1.printStackTrace();
-			logger.error("init : " + e1.getMessage(), e1);
-			throw new DriverImportFailedError();
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-			logger.error("init : " + e1.getMessage(), e1);
-			throw new DriverImportFailedError();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			logger.error("init : " + e.getMessage(), e);
-			throw new CouldNotConnectToDBException();
-		}
-	}
+    private DBConnection() {
+        LOG.info("Instanciation");
+        if (testMode) {
+            dbName = TEST_DB_NAME;
+        } else {
+            dbName = DB_NAME;
+        }
+        init();
+    }
 
-	public static DBConnection getConnection() {
-		if (dbConnInstance == null || dbConnInstance.isClosed())
-			dbConnInstance = new DBConnection();
-		return dbConnInstance;
-	}
+    /** Fermeture de la connexion.
+     */
+    public void close() throws SQLException {
+        if (conn == null) {
+            return;
+        }
+        conn.close();
+        conn = null;
+    }
 
-	private boolean isClosed() {
-		try {
-			return conn == null || conn.isClosed();
-		} catch (SQLException e) {
-			logger.error("isClosed : " + e.getMessage(), e);
-			return true;
-		}
-	}
+    /**
+     * @return un statement pour faire des requêtes.
+     */
+    public Statement createStatement() throws SQLException {
+        return this.conn.createStatement();
+    }
 
-	public Statement createStatement() throws SQLException {
-		return this.conn.createStatement();
-	}
 
-	public PreparedStatement prepareStatement(String sqlPreparedRequest) throws SQLException {
-		
-		return this.conn.prepareStatement(sqlPreparedRequest);
-	}
+    private void init() {
+        LOG.info("import du driver JDBC");
+        try {
+            Class.forName(DRIVER_NAME).newInstance();
+            conn = DriverManager.getConnection(
+                    URL_DB + dbName,
+                    USERNAME,
+                    PASSWORD);
+        } catch (InstantiationException e1) {
+            e1.printStackTrace();
+            LOG.error("init : " + e1.getMessage(), e1);
+            throw new DriverImportFailedError();
+        } catch (IllegalAccessException e1) {
+            e1.printStackTrace();
+            LOG.error("init : " + e1.getMessage(), e1);
+            throw new DriverImportFailedError();
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+            LOG.error("init : " + e1.getMessage(), e1);
+            throw new DriverImportFailedError();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            LOG.error("init : " + e.getMessage(), e);
+            throw new CouldNotConnectToDBException();
+        }
+    }
 
-	public PreparedStatement prepareStatement(String sqlPreparedRequest, int autoGeneratedKeys) throws SQLException {
-		return this.conn.prepareStatement(sqlPreparedRequest, autoGeneratedKeys);
-	}
+    /**
+     * @return true si l'on se trouve en mode de test, false sinon
+     */
+    public boolean inTestMode() {
+        return testMode;
+    }
 
-	public boolean reinitTestBase() {
-		logger.info("Réinitialisation de la BD test");
-		if (!this.inTestMode()) {
-			logger.debug("Erreur : Réinitialisation de la BD en mode non test");
-			throw new RuntimeException("Réinitialisation de la BD de test invalide");
-		}
-		
-		String PATH_SQL_REINIT_FILE = "/home/jguyot2/cdb/sql_scripts/script-reinit-db-test.sql";
 
-		try (Statement stmt = this.createStatement();
-				BufferedReader fileReader = new BufferedReader(new FileReader(PATH_SQL_REINIT_FILE));) {
-			String line = fileReader.readLine();
-			while (line != null) {
-				stmt.addBatch(line);
-				line = fileReader.readLine();
-			}
-			stmt.executeBatch();
-			return true;
-		} catch (SQLException e) {
-			logger.debug("Réinitialisation de la BD : " + e.getMessage(), e);
-			e.printStackTrace();
-		} catch (IOException e) {
-			logger.debug("Réinitialisation de la BD : " + e.getMessage(), e);
-			e.printStackTrace();
-		}
-		return false;
-	}
-	
-	public void close() throws SQLException {
-		if(conn == null)
-			return;
-		conn.close();
-		conn = null;
-	}
+    private boolean isClosed() {
+        try {
+            return conn == null || conn.isClosed();
+        } catch (SQLException e) {
+            LOG.error("isClosed : " + e.getMessage(), e);
+            return true;
+        }
+    }
+
+    /**
+     * Préparation d'un Statement sur une requête prédéfinie.
+     * @param sqlPreparedRequest la requête préparée, en
+     * remplaçant les paramètres par des?
+     * @return une instance de PerparedStatement associée à la requête en
+     * paramètre
+     */
+    public PreparedStatement prepareStatement(final String sqlPreparedRequest)
+            throws SQLException {
+
+        return this.conn.prepareStatement(sqlPreparedRequest);
+    }
+
+    /**
+     *
+     * @param sqlPreparedRequest La chaîne de caractères correspondant à une
+     * requête préparée.
+     * @param autoGeneratedKeys un flag indiquant si les clefs
+     * retournées lors de la requêtes doivent être générées
+     * @return Un preparedStatement associé aux paramètres
+     * @throws SQLException
+     */
+    public PreparedStatement prepareStatement(
+            final String sqlPreparedRequest,
+            final int autoGeneratedKeys) throws SQLException {
+       return this.conn.prepareStatement(sqlPreparedRequest, autoGeneratedKeys);
+    }
+
+    /**
+     * @return true si la réinitialisation a réussi, false sinon
+     */
+    public boolean reinitTestBase() {
+        LOG.info("Réinitialisation de la BD test");
+        if (!this.inTestMode()) {
+            LOG.debug("Erreur : Réinitialisation de la BD en mode non test");
+
+            throw new
+                RuntimeException("Réinitialisation de la BD de test invalide");
+        }
+
+        try (Statement stmt = this.createStatement();
+                BufferedReader fileReader =
+                    new BufferedReader(new FileReader(PATH_SQL_REINIT_FILE));) {
+            String line = fileReader.readLine();
+            while (line != null) {
+                stmt.addBatch(line);
+                line = fileReader.readLine();
+            }
+            stmt.executeBatch();
+            return true;
+        } catch (SQLException e) {
+            LOG.debug("Réinitialisation de la BD : " + e.getMessage(), e);
+            e.printStackTrace();
+        } catch (IOException e) {
+            LOG.debug("Réinitialisation de la BD : " + e.getMessage(), e);
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

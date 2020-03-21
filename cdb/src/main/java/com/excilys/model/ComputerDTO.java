@@ -1,64 +1,120 @@
 package com.excilys.model;
 
 /**
- * 
+ * Classe pour la transmission des valeurs.
+ *
  * @author jguyot2
  */
 public class ComputerDTO {
+    /**
+     * Nom de l'ordinateur.
+     */
+    private String name;
 
-	private String name;
-	private String strId;
-	private String strEntrepriseId;
-	private String introductionDate;
-	private String discontinuationDate;
-	
-	public ComputerDTO(String name, String strId, String strEntrepriseId, String introductionDate,
-			String discontinuationDate) {
-		super();
-		this.name = name;
-		this.strId = strId;
-		this.strEntrepriseId = strEntrepriseId;
-		this.introductionDate = introductionDate;
-		this.discontinuationDate = discontinuationDate;
-	}
+    /**
+     * Représentation de l'identifiant de l'ordinateur.
+     */
+    private String strId;
 
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * Représentation de l'identifiant de l'entreprise par son
+     * identifiant.
+     */
+    private String strEntrepriseId;
+    /**
+     * Représentation de la date d'intro, au format DD/MM/YYY.
+     */
+    private String introductionDate;
+    /**
+     * Représentation de la date d'arrêt, au format DD/MM/YYYY.
+     */
+    private String discontinuationDate;
 
-	public String getStrId() {
-		return strId;
-	}
+    /**
+     * @param computerName
+     * @param computerId
+     * @param companyId
+     * @param strIntroductionDate
+     * @param strDiscontinuationDate
+     */
+    public ComputerDTO(final String computerName, final String computerId,
+            final String companyId, final String strIntroductionDate,
+            final String strDiscontinuationDate) {
+        super();
+        this.name = computerName;
+        this.strId = computerId;
+        this.strEntrepriseId = companyId;
+        this.introductionDate = strIntroductionDate;
+        this.discontinuationDate = strDiscontinuationDate;
+    }
 
-	public void setStrId(String strId) {
-		this.strId = strId;
-	}
+    /**
+     * @return la date d'arrêt de production
+     */
+    public String getDiscontinuationDate() {
+        return discontinuationDate;
+    }
 
-	public String getStrEntrepriseId() {
-		return strEntrepriseId;
-	}
+    /**
+     * @return la date d'introduction à la vente
+     */
+    public String getIntroductionDate() {
+        return introductionDate;
+    }
 
-	public void setStrEntrepriseId(String strEntrepriseId) {
-		this.strEntrepriseId = strEntrepriseId;
-	}
+    /**
+     * @return le nom de l'ordinateur
+     */
+    public String getName() {
+        return name;
+    }
 
-	public String getIntroductionDate() {
-		return introductionDate;
-	}
+    /**
+     * @return la chaîne de caractères correspondant à
+     *         l'identifiant de l'entreprise
+     */
+    public String getStrEntrepriseId() {
+        return strEntrepriseId;
+    }
 
-	public void setIntroductionDate(String introductionDate) {
-		this.introductionDate = introductionDate;
-	}
+    /**
+     * @return une chaine représentant l'identifiant de
+     *         l'ordinateur dans la base
+     */
+    public String getStrId() {
+        return strId;
+    }
 
-	public String getDiscontinuationDate() {
-		return discontinuationDate;
-	}
+    /**
+     * @param newDiscontinuationDate
+     */
+    public void setDiscontinuationDate(final String newDiscontinuationDate) {
+        this.discontinuationDate = newDiscontinuationDate;
+    }
+/**
+ * @param newIntroductionDate
+ */
+    public void setIntroductionDate(final String newIntroductionDate) {
+        this.introductionDate = newIntroductionDate;
+    }
 
-	public void setDiscontinuationDate(String discontinuationDate) {
-		this.discontinuationDate = discontinuationDate;
-	}
+    /**
+     * @param newName
+     */
+    public void setName(final String newName) {
+        this.name = newName;
+    }
+/**
+ * @param newStrEntrepriseId
+ */
+    public void setStrEntrepriseId(final String newStrEntrepriseId) {
+        this.strEntrepriseId = newStrEntrepriseId;
+    }
+
+    /**
+     * @param newStrId
+     */
+    public void setStrId(final String newStrId) {
+        this.strId = newStrId;
+    }
 }

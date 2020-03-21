@@ -29,6 +29,7 @@ public class ComputerValidatorTest {
 
 	private static final Company[] fakeCompanyList = { new Company("POUET", 1), new Company("J'AIME L'OCA", 2),
 			new Company("Café Oz", 5), new Company("Chocolatine", 10) };
+	
 	private static final LocalDate[] localDates = { LocalDate.of(1985, 1, 1), LocalDate.of(1985, 1, 19),
 			LocalDate.of(2000, 7, 19), LocalDate.of(2048, 8, 16) };
 	private static final Computer[] fakeComputerList = {
@@ -38,10 +39,9 @@ public class ComputerValidatorTest {
 			new Computer("PATES", null, null, null, 921), new Computer("RIZ", null, localDates[3], null, 245) };
 
 	private static final Computer[] invalidComputerInstanceList = { new Computer("", null, null, null, 214),
-			new Computer(null, null, null, null, 0),
-			new Computer("nom", null, localDates[1], localDates[0], 12),
-			new Computer("pouet", null, null, localDates[0], 12),
-			new Computer("", null, null, localDates[0], 1), new Computer("", null, localDates[2], localDates[0], 12) };
+			new Computer(null, null, null, null, 0), new Computer("nom", null, localDates[1], localDates[0], 12),
+			new Computer("pouet", null, null, localDates[0], 12), new Computer("", null, null, localDates[0], 1),
+			new Computer("", null, localDates[2], localDates[0], 12) };
 
 	@Before
 	public void init() {
@@ -51,15 +51,13 @@ public class ComputerValidatorTest {
 	}
 
 	@Test
-	public void findByIdTest() {
+	public void findByIdTest() throws SQLException {
 		Computer c = fakeComputerList[0];
 		Optional<Computer> computerOpt = Optional.of(c);
 		Optional<Computer> emptyComputer = Optional.empty();
-		try {
-			Mockito.when(computerSearcherMock.fetchById(c.getId())).thenReturn(computerOpt);
-			Mockito.when(computerSearcherMock.fetchById(0)).thenReturn(emptyComputer);
-		} catch (SQLException e) {
-		}
+
+		Mockito.when(computerSearcherMock.fetchById(c.getId())).thenReturn(computerOpt);
+		Mockito.when(computerSearcherMock.fetchById(0)).thenReturn(emptyComputer);
 
 		Assert.assertEquals(computerOpt, this.validator.findById(c.getId()));
 		Assert.assertEquals(emptyComputer, this.validator.findById(0));
@@ -67,15 +65,12 @@ public class ComputerValidatorTest {
 	}
 
 	@Test
-	public void fetchListTest() {
+	public void fetchListTest() throws SQLException {
 		List<Computer> computerList = new ArrayList<>();
 		for (Computer c : fakeComputerList)
 			computerList.add(c);
 
-		try {
-			Mockito.when(computerSearcherMock.fetchList()).thenReturn(computerList);
-		} catch (SQLException e) {
-		}
+		Mockito.when(computerSearcherMock.fetchList()).thenReturn(computerList);
 
 		List<Computer> l = this.validator.fetchList();
 		Assert.assertEquals(l.size(), fakeComputerList.length);
@@ -85,37 +80,32 @@ public class ComputerValidatorTest {
 	}
 
 	@Test
-	public void fetchWithOffsetTest() {
-		Page p = new Page();
+	public void fetchWithOffsetTest() throws SQLException {
+		Page p = new Page(fakeComputerList.length);
 
 		List<Computer> computerList = new ArrayList<>();
 		for (Computer c : fakeComputerList)
 			computerList.add(0, c);
-		try {
-			Mockito.when(computerSearcherMock.fetchWithOffset(p)).thenReturn(computerList);
-		} catch (SQLException e) {
-		}
+
+		Mockito.when(computerSearcherMock.fetchWithOffset(p)).thenReturn(computerList);
 
 		Assert.assertEquals(validator.fetchWithOffset(p), computerList);
 	}
 
 	@Test
-	public void getNumberOfElementsTest() {
-		try {
-			Mockito.when(computerSearcherMock.getNumberOfElements()).thenReturn(523);
-		} catch (SQLException e) {
-		}
+	public void getNumberOfElementsTest() throws SQLException {
+
+		Mockito.when(computerSearcherMock.getNumberOfElements()).thenReturn(523);
+
 		Assert.assertEquals(validator.getNumberOfElements(), 523);
 	}
 
 	//// Partie mise à jour
 
 	@Test
-	public void createComputerTest() {
-		try {
-			Mockito.when(computerUpdaterMock.createComputer(Mockito.any(Computer.class))).thenReturn(24L);
-		} catch (SQLException e) {
-		}
+	public void createComputerTest() throws SQLException {
+
+		Mockito.when(computerUpdaterMock.createComputer(Mockito.any(Computer.class))).thenReturn(24L);
 
 		for (Computer c : fakeComputerList) // Normalement tout passe
 			try {
@@ -176,20 +166,17 @@ public class ComputerValidatorTest {
 	}
 
 	@Test
-	public void deleteComputerTest() {
-		try {
-			Mockito.when(computerUpdaterMock.deleteById(56)).thenReturn(1);
-		} catch (SQLException e) {
-		}
+	public void deleteComputerTest() throws SQLException {
+
+		Mockito.when(computerUpdaterMock.deleteById(56)).thenReturn(1);
+
 		Assert.assertEquals(1, validator.deleteComputer(56));
 	}
 
 	@Test
-	public void updateComputerTest() {
-		try {
-			Mockito.when(computerUpdaterMock.updateComputer(Mockito.any(Computer.class))).thenReturn(1);
-		} catch (SQLException e) {
-		}
+	public void updateComputerTest() throws SQLException {
+
+		Mockito.when(computerUpdaterMock.updateComputer(Mockito.any(Computer.class))).thenReturn(1);
 
 		for (Computer c : fakeComputerList) // Normalement tout passe
 			try {

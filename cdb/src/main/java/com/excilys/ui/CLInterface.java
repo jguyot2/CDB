@@ -23,308 +23,309 @@ import com.excilys.service.InvalidComputerInstanceException;
  */
 public class CLInterface {
 
-	private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
-	private static ComputerValidator computerValidator = new ComputerValidator();
-	private static CompanyValidator companyValidator = new CompanyValidator();
+    private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
+    private static ComputerValidator computerValidator = new ComputerValidator();
+    private static CompanyValidator companyValidator = new CompanyValidator();
 
-	private static void listComputersCommand() {
-		List<Computer> computerList = computerValidator.fetchList();
-		for (Computer c : computerList)
-			System.out.println(c.getShortDescription());
-	}
+    private static void createComputerCommand() {
+        System.out.println("Entrez le nom de l'ordinateur");
 
-	private static void listCompaniesCommand() {
-		List<Company> companyList = companyValidator.fetchList();
-		for (Company c : companyList)
-			System.out.println(c);
-	}
+        String computerName = sc.nextLine().trim();
+        System.out.println("Nom entré:'" + computerName + "'");
 
-	private static void getComputerDetailsCommand() {
-		System.out.println("Entrez l'identifiant de l'ordinateur recherché");
-		String strComputerId = sc.nextLine();
-		long computerId = 0;
-		try {
-			computerId = Long.parseLong(strComputerId, 10);
-		} catch (NumberFormatException e) {
-			System.out.println("Ce qui a été entré ne correspond pas à un identifiant valide");
-			return;
-		}
+        System.out.println("Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
+        String strCompanyId = sc.nextLine().trim();
+        System.out.println("ID entré:" + strCompanyId);
 
-		Optional<Computer> computerOpt = computerValidator.findById(computerId);
-		if (!computerOpt.isPresent()) {
-			System.out.println("L'ordinateur n'a pas été trouvé dans la BD");
-		} else {
-			Computer computer = computerOpt.get();
-			System.out.println(computer);
-		}
-	}
+        Company company = null;
 
-	private static void createComputerCommand() {
-		System.out.println("Entrez le nom de l'ordinateur");
+        if (!strCompanyId.isEmpty()) {
+            long companyId = 0;
+            try {
+                companyId = Long.parseLong(strCompanyId);
+            } catch (NumberFormatException e) {
+                System.out.println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
+                return;
+            }
+            Optional<Company> companyOpt = companyValidator.findById(companyId);
+            if (companyOpt.isPresent())
+                company = companyOpt.get();
+            else
+                System.out.println("Entreprise non trouvée dans la bd");
+        }
+        System.out.println("Company:" + company);
+        System.out.println("Entrez la date d'introduction au format DD/MM/YYYY");
+        String dateStr = sc.nextLine().trim();
+        System.out.println("STR INTRO:" + dateStr);
+        LocalDate introduced = null;
+        if (!dateStr.isEmpty())
+            try {
+                Optional<LocalDate> introducedOpt = DateMapper.stringToLocalDate(dateStr);
+                if (introducedOpt.isPresent())
+                    introduced = introducedOpt.get();
+                else
+                    return;
+            } catch (DateTimeParseException e) {
+                System.out.println(e.getMessage());
+                System.out.println("Fin de la saisie, car date no parsable");
+                return;
+            }
+        System.out.println("Date:" + introduced);
+        System.out.println("Entrez la date d'arrêt de production au format DD/MM/YYYY");
+        String strDiscontinuation = sc.nextLine().trim();
+        LocalDate discontinued = null;
+        if (!strDiscontinuation.isEmpty())
+            try {
+                Optional<LocalDate> discontinuedOpt = DateMapper.stringToLocalDate(strDiscontinuation);
+                if (!discontinuedOpt.isPresent())
+                    return;
+                discontinued = discontinuedOpt.get();
+            } catch (DateTimeParseException e) {
+                System.out.println("Erreur : " + e.getMessage());
+                System.out.println("Date saisie invalide, fin de l'entrée");
+                return;
+            }
 
-		String computerName = sc.nextLine().trim();
-		System.out.println("Nom entré:'" + computerName + "'");
+        Computer createdComputer = new Computer(computerName, company, introduced, discontinued);
+        long newIdComputer;
+        try {
+            newIdComputer = computerValidator.createComputer(createdComputer);
+        } catch (InvalidComputerInstanceException e) {
+            System.out.println("Instance incorrecte de Computer crée");
+            for (ComputerInstanceProblems problem : e.getProblems())
+                System.out.println(problem.getExplanation());
+            System.out.println("Fin de la saisie");
+            return;
+        }
+        if (newIdComputer == 0)
+            System.out.println("L'ordinateur n'a pas été enregistré");
+        else
+            System.out.println("L'ordinateur a été créé, et est d'id :" + newIdComputer);
+    }
 
-		System.out.println("Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
-		String strCompanyId = sc.nextLine().trim();
-		System.out.println("ID entré:" + strCompanyId);
+    private static void deleteComputerCommand() {
+        System.out.println("Saisissez l'identifiant du pc à supprimer");
+        String idString = sc.nextLine().trim();
+        long id = 0;
+        try {
+            id = Long.parseLong(idString, 0);
+        } catch (NumberFormatException e) {
+            System.out.println("Identifiant invalide");
+            return;
+        }
 
-		Company company = null;
+        if (computerValidator.deleteComputer(id) > 0)
+            System.out.println("le PC a été supprimé");
+        else
+            System.out.println("L'ordinateur de n'a pas été supprimé dans la BD");
 
-		if (!strCompanyId.isEmpty()) {
-			long companyId = 0;
-			try {
-				companyId = Long.parseLong(strCompanyId);
-			} catch (NumberFormatException e) {
-				System.out.println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
-				return;
-			}
-			Optional<Company> companyOpt = companyValidator.findById(companyId);
-			if (companyOpt.isPresent())
-				company = companyOpt.get();
-			else
-				System.out.println("Entreprise non trouvée dans la bd");
-		}
-		System.out.println("Company:" + company);
-		System.out.println("Entrez la date d'introduction au format DD/MM/YYYY");
-		String dateStr = sc.nextLine().trim();
-		System.out.println("STR INTRO:" + dateStr);
-		LocalDate introduced = null;
-		if (!dateStr.isEmpty())
-			try {
-				Optional<LocalDate> introducedOpt = DateMapper.stringToLocalDate(dateStr); 
-				if(introducedOpt.isPresent())
-					introduced = introducedOpt.get();
-				else return;
-			} catch (DateTimeParseException e) {
-				System.out.println(e.getMessage());
-				System.out.println("Fin de la saisie, car date no parsable");
-				return;
-			}
-		System.out.println("Date:" + introduced);
-		System.out.println("Entrez la date d'arrêt de production au format DD/MM/YYYY");
-		String strDiscontinuation = sc.nextLine().trim();
-		LocalDate discontinued = null;
-		if (!strDiscontinuation.isEmpty())
-			try {
-				Optional<LocalDate> discontinuedOpt = DateMapper.stringToLocalDate(strDiscontinuation);
-				if (!discontinuedOpt.isPresent())
-					return;
-				discontinued = discontinuedOpt.get();
-			} catch (DateTimeParseException e) {
-				System.out.println("Erreur : " + e.getMessage());
-				System.out.println("Date saisie invalide, fin de l'entrée");
-				return;
-			}
+    }
 
-		Computer createdComputer = new Computer(computerName, company, introduced, discontinued);
-		long newIdComputer;
-		try {
-			newIdComputer = computerValidator.createComputer(createdComputer);
-		} catch (InvalidComputerInstanceException e) {
-			System.out.println("Instance incorrecte de Computer crée");
-			for (ComputerInstanceProblems problem : e.getProblems())
-				System.out.println(problem.getExplanation());
-			System.out.println("Fin de la saisie");
-			return;
-		}
-		if (newIdComputer == 0)
-			System.out.println("L'ordinateur n'a pas été enregistré");
-		else
-			System.out.println("L'ordinateur a été créé, et est d'id :" + newIdComputer);
-	}
+    /**
+     * Exécution d'une commande donnée en paramètre
+     * 
+     * @param commandToExecute La commande à exécuter
+     */
+    private static void executeCommand(CLICommand commandToExecute) {
+        switch (commandToExecute) {
+        case LIST_COMPUTERS:
+            listComputersCommand();
+            break;
+        case LIST_COMPANIES:
+            listCompaniesCommand();
+            break;
+        case SHOW_DETAILS:
+            getComputerDetailsCommand();
+            break;
+        case CREATE_COMPUTER:
+            createComputerCommand();
+            break;
+        case UPDATE_COMPUTER:
+            updateComputerCommand();
+            break;
+        case DELETE_COMPUTER:
+            deleteComputerCommand();
+            break;
+        case EXIT:
+            exitCommand();
+            break;
+        case COMPUTER_PAGINATION:
+            ComputerPagination.paginate();
+            break;
+        case COMPANY_PAGINATION:
+            CompanyPagination.paginate();
+            break;
+        default:
+            throw new RuntimeException("arrivée dans le default alors que c'est pas censé arriver");
+        }
+    }
 
-	private static void deleteComputerCommand() {
-		System.out.println("Saisissez l'identifiant du pc à supprimer");
-		String idString = sc.nextLine().trim();
-		long id = 0;
-		try {
-			id = Long.parseLong(idString, 0);
-		} catch (NumberFormatException e) {
-			System.out.println("Identifiant invalide");
-			return;
-		}
+    private static void exitCommand() {
+        System.out.println("Sortie du programme");
+        System.exit(0);
+    }
 
-		if (computerValidator.deleteComputer(id) > 0)
-			System.out.println("le PC a été supprimé");
-		else
-			System.out.println("L'ordinateur de n'a pas été supprimé dans la BD");
+    /**
+     * Fonction affichant un menu et exécutant une commande rentrée par
+     * l'utilisateur
+     */
+    public static void getCommande() {
+        printMenu();
+        String strCommandId = sc.nextLine();
+        int commandId = -1;
+        try {
+            commandId = Integer.parseInt(strCommandId);
+        } catch (NumberFormatException e) {
+            System.out.println("La commande rentrée est invalide");
+        }
 
-	}
+        try {
+            CLICommand commandToExecute = CLICommand.getCommandeFromInput(commandId);
+            executeCommand(commandToExecute);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erreur" + e.getMessage());
+        }
+    }
 
-	private static void updateComputerCommand() {
-		System.out.println("Entrez l'id de l'ordinateur à modifier");
-		String idString = sc.nextLine().trim();
-		long id = 0;
-		try {
-			id = Long.parseLong(idString);
-		} catch (NumberFormatException e) {
-			System.out.println("La valeur entrée ne correspond pas à un ID. ");
-			return;
-		}
+    private static void getComputerDetailsCommand() {
+        System.out.println("Entrez l'identifiant de l'ordinateur recherché");
+        String strComputerId = sc.nextLine();
+        long computerId = 0;
+        try {
+            computerId = Long.parseLong(strComputerId, 10);
+        } catch (NumberFormatException e) {
+            System.out.println("Ce qui a été entré ne correspond pas à un identifiant valide");
+            return;
+        }
 
-		Optional<Computer> optFoundComputer = computerValidator.findById(id);
-		if (!optFoundComputer.isPresent()) {
-			System.out.println("Ordinateur non trouvé.");
-			return;
-		}
-		Computer foundComputer = optFoundComputer.get();
+        Optional<Computer> computerOpt = computerValidator.findById(computerId);
+        if (!computerOpt.isPresent()) {
+            System.out.println("L'ordinateur n'a pas été trouvé dans la BD");
+        } else {
+            Computer computer = computerOpt.get();
+            System.out.println(computer);
+        }
+    }
 
-		System.out.println("Modification du nom: Ne rien entrer pour ne pas changer, entrer un nom sinon");
-		System.out.println("Nom courant: " + foundComputer.getName());
-		String newName = sc.nextLine().trim();
-		if (!newName.isEmpty())
-			foundComputer.setName(newName);
-		System.out.println("Modification de l'identifiant de l'entreprise: "
-				+ "Ne rien entrer pour ne pas changer, entrer 'NONE' pour supprimer l'entreprise");
+    private static void listCompaniesCommand() {
+        List<Company> companyList = companyValidator.fetchList();
+        for (Company c : companyList)
+            System.out.println(c);
+    }
 
-		System.out.println("Entreprise courante:" + foundComputer.getManufacturer());
-		String newEnterpriseIdStr = sc.nextLine().trim();
-		if (!newEnterpriseIdStr.isEmpty())
-			if (newEnterpriseIdStr.equals("NONE"))
-				foundComputer.setId(0);
-			else {
-				long idComputer = 0;
-				try {
-					idComputer = Long.parseLong(newEnterpriseIdStr);
-				} catch (NumberFormatException e) {
-					System.out.println("Id invalide entré, fin de la saisie");
-					return;
-				}
-				foundComputer.setId(idComputer);
-			}
-		System.out.println("Entrez la date d'introduction sous forme `JJ/MM/AAAA`: "
-				+ "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
-				+ "pour supprimer cette date");
-		System.out.println("Date d'intro courante: " + foundComputer.getIntroduction());
+    private static void listComputersCommand() {
+        List<Computer> computerList = computerValidator.fetchList();
+        for (Computer c : computerList)
+            System.out.println(c.getShortDescription());
+    }
 
-		String strIntro = sc.nextLine().trim();
-		if (!strIntro.isEmpty())
-			if ("NONE".equals(strIntro))
-				foundComputer.setIntroduction(null);
-			else {
-				Optional<LocalDate> introDateOpt = DateMapper.stringToLocalDate(strIntro);
-				if (!introDateOpt.isPresent()) {
-					return;
-				}
-				foundComputer.setIntroduction(introDateOpt.get());
-			}
+    private static void printMenu() {
+        System.out.println("--------------------------------");
+        System.out.println("Entrez la commande: ");
+        System.out.println("0:\t Lister les ordinateurs");
+        System.out.println("1:\t Lister les entreprises");
+        System.out.println("2:\t Détails d'un ordinateur");
+        System.out.println("3:\t Création d'un ordinateur");
+        System.out.println("4:\t Mise à jour d'un ordinateur");
+        System.out.println("5:\t Suppression d'un ordinateur");
+        System.out.println("6:\t Sortie du programme");
+        System.out.println("7:\t Pagination des ordinateurs");
+        System.out.println("8:\t Pagination des entreprises");
+        System.out.println("--------------------------------");
+    }
 
-		System.out.println("Entrez la date de discontinuation sous forme `JJ/MM/AAAA`: "
-				+ "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
-				+ "pour supprimer cette date");
-		System.out.println("Date d'intro courante: " + foundComputer.getDiscontinuation());
+    public static void start() {
+        while (true)
+            CLInterface.getCommande();
+    }
 
-		String strDiscontinuation = sc.nextLine().trim();
-		if (!strDiscontinuation.isEmpty())
-			if ("NONE".equals(strDiscontinuation))
-				foundComputer.setDiscontinuation(null);
-			else {
-				Optional<LocalDate> localDateOpt = DateMapper.stringToLocalDate(strDiscontinuation);
-				if (!localDateOpt.isPresent())
-					return;
+    private static void updateComputerCommand() {
+        System.out.println("Entrez l'id de l'ordinateur à modifier");
+        String idString = sc.nextLine().trim();
+        long id = 0;
+        try {
+            id = Long.parseLong(idString);
+        } catch (NumberFormatException e) {
+            System.out.println("La valeur entrée ne correspond pas à un ID. ");
+            return;
+        }
 
-				foundComputer.setDiscontinuation(localDateOpt.get());
-			}
-		int updated;
-		try {
-			updated = computerValidator.updateComputer(foundComputer);
-		} catch (InvalidComputerInstanceException e) {
-			System.out.println("Instance incorrecte de Computer crée");
-			for (ComputerInstanceProblems problem : e.getProblems())
-				System.out.println(problem.getExplanation());
-			System.out.println("Fin de la saisie");
-			return;
-		}
-		if (updated > 0) {
-			System.out.println("La mise a jour a été effectuée");
-		} else
-			System.out.println("La mise à jour n'a pas eu lieu");
-	}
+        Optional<Computer> optFoundComputer = computerValidator.findById(id);
+        if (!optFoundComputer.isPresent()) {
+            System.out.println("Ordinateur non trouvé.");
+            return;
+        }
+        Computer foundComputer = optFoundComputer.get();
 
-	private static void exitCommand() {
-		System.out.println("Sortie du programme");
-		System.exit(0);
-	}
+        System.out.println("Modification du nom: Ne rien entrer pour ne pas changer, entrer un nom sinon");
+        System.out.println("Nom courant: " + foundComputer.getName());
+        String newName = sc.nextLine().trim();
+        if (!newName.isEmpty())
+            foundComputer.setName(newName);
+        System.out.println("Modification de l'identifiant de l'entreprise: "
+                + "Ne rien entrer pour ne pas changer, entrer 'NONE' pour supprimer l'entreprise");
 
-	private static void printMenu() {
-		System.out.println("--------------------------------");
-		System.out.println("Entrez la commande: ");
-		System.out.println("0:\t Lister les ordinateurs");
-		System.out.println("1:\t Lister les entreprises");
-		System.out.println("2:\t Détails d'un ordinateur");
-		System.out.println("3:\t Création d'un ordinateur");
-		System.out.println("4:\t Mise à jour d'un ordinateur");
-		System.out.println("5:\t Suppression d'un ordinateur");
-		System.out.println("6:\t Sortie du programme");
-		System.out.println("7:\t Pagination des ordinateurs");
-		System.out.println("8:\t Pagination des entreprises");
-		System.out.println("--------------------------------");
-	}
+        System.out.println("Entreprise courante:" + foundComputer.getManufacturer());
+        String newEnterpriseIdStr = sc.nextLine().trim();
+        if (!newEnterpriseIdStr.isEmpty())
+            if (newEnterpriseIdStr.equals("NONE"))
+                foundComputer.setId(0);
+            else {
+                long idComputer = 0;
+                try {
+                    idComputer = Long.parseLong(newEnterpriseIdStr);
+                } catch (NumberFormatException e) {
+                    System.out.println("Id invalide entré, fin de la saisie");
+                    return;
+                }
+                foundComputer.setId(idComputer);
+            }
+        System.out.println("Entrez la date d'introduction sous forme `JJ/MM/AAAA`: "
+                + "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
+                + "pour supprimer cette date");
+        System.out.println("Date d'intro courante: " + foundComputer.getIntroduction());
 
-	/**
-	 * Exécution d'une commande donnée en paramètre
-	 * 
-	 * @param commandToExecute La commande à exécuter
-	 */
-	private static void executeCommand(CLICommand commandToExecute) {
-		switch (commandToExecute) {
-		case LIST_COMPUTERS:
-			listComputersCommand();
-			break;
-		case LIST_COMPANIES:
-			listCompaniesCommand();
-			break;
-		case SHOW_DETAILS:
-			getComputerDetailsCommand();
-			break;
-		case CREATE_COMPUTER:
-			createComputerCommand();
-			break;
-		case UPDATE_COMPUTER:
-			updateComputerCommand();
-			break;
-		case DELETE_COMPUTER:
-			deleteComputerCommand();
-			break;
-		case EXIT:
-			exitCommand();
-			break;
-		case COMPUTER_PAGINATION:
-			ComputerPagination.paginate();
-			break;
-		case COMPANY_PAGINATION:
-			CompanyPagination.paginate();
-			break;
-		default:
-			throw new RuntimeException("arrivée dans le default alors que c'est pas censé arriver");
-		}
-	}
+        String strIntro = sc.nextLine().trim();
+        if (!strIntro.isEmpty())
+            if ("NONE".equals(strIntro))
+                foundComputer.setIntroduction(null);
+            else {
+                Optional<LocalDate> introDateOpt = DateMapper.stringToLocalDate(strIntro);
+                if (!introDateOpt.isPresent()) {
+                    return;
+                }
+                foundComputer.setIntroduction(introDateOpt.get());
+            }
 
-	/**
-	 * Fonction affichant un menu et exécutant une commande rentrée par
-	 * l'utilisateur
-	 */
-	public static void getCommande() {
-		printMenu();
-		String strCommandId = sc.nextLine();
-		int commandId = -1;
-		try {
-			commandId = Integer.parseInt(strCommandId);
-		} catch (NumberFormatException e) {
-			System.out.println("La commande rentrée est invalide");
-		}
+        System.out.println("Entrez la date de discontinuation sous forme `JJ/MM/AAAA`: "
+                + "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
+                + "pour supprimer cette date");
+        System.out.println("Date d'intro courante: " + foundComputer.getDiscontinuation());
 
-		try {
-			CLICommand commandToExecute = CLICommand.getCommandeFromInput(commandId);
-			executeCommand(commandToExecute);
-		} catch (IllegalArgumentException e) {
-			System.out.println("Erreur" + e.getMessage());
-		}
-	}
+        String strDiscontinuation = sc.nextLine().trim();
+        if (!strDiscontinuation.isEmpty())
+            if ("NONE".equals(strDiscontinuation))
+                foundComputer.setDiscontinuation(null);
+            else {
+                Optional<LocalDate> localDateOpt = DateMapper.stringToLocalDate(strDiscontinuation);
+                if (!localDateOpt.isPresent())
+                    return;
 
-	public static void start() {
-		while (true)
-			CLInterface.getCommande();
-	}
+                foundComputer.setDiscontinuation(localDateOpt.get());
+            }
+        int updated;
+        try {
+            updated = computerValidator.updateComputer(foundComputer);
+        } catch (InvalidComputerInstanceException e) {
+            System.out.println("Instance incorrecte de Computer crée");
+            for (ComputerInstanceProblems problem : e.getProblems())
+                System.out.println(problem.getExplanation());
+            System.out.println("Fin de la saisie");
+            return;
+        }
+        if (updated > 0) {
+            System.out.println("La mise a jour a été effectuée");
+        } else
+            System.out.println("La mise à jour n'a pas eu lieu");
+    }
 }

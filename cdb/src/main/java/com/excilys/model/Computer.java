@@ -1,120 +1,208 @@
 package com.excilys.model;
 
 import java.time.LocalDate;
-
+import java.util.Objects;
 /**
- * Classe représentant un ordinateur
- * 
- * @author jguyot2
+ * Classe représentant un ordinateur.
  *
+ * @author jguyot2
  */
 public class Computer {
-	private String name;
-	private Company manufacturer;
-	private LocalDate introduction;
-	private LocalDate discontinuation;
-	private long id;
+    /**
+     * Nom de l'ordinateur.
+     */
+    private String name;
 
-	public Computer() {
-	}
+    /**
+     * Fabricant de l'ordinateur.
+     */
+    private Company manufacturer;
+    /**
+     * Date d'introduction sur le marché.
+     */
+    private LocalDate introduction;
 
-	public Computer(String name) {
-		this.name = name;
-		this.manufacturer = null;
-		this.introduction = null;
-		this.discontinuation = null;
-		this.id = 0;
-	}
+    /**
+     * Date de retrait de la vente sur le marché.
+     */
+    private LocalDate discontinuation;
 
-	public Computer(String name, Company manufacturer, LocalDate introduction, LocalDate discontinuation) {
-		this.name = name;
-		this.manufacturer = manufacturer;
-		this.introduction = introduction;
-		this.discontinuation = discontinuation;
-		this.id = 0;
-	}
+    /**
+     * Identifiant dans la base de données.
+     */
+    private long id;
 
-	public Computer(String name, Company manufacturer, LocalDate introduction, LocalDate discontinuation, long id) {
-		this.name = name;
-		this.manufacturer = manufacturer;
-		this.introduction = introduction;
-		this.discontinuation = discontinuation;
-		this.id = id;
-	}
+    /**
+     *
+     */
+    public Computer() {
+    }
 
-	public String getName() {
-		return name;
-	}
+    /**
+     * Constructeur de l'ordinateur à partir du nom.
+     *
+     * @param computerName
+     */
+    public Computer(final String computerName) {
+        this.name = computerName;
+        this.manufacturer = null;
+        this.introduction = null;
+        this.discontinuation = null;
+        this.id = 0;
+    }
 
-	public Company getManufacturer() {
-		return manufacturer;
-	}
+    /**
+     * @param computerName
+     * @param computerManufacturer
+     * @param computerIntroduction
+     * @param computerDiscontinuation
+     */
+    public Computer(final String computerName,
+            final Company computerManufacturer,
+            final LocalDate computerIntroduction,
+            final LocalDate computerDiscontinuation) {
+        this.name = computerName;
+        this.manufacturer = computerManufacturer;
+        this.introduction = computerIntroduction;
+        this.discontinuation = computerDiscontinuation;
+        this.id = 0;
+    }
 
-	public LocalDate getIntroduction() {
-		return introduction;
-	}
+    /**
+     * @param computerName
+     * @param computerManufacturer
+     * @param computerIntroduction
+     * @param computerDiscontinuation
+     * @param computerId
+     */
+    public Computer(final String computerName,
+            final Company computerManufacturer,
+            final LocalDate computerIntroduction,
+            final LocalDate computerDiscontinuation, final long computerId) {
+        this.name = computerName;
+        this.manufacturer = computerManufacturer;
+        this.introduction = computerIntroduction;
+        this.discontinuation = computerDiscontinuation;
+        this.id = computerId;
+    }
 
-	public LocalDate getDiscontinuation() {
-		return discontinuation;
+    /**
+     * Test d'égalité sur les attributs, sauf les identifiants.
+     *
+     * @param other
+     *
+     * @return true si les deux instances sont égales, false
+     *         sinon.
+     */
+    public boolean equals(final Computer other) {
+        if (other == null) {
 
-	}
+            return false;
+        } else if (this == other) {
 
-	@Override
-	public String toString() {
-		String representation = "";
-		representation += "name=" + this.name + "\t";
-		representation += "manufacturer=" + String.valueOf(this.manufacturer) + "\t";
-		representation += "intro=" + String.valueOf(this.introduction) + "\t";
-		representation += "dicontinuation=" + String.valueOf(this.discontinuation);
-		return representation;
-	}
+            return true;
+        }
+        return Objects.equals(this.name, other.name)
+                && Objects.equals(this.introduction, other.introduction)
+                && Objects.equals(this.discontinuation, other.discontinuation)
+                && Objects.equals(this.manufacturer, other.manufacturer);
+    }
 
-	/**
-	 * Décrit brièvement une instance de Computer
-	 * 
-	 * @return une chaîne contenant l'id et le nom de l'instance courante
-	 */
-	public String getShortDescription() {
-		return "(" + this.id + ", " + this.name + " )";
-	}
+    /**
+     * @return la date d'interruption de la vente
+     */
+    public LocalDate getDiscontinuation() {
+        return discontinuation;
 
-	public long getId() {
-		return id;
-	}
+    }
 
-	public void setId(long l) {
-		this.id = l;
-	}
+    /**
+     * @return l'identifiant du Computer dans la Bd associée, ou
+     *         0 si
+     *         l'identifiant n'a pas été défini
+     */
+    public long getId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @return la date de début de vente de l'instance.
+     */
+    public LocalDate getIntroduction() {
+        return introduction;
+    }
 
-	public void setManufacturer(Company manufacturer) {
-		this.manufacturer = manufacturer;
-	}
+    /**
+     * @return le fabricant de l'ordinateur
+     */
+    public Company getManufacturer() {
+        return manufacturer;
+    }
 
-	public void setIntroduction(LocalDate introduction) {
-		this.introduction = introduction;
-	}
+    /**
+     * @return le nom de l'ordinateur
+     */
+    public String getName() {
+        return name;
+    }
 
-	public void setDiscontinuation(LocalDate discontinuation) {
-		this.discontinuation = discontinuation;
-	}
-	
-	public static boolean testEquals(Object obj1, Object obj2) {
-	    return (obj1 == null ? obj2 == null : obj1.equals(obj2));
-	}
-	
-	public boolean equals(Computer other) { 
-		if(other == null)
-			return false;
-		else if(this == other)
-			return true;
-		
-		return testEquals(this.name, other.name)
-		&& testEquals(this.introduction, other.introduction)
-		&& testEquals(this.discontinuation, other.discontinuation)
-		&& testEquals(this.manufacturer, other.manufacturer);
-	}
+    /**
+     * Décrit brièvement une instance de Computer.
+     *
+     * @return une chaîne contenant l'id et le nom de l'instance
+     *         courante
+     */
+    public String getShortDescription() {
+        return "(" + this.id + ", " + this.name + " )";
+    }
+
+    /**
+     * @param newDiscontinuation
+     */
+    public void setDiscontinuation(final LocalDate newDiscontinuation) {
+        this.discontinuation = newDiscontinuation;
+    }
+
+    /**
+     *
+     * @param newId
+     */
+    public void setId(final long newId) {
+        this.id = newId;
+    }
+
+    /**
+     * @param newIntroduction
+     */
+    public void setIntroduction(final LocalDate newIntroduction) {
+        this.introduction = newIntroduction;
+    }
+
+    /**
+     * @param newManufacturer
+     */
+    public void setManufacturer(final Company newManufacturer) {
+        this.manufacturer = newManufacturer;
+    }
+
+    /**
+     * @param newName
+     */
+    public void setName(final String newName) {
+        this.name = newName;
+    }
+
+    /**
+     */
+    @Override
+    public String toString() {
+        String representation = "";
+        representation += "name=" + this.name + "\t";
+        representation += "manufacturer=" + String.valueOf(this.manufacturer)
+                + "\t";
+        representation += "intro=" + String.valueOf(this.introduction) + "\t";
+        representation += "dicontinuation="
+                + String.valueOf(this.discontinuation);
+        return representation;
+    }
 }
