@@ -1,6 +1,14 @@
+<!-- 
+
+	Page JSP permettant d'afficher l'ensemble des ordinateurs dans la base en une seule page.
+	paramètres nécessaires.
+		-> ComputerList : List<ComputerDTO>  Correspond à la liste des ordinateurs à afficher 
+
+-->
 <!DOCTYPE html>
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.excilys.model.Computer,java.util.List" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page
+	import="com.excilys.model.ComputerDTO,java.util.List,java.util.Objects"%>
 <html>
 <head>
 <title>Computer Database</title>
@@ -69,18 +77,24 @@
 				</thead>
 				<!-- Browse attribute computers -->
 				<tbody>
-		<% List<Computer> computerList = (List<Computer>) request.getAttribute("computerList");
-		   for(Computer c: computerList){ %>
+					<%
+					    Object o = request.getAttribute("computerList");
+					
+					    List<ComputerDTO> computerList = (List<ComputerDTO>) o;
+					    for (ComputerDTO c : computerList) {
+
+					%>
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
 							class="cb" value="0"></td>
-						<td><a href="editComputer.html" onclick="">
-						<%= c.getName() %>
+						<td><a href="editComputer.html" onclick=""> <%=c.getName()%>
 						</a></td>
-						<td><%= c.getIntroduction() %></td>
-						<td><%= c.getDiscontinuation() %></td>
-						<td><%= c.getManufacturer() %></td>
-						<% }%>
+						<td><%=Objects.toString(c.getIntroductionDate(), "")%></td>
+						<td><%=Objects.toString(c.getDiscontinuationDate(), "")%></td>
+						<td><%=Objects.toString(c.getStrEntrepriseId(), "")%></td>
+						<%
+						    }
+						%>
 					</tr>
 				</tbody>
 			</table>

@@ -9,26 +9,36 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.model.Computer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.model.ComputerDTO;
+import com.excilys.service.ComputerDTOValidator;
 import com.excilys.service.ComputerValidator;
 
 @WebServlet("/list")
 public class ShowComputerListServlet extends HttpServlet {
+    private static ComputerDTOValidator computerDTOValidator = new ComputerDTOValidator();
     /** */
     private static final long serialVersionUID = 1L;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ShowComputerListServlet.class);
 
     /**
      * @param request
      * @param response
      */
-    public void doGet(final HttpServletRequest request,
-            final HttpServletResponse response) throws ServletException {
+    @Override
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
+        throws ServletException {
         try {
-            ComputerValidator computerValidator = new ComputerValidator();
-            List<Computer> computerList = computerValidator.fetchList();
+            List<ComputerDTO> computerList = computerDTOValidator.fetchList();
+
+            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp");
             request.setAttribute("computerList", computerList);
-            RequestDispatcher rd = request
-                    .getRequestDispatcher("/WEB-INF/views/dashboard.jsp");
+            if (computerList == null)
+                throw new AssertionError();
+            assert (rd != null);
             rd.forward(request, response);
         } catch (Exception e) {
             throw new ServletException(e);

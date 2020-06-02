@@ -2,26 +2,13 @@ package com.excilys.model;
 
 import java.time.LocalDate;
 import java.util.Objects;
+
 /**
  * Classe représentant un ordinateur.
  *
  * @author jguyot2
  */
 public class Computer {
-    /**
-     * Nom de l'ordinateur.
-     */
-    private String name;
-
-    /**
-     * Fabricant de l'ordinateur.
-     */
-    private Company manufacturer;
-    /**
-     * Date d'introduction sur le marché.
-     */
-    private LocalDate introduction;
-
     /**
      * Date de retrait de la vente sur le marché.
      */
@@ -31,6 +18,20 @@ public class Computer {
      * Identifiant dans la base de données.
      */
     private long id;
+    /**
+     * Date d'introduction sur le marché.
+     */
+    private LocalDate introduction;
+
+    /**
+     * Fabricant de l'ordinateur.
+     */
+    private Company manufacturer;
+
+    /**
+     * Nom de l'ordinateur.
+     */
+    private String name;
 
     /**
      *
@@ -44,11 +45,11 @@ public class Computer {
      * @param computerName
      */
     public Computer(final String computerName) {
-        this.name = computerName;
-        this.manufacturer = null;
-        this.introduction = null;
-        this.discontinuation = null;
-        this.id = 0;
+        name = computerName;
+        manufacturer = null;
+        introduction = null;
+        discontinuation = null;
+        id = 0;
     }
 
     /**
@@ -58,14 +59,15 @@ public class Computer {
      * @param computerDiscontinuation
      */
     public Computer(final String computerName,
-            final Company computerManufacturer,
-            final LocalDate computerIntroduction,
-            final LocalDate computerDiscontinuation) {
-        this.name = computerName;
-        this.manufacturer = computerManufacturer;
-        this.introduction = computerIntroduction;
-        this.discontinuation = computerDiscontinuation;
-        this.id = 0;
+        final Company computerManufacturer,
+        final LocalDate computerIntroduction,
+        final LocalDate computerDiscontinuation) {
+
+        name = computerName;
+        manufacturer = computerManufacturer;
+        introduction = computerIntroduction;
+        discontinuation = computerDiscontinuation;
+        id = 0;
     }
 
     /**
@@ -76,14 +78,15 @@ public class Computer {
      * @param computerId
      */
     public Computer(final String computerName,
-            final Company computerManufacturer,
-            final LocalDate computerIntroduction,
-            final LocalDate computerDiscontinuation, final long computerId) {
-        this.name = computerName;
-        this.manufacturer = computerManufacturer;
-        this.introduction = computerIntroduction;
-        this.discontinuation = computerDiscontinuation;
-        this.id = computerId;
+        final Company computerManufacturer,
+        final LocalDate computerIntroduction,
+        final LocalDate computerDiscontinuation, final long computerId) {
+
+        name = computerName;
+        manufacturer = computerManufacturer;
+        introduction = computerIntroduction;
+        discontinuation = computerDiscontinuation;
+        id = computerId;
     }
 
     /**
@@ -102,10 +105,10 @@ public class Computer {
 
             return true;
         }
-        return Objects.equals(this.name, other.name)
-                && Objects.equals(this.introduction, other.introduction)
-                && Objects.equals(this.discontinuation, other.discontinuation)
-                && Objects.equals(this.manufacturer, other.manufacturer);
+        return Objects.equals(name, other.name)
+            && Objects.equals(introduction, other.introduction)
+            && Objects.equals(discontinuation, other.discontinuation)
+            && Objects.equals(manufacturer, other.manufacturer);
     }
 
     /**
@@ -153,14 +156,14 @@ public class Computer {
      *         courante
      */
     public String getShortDescription() {
-        return "(" + this.id + ", " + this.name + " )";
+        return "(" + id + ", " + name + " )";
     }
 
     /**
      * @param newDiscontinuation
      */
     public void setDiscontinuation(final LocalDate newDiscontinuation) {
-        this.discontinuation = newDiscontinuation;
+        discontinuation = newDiscontinuation;
     }
 
     /**
@@ -168,28 +171,28 @@ public class Computer {
      * @param newId
      */
     public void setId(final long newId) {
-        this.id = newId;
+        id = newId;
     }
 
     /**
      * @param newIntroduction
      */
     public void setIntroduction(final LocalDate newIntroduction) {
-        this.introduction = newIntroduction;
+        introduction = newIntroduction;
     }
 
     /**
      * @param newManufacturer
      */
     public void setManufacturer(final Company newManufacturer) {
-        this.manufacturer = newManufacturer;
+        manufacturer = newManufacturer;
     }
 
     /**
      * @param newName
      */
     public void setName(final String newName) {
-        this.name = newName;
+        name = newName;
     }
 
     /**
@@ -197,12 +200,10 @@ public class Computer {
     @Override
     public String toString() {
         String representation = "";
-        representation += "name=" + this.name + "\t";
-        representation += "manufacturer=" + String.valueOf(this.manufacturer)
-                + "\t";
-        representation += "intro=" + String.valueOf(this.introduction) + "\t";
-        representation += "dicontinuation="
-                + String.valueOf(this.discontinuation);
+        representation += "name=" + name + "\t";
+        representation += "manufacturer=" + String.valueOf(manufacturer) + "\t";
+        representation += "intro=" + String.valueOf(introduction) + "\t";
+        representation += "dicontinuation=" + String.valueOf(discontinuation);
         return representation;
     }
 }

@@ -1,7 +1,6 @@
 package com.excilys.model;
 
 import java.util.Objects;
-
 /**
  * Classe représentant une entreprise par son nom + son
  * identifiant sur la base
@@ -11,22 +10,21 @@ import java.util.Objects;
  */
 public class Company {
     /**
-     * Nom de l'entreprise.
-     */
-    private final String name;
-
-    /**
      * Identifiant dans la BD de l'entreprise.
      */
     private long id = 0;
-
+    
+    /**
+     * Nom de l'entreprise.
+     */
+    private final String name;
     /**
      * Constructeur d'une entreprise à partir de son nom.
      *
      * @param companyName le nom de l'entreprise
      */
     public Company(final String companyName) {
-        this.name = companyName;
+        name = companyName;
     }
 
     /**
@@ -36,8 +34,8 @@ public class Company {
      * @param companyId   l'identifiant de l'entreprise
      */
     public Company(final String companyName, final long companyId) {
-        this.name = companyName;
-        this.id = companyId;
+        name = companyName;
+        id = companyId;
     }
 
     /**
@@ -52,7 +50,7 @@ public class Company {
         if (this == other) {
             return true;
         }
-        return Objects.equals(this.name, other.name);
+        return Objects.equals(name, other.name);
     }
 
     /**
@@ -68,7 +66,7 @@ public class Company {
      * @return Le nom de l'entreprise
      */
     public String getName() {
-        return this.name;
+        return name;
     }
 
     /**
@@ -76,12 +74,12 @@ public class Company {
      * @param companyId l'identifiant.
      */
     public void setId(final long companyId) {
-        this.id = companyId;
+        id = companyId;
     }
 
     /** */
     @Override
     public String toString() {
-        return this.name;
+        return name;
     }
 }

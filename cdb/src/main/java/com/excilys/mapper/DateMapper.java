@@ -10,7 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Fonction de conversion de formats de date.
+ * Fonctions de conversion de formats de date, notamment entre LocalDate
+ * et java.sql.Date
  *
  * @author jguyot2
  */
@@ -18,7 +19,7 @@ public final class DateMapper {
     /**
      *
      */
-    private static Logger logger = LoggerFactory.getLogger(DateMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DateMapper.class);
 
     /**
      * Fonction de conversion d'une instance de LocalDate vers une
@@ -27,11 +28,27 @@ public final class DateMapper {
      * @return une instance de java.sql.date correspondante
      */
     public static Optional<Date> localDateToSqlDate(final LocalDate localDate) {
+        LOG.info("Conversion de date locale vers sqlDate. Date = " + localDate);
         if (localDate == null) {
             return Optional.empty();
         } else {
             return Optional.of(Date.valueOf(localDate));
         }
+    }
+
+    /**
+     * Conversion d'une date en chaîne de caractères au format JJ/MM/YYYY.
+     * @param ld la date à convertir
+     * @return une instance de String correspondant à la date en paramètre
+     * au format JJ/MM/AAAA
+     */
+    public static Optional<String> localDateToString(final LocalDate ld) {
+        LOG.info("Conversion de localDate vers Str. localDate = " + ld);
+        if (ld == null) {
+            return Optional.empty();
+        }
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return Optional.of(ld.format(df));
     }
 
     /**
@@ -47,11 +64,13 @@ public final class DateMapper {
      */
     @SuppressWarnings("deprecation")
     public static Optional<LocalDate> sqlDateToLocalDate(final Date sqlDate) {
+        LOG.info("Conversion de java.sql.Date vers localDate. Param=" + sqlDate);
         if (sqlDate == null) {
             return Optional.empty();
         }
+        //TODO : vérifier cet appel.
         return Optional.of(LocalDate.of(sqlDate.getYear() + 1900,
-                sqlDate.getMonth() + 1, sqlDate.getDate()));
+            sqlDate.getMonth() + 1, sqlDate.getDate()));
     }
 
     /**
@@ -71,17 +90,16 @@ public final class DateMapper {
      *                                format
      */
     public static Optional<LocalDate> stringToLocalDate(final String dateRepr) {
+        LOG.info("Conversion de str vers localDate. str =" + dateRepr);
         if (dateRepr == null) {
-
             return Optional.empty();
         }
-        logger.info("string to date appellée : str=" + dateRepr);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         try {
             LocalDate date = LocalDate.parse(dateRepr, formatter);
             return Optional.of(date);
         } catch (DateTimeParseException e) {
-            logger.debug("Date en entrée invalide");
+            LOG.debug("Date en entrée invalide");
             return Optional.empty();
         }
     }

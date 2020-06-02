@@ -14,8 +14,7 @@ import com.excilys.persistence.CompanySearcher;
 
 public class CompanyValidator implements SearchValidator<Company> {
     /** */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(CompanyValidator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CompanyValidator.class);
 
     /** */
     private CompanySearcher companySearcher;
@@ -30,21 +29,24 @@ public class CompanyValidator implements SearchValidator<Company> {
      *
      * @return La liste des entreprises présentes dans la BD
      */
+    @Override
     public List<Company> fetchList() {
         try {
             return companySearcher.fetchList();
         } catch (SQLException e) {
-            LOG.debug("fetchList: " + e.getMessage(), e);
+            LOG.error("fetchList: " + e.getMessage(), e);
             return new ArrayList<>();
         }
     }
 
     /**
-     * Renvoie la liste des instances présentes dans la BD qui
-     * sont contenues dans la page en paramètre.
+     * Renvoie la liste des instances présentes dans la BD qui sont contenues dans
+     * la page en paramètre.
+     * 
      * @param page la page à afficher.
      * @return La liste des entreprises présentes dans la page.
      */
+    @Override
     public List<Company> fetchWithOffset(final Page page) {
         try {
             return companySearcher.fetchWithOffset(page);
@@ -62,6 +64,7 @@ public class CompanyValidator implements SearchValidator<Company> {
      *         ligne correspondante a été trouvée dans la BD ou une instance de
      *         Optional vide si aucune entreprise n'a été trouvée
      */
+    @Override
     public Optional<Company> findById(final long id) {
         try {
             return companySearcher.fetchById(id);
@@ -72,25 +75,24 @@ public class CompanyValidator implements SearchValidator<Company> {
     }
 
     /**
-     * @return le nombre d'entreprises dans la BD.
+     * @return le nombre d'entreprises dans la BD, ou -1 s'il y a eu un problème dans la base
      */
+    @Override
     public int getNumberOfElements() {
         try {
             return companySearcher.getNumberOfElements();
         } catch (SQLException e) {
             LOG.error("getNbOfElements : " + e.getMessage(), e);
-        // TODO : Gestion propre de ce cas (renvoi d'une exception appropriée)
             return -1;
         }
     }
 
     /**
-     * change l'instance de la couche persistance
-     * Uniquement utilisé pour les tests.
+     * change l'instance de la couche persistance Uniquement utilisé pour les tests.
+     * 
      * @param newCompanySearcher la nouvelle
      */
     public void setCompanySearcher(final CompanySearcher newCompanySearcher) {
-        this.companySearcher = newCompanySearcher;
+        companySearcher = newCompanySearcher;
     }
-
 }

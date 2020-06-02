@@ -1,3 +1,8 @@
+<!-- TODO
+	Erreur 500.
+	Paramètres: 
+		"exn" : Exception ayant causé l'erreur.
+-->
 <!DOCTYPE html>
 <html>
 <head>

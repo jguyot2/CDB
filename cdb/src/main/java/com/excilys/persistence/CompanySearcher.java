@@ -1,11 +1,11 @@
 package com.excilys.persistence;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -21,29 +21,19 @@ import com.excilys.model.Page;
  * @author jguyot2
  */
 public class CompanySearcher implements Searcher<Company> {
-    /**
-     */
-    private static final Logger LOG = LoggerFactory
-            .getLogger(CompanySearcher.class);
-    /**
-     */
-    private static final String REQUEST_COMPANIES =
-            "SELECT name, id FROM company";
-    /**
-    */
-    private static final String REQUEST_SEARCH_BY_ID =
-            "SELECT name, id FROM company WHERE id = ?";
-    /**
-     */
+    /** */
+    private static final Logger LOG = LoggerFactory.getLogger(CompanySearcher.class);
+    /** */
+    private static final String REQUEST_COMPANIES = "SELECT name, id FROM company";
+    /**  */
     private static final String REQUEST_COMPANIES_OFFSET =
-            "SELECT name, id FROM company ORDER BY id LIMIT ? OFFSET ?";
-    /**
-     */
-    private static final String REQUEST_NB_OF_ROWS =
-            "SELECT count(id) FROM company";
+        "SELECT name, id FROM company ORDER BY id LIMIT ? OFFSET ?";
+    /** */
+    private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM company";
+    /** */
+    private static final String REQUEST_SEARCH_BY_ID = "SELECT name, id FROM company WHERE id = ?";
 
-    /**
-     */
+    /** */
     public CompanySearcher() {
     }
 
@@ -51,29 +41,27 @@ public class CompanySearcher implements Searcher<Company> {
      * Recherche une compagnie par son identifiant dans la base
      * de données.
      *
-     * @param searchedId l'identifiant de l'entreprise
-     *                   identifiée
+     * @param searchedId
+     *                       l'identifiant de l'entreprise
+     *                       identifiée
      *
      * @return Optional.empty() si aucune entreprise n'a été
      *         trouvée, ou une
      *         instance de Optional contenant l'entreprise
      *         trouvée sinon
      */
-    public Optional<Company> fetchById(final long searchedId)
-            throws SQLException {
+    @Override
+    public Optional<Company> fetchById(final long searchedId) throws SQLException {
+        LOG.info("Recherche d'un pc avec l'id " + searchedId);
         try (PreparedStatement stmt = DBConnection.getConnection()
-                .prepareStatement(REQUEST_SEARCH_BY_ID)) {
-
+            .prepareStatement(REQUEST_SEARCH_BY_ID)) {
             stmt.setLong(1, searchedId);
             ResultSet res = stmt.executeQuery();
             if (!res.next()) {
-
-                LOG.debug(
-                  "fetchById: La recherche n'a donné aucun résultat pour l'id:"
-                  + searchedId);
+                LOG.debug("fetchById: La recherche n'a donné rien renvoyé pour l'id:" + searchedId);
                 return Optional.empty();
             }
-            Integer companyId = new Integer(res.getInt("id"));
+            long companyId = res.getLong("id");
             String companyName = res.getString("name");
             Company foundCompany = new Company(companyName, companyId);
             return Optional.of(foundCompany);
@@ -88,13 +76,12 @@ public class CompanySearcher implements Searcher<Company> {
      * @return La liste des entreprises présentes dans la base
      *         de données
      */
+    @Override
     public List<Company> fetchList() throws SQLException {
         List<Company> companiesList = new ArrayList<>();
         try (Statement stmt = DBConnection.getConnection().createStatement()) {
-
             ResultSet res = stmt.executeQuery(REQUEST_COMPANIES);
             while (res.next()) {
-
                 long id = res.getLong("id");
                 String name = res.getString("name");
                 assert (name != null);
@@ -107,20 +94,25 @@ public class CompanySearcher implements Searcher<Company> {
     /**
      * Recherche une "page" de la liste des entreprises, en
      * fonction du paramètre.
-     * @param page la page à afficher
-     * @return la liste des Company de la BD comprises dans la page
-     * en paramètre
+     *
+     * @param page
+     *                 la page à afficher
+     *
+     * @return la liste des Company de la BD comprises dans la
+     *         page
+     *         en paramètre
      */
+    @Override
     public List<Company> fetchWithOffset(final Page page) throws SQLException {
         List<Company> ret = new ArrayList<>();
         try (PreparedStatement stmt = DBConnection.getConnection()
-                .prepareStatement(REQUEST_COMPANIES_OFFSET)) {
+            .prepareStatement(REQUEST_COMPANIES_OFFSET)) {
 
             stmt.setInt(1, page.getPageLength());
             stmt.setInt(2, page.getOffset());
+            
             ResultSet res = stmt.executeQuery();
             while (res.next()) {
-
                 long companyId = res.getLong("id");
                 String companyName = res.getString("name");
                 ret.add(new Company(companyName, companyId));
@@ -131,11 +123,12 @@ public class CompanySearcher implements Searcher<Company> {
 
     /**
      * renvoie la taille de la table company.
+     *
      * @return le nombre d'entreprises enregistrées dans la base
      */
+    @Override
     public int getNumberOfElements() throws SQLException {
         try (Statement stmt = DBConnection.getConnection().createStatement()) {
-
             ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
             if (res.next()) {
                 return res.getInt(1);

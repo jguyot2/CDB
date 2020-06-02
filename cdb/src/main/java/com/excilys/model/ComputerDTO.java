@@ -7,28 +7,30 @@ package com.excilys.model;
  */
 public class ComputerDTO {
     /**
+     * Représentation de la date d'arrêt, au format DD/MM/YYYY.
+     */
+    private String discontinuationDate;
+
+    /**
+     * Représentation de la date d'intro, au format DD/MM/YYY.
+     */
+    private String introductionDate;
+
+    /**
      * Nom de l'ordinateur.
      */
     private String name;
 
     /**
-     * Représentation de l'identifiant de l'ordinateur.
-     */
-    private String strId;
-
-    /**
      * Représentation de l'identifiant de l'entreprise par son
      * identifiant.
      */
-    private String strEntrepriseId;
+    private CompanyDTO strEntrepriseId;
+
     /**
-     * Représentation de la date d'intro, au format DD/MM/YYY.
+     * Représentation de l'identifiant de l'ordinateur.
      */
-    private String introductionDate;
-    /**
-     * Représentation de la date d'arrêt, au format DD/MM/YYYY.
-     */
-    private String discontinuationDate;
+    private String strId;
 
     /**
      * @param computerName
@@ -38,14 +40,14 @@ public class ComputerDTO {
      * @param strDiscontinuationDate
      */
     public ComputerDTO(final String computerName, final String computerId,
-            final String companyId, final String strIntroductionDate,
-            final String strDiscontinuationDate) {
+        final CompanyDTO companyId, final String strIntroductionDate,
+        final String strDiscontinuationDate) {
         super();
-        this.name = computerName;
-        this.strId = computerId;
-        this.strEntrepriseId = companyId;
-        this.introductionDate = strIntroductionDate;
-        this.discontinuationDate = strDiscontinuationDate;
+        name = computerName;
+        strId = computerId;
+        strEntrepriseId = companyId;
+        introductionDate = strIntroductionDate;
+        discontinuationDate = strDiscontinuationDate;
     }
 
     /**
@@ -73,7 +75,7 @@ public class ComputerDTO {
      * @return la chaîne de caractères correspondant à
      *         l'identifiant de l'entreprise
      */
-    public String getStrEntrepriseId() {
+    public CompanyDTO getStrEntrepriseId() {
         return strEntrepriseId;
     }
 
@@ -89,32 +91,34 @@ public class ComputerDTO {
      * @param newDiscontinuationDate
      */
     public void setDiscontinuationDate(final String newDiscontinuationDate) {
-        this.discontinuationDate = newDiscontinuationDate;
+        discontinuationDate = newDiscontinuationDate;
     }
-/**
- * @param newIntroductionDate
- */
+
+    /**
+     * @param newIntroductionDate
+     */
     public void setIntroductionDate(final String newIntroductionDate) {
-        this.introductionDate = newIntroductionDate;
+        introductionDate = newIntroductionDate;
     }
 
     /**
      * @param newName
      */
     public void setName(final String newName) {
-        this.name = newName;
+        name = newName;
     }
-/**
- * @param newStrEntrepriseId
- */
-    public void setStrEntrepriseId(final String newStrEntrepriseId) {
-        this.strEntrepriseId = newStrEntrepriseId;
+
+    /**
+     * @param newStrEntrepriseId
+     */
+    public void setStrEntrepriseId(final CompanyDTO newStrEntrepriseId) {
+        strEntrepriseId = newStrEntrepriseId;
     }
 
     /**
      * @param newStrId
      */
     public void setStrId(final String newStrId) {
-        this.strId = newStrId;
+        strId = newStrId;
     }
 }

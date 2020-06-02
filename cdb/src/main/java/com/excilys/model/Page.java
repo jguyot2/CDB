@@ -1,5 +1,7 @@
 package com.excilys.model;
 
+import com.excilys.service.NotImplementedException;
+
 /**
  * Classe permettant la pagination. Garde l'identifiant
  *
@@ -10,22 +12,17 @@ public class Page {
      * Nombre d'éléments par page par défaut.
      */
     private static final int BASE_NUMBER_OF_ELEMENTS_PER_PAGE = 30;
-    /**
-     * Nombre d'éléments à afficher.
-     */
+    
+    /** */
     private int totalNumberOfElements;
-    /**
-     * Nombre d'éléments pour une page.
-     */
+    
+    /** */
     private int pageLength = BASE_NUMBER_OF_ELEMENTS_PER_PAGE;
-    /**
-     * Nombre de pages.
-     */
+    
+    /** */
     private int nbOfPages;
 
-    /**
-     * Numéro de page courant.
-     */
+    /** commence à 0 */
     private int pageNumber;
 
     /**
@@ -40,32 +37,28 @@ public class Page {
                 + (numberOfElements % pageLength == 0 ? 0 : 1);
         pageNumber = 0;
     }
+    public Page() {}
+    
+    public Page(int numberOfElements, int pageNumber, int elementsPerPage) {
+        throw new NotImplementedException();
+    }
 
-    /**
-     * @return le numéro de la page courante.
-     */
+    /** */
     public int getPageNumber() {
         return this.pageNumber;
     }
 
-    /**
-     * @return le nombre total de pages
-     */
+    /** */
     public int getNbOfPAges() {
         return this.nbOfPages;
     }
 
-    /**
-     * @return le nombre d'éléments par page.
-     */
+    /** */
     public int getPageLength() {
         return pageLength;
     }
 
-    /**
-     * @return le nombre total d'éléments qu'il est
-     * possible d'afficher
-     */
+    /** */
     public int getLimit() {
         return totalNumberOfElements;
     }
@@ -78,18 +71,14 @@ public class Page {
         return this.pageNumber * this.pageLength;
     }
 
-    /**
-     * Avance d'une page.
-     */
+    /** */
     public void goToNextPage() {
         if (this.pageNumber < this.nbOfPages) {
             this.pageNumber++;
         }
     }
 
-    /**
-     * Recule d'une page.
-     */
+    /** */
     public void goToPreviousPage() {
         if (this.pageNumber > 0) {
             pageNumber--;
@@ -112,4 +101,20 @@ public class Page {
     public void setLimit(final int newLimit) {
         this.totalNumberOfElements = newLimit;
     }
+    public int getTotalNumberOfElements() {
+        return totalNumberOfElements;
+    }
+    public void setTotalNumberOfElements(int totalNumberOfElements) {
+        this.totalNumberOfElements = totalNumberOfElements;
+    }
+    public int getNbOfPages() {
+        return nbOfPages;
+    }
+    public void setNbOfPages(int nbOfPages) {
+        this.nbOfPages = nbOfPages;
+    }
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+  
 }

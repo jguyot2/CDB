@@ -1,6 +1,12 @@
+<!--
+	Affichage d'une page de Computer.
+	paramètres : 
+		-> computerList : List<ComputerDTO> Une liste d'instances de Computer à afficher.
+-->
 <!DOCTYPE html>
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.excilys.model.Computer,java.util.List" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page
+	import="com.excilys.model.ComputerDTO,java.util.List,java.util.Objects"%>
 <html>
 <head>
 <title>Computer Database</title>
@@ -69,18 +75,23 @@
 				</thead>
 				<!-- Browse attribute computers -->
 				<tbody>
-		<% List<Computer> computerList = (List<Computer>) request.getAttribute("computerList");
-		   for(Computer c: computerList){ %>
+					<%
+					    List<ComputerDTO> computerList =
+					        (List<ComputerDTO>) request.getAttribute("computerList");
+					    for (ComputerDTO c : computerList) {
+					%>
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
 							class="cb" value="0"></td>
-						<td><a href="editComputer.html" onclick="">
-						<%= c.getName() %>
+						<td><a href="editComputer.html" onclick=""> <%=c.getName()%>
 						</a></td>
-						<td><%= c.getIntroduction() %></td>
-						<td><%= c.getDiscontinuation() %></td>
-						<td><%= c.getManufacturer() %></td>
-						<% }%>
+						<td><%=Objects.toString(c.getIntroductionDate(), "")%></td>
+						<td><%=Objects.toString(c.getDiscontinuationDate(), "")%></td>
+						<td><%=Objects.toString(
+                    c.getStrEntrepriseId() == null ? "" : c.getStrEntrepriseId().getName(), "")%></td>
+						<%
+						    }
+						%>
 					</tr>
 				</tbody>
 			</table>
@@ -92,7 +103,7 @@
 			<ul class="pagination">
 				<li><a href="#" aria-label="Previous"> <span
 						aria-hidden="true">&laquo;</span>
-				</a></li>
+				</a></li> <!-- TODO -->
 				<li><a href="#">1</a></li>
 				<li><a href="#">2</a></li>
 				<li><a href="#">3</a></li>
@@ -109,9 +120,9 @@
 		</div>
 
 	</footer>
-	<script src="../js/jquery.min.js"></script>
-	<script src="../js/bootstrap.min.js"></script>
-	<script src="../js/dashboard.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/dashboard.js"></script>
 
 </body>
 </html>

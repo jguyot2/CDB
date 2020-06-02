@@ -15,13 +15,13 @@ public class InvalidComputerInstanceException extends Exception {
      * @param problemList Les problèmes associés à une instance de Computer donnée
      */
     public InvalidComputerInstanceException(final List<ComputerInstanceProblems> problemList) {
-        this.problems = problemList;
+        problems = problemList;
     }
 
     /**
      * @return La liste des problèmes d'une instance donnée.
      */
     public List<ComputerInstanceProblems> getProblems() {
-        return this.problems;
+        return problems;
     }
 }

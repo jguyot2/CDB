@@ -2,14 +2,14 @@ package com.excilys.model;
 
 public class CompanyDTO {
     /**
-     * Nom de l'entreprise.
-     */
-    private String name;
-
-    /**
      * Identifiant dans la BD.
      */
     private String id;
+
+    /**
+     * Nom de l'entreprise.
+     */
+    private String name;
 
     /** */
     public CompanyDTO() {
@@ -19,7 +19,17 @@ public class CompanyDTO {
      * @param companyName
      */
     public CompanyDTO(final String companyName) {
-        this.name = companyName;
+        name = companyName;
+    }
+
+    /**
+     *
+     * @param companyName
+     * @param companyId
+     */
+    public CompanyDTO(final String companyName, final String companyId) {
+        name = companyName;
+        id = companyId;
     }
 
     /**
@@ -27,14 +37,14 @@ public class CompanyDTO {
      * l'identifiant de l'entreprise
      */
     public String getId() {
-        return this.id;
+        return id;
     }
 
     /**
      * @return le nom de l'entreprise
      */
     public String getName() {
-        return this.name;
+        return name;
     }
 
     /**
@@ -42,7 +52,7 @@ public class CompanyDTO {
      * @param companyId
      */
     public void setId(final String companyId) {
-        this.id = companyId;
+        id = companyId;
     }
 
     /**
@@ -50,6 +60,11 @@ public class CompanyDTO {
      * @param companyName
      */
     public void setName(final String companyName) {
-        this.name = companyName;
+        name = companyName;
+    }
+    
+    @Override
+    public String toString() {
+        return name;
     }
 }
