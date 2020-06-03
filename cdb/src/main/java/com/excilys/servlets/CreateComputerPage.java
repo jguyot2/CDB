@@ -90,7 +90,8 @@ public class CreateComputerPage extends HttpServlet {
             }
         }
         // Succès : envoyer sur la page du computer créé
-        
+        // TODO
+        // TODO refacto
     }
 
     private CompanyDTO getCompanyDTOFromParameters(final HttpServletRequest request)
