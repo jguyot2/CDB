@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +14,10 @@ import com.excilys.model.ComputerDTO;
 import com.excilys.model.Page;
 import com.excilys.service.ComputerDTOValidator;
 
+@WebServlet("/page")
 public class ComputerPageServlet extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
     private static final ComputerDTOValidator validator = new ComputerDTOValidator();
 
     /**
@@ -21,35 +25,48 @@ public class ComputerPageServlet extends HttpServlet {
      * @param request la requête, qui peut contenir les params suivants :
      * "pageNumber" représentant le numéro de page courante (Première page par défaut)
      * "pageLength" Représentant le nombre d'éléments par page.
-     * @throws ServletException 
+     * @throws ServletException
      */
-    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
+    @Override
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
+        throws ServletException {
         try {
-            String strPageNumber = request.getParameter("pageNumber");
-            String strPageLength = request.getParameter("pageLength");
-            Page page = new Page();
-            try {
-                if (strPageNumber != null)
-                    page.setPageNumber(Integer.parseInt(strPageNumber));
-                
-                if (strPageLength != null)
-                    page.setPageLength(Integer.parseInt(strPageLength));
-
-                request.setAttribute("pageNumber", page.getPageNumber());
-                request.setAttribute("pageLength", page.getPageLength());
-            } catch (NumberFormatException e) {
-                throw new RuntimeException(); //TODO 
-            }
-            List<ComputerDTO> computerList = validator.fetchWithOffset(page);
-            request.setAttribute("computerList", computerList);
-            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/dashboardPage.jsp");
-
+            Page page = this.getPageFromRequest(request);
+            setAttributesFromPage(request, page);
+            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
             rd.forward(request, response);
-
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw new ServletException(e);
+        } catch (NumberFormatException e) {
+            RequestDispatcher rd = request.getRequestDispatcher("/400");
+            request.setAttribute("errorCause",
+                "the page number or page length parameter is invalid");
+            try {
+                rd.forward(request, response);
+            } catch (IOException e1) {
+                throw new ServletException(e1);
+            }
         }
+    }
+
+    private Page getPageFromRequest(final HttpServletRequest request) throws NumberFormatException {
+        String strPageNumber = request.getParameter("pageNumber");
+        String strPageLength = request.getParameter("pageLength");
+        Page page = new Page();
+        if (strPageNumber != null) {
+            page.setPageNumber(Integer.parseInt(strPageNumber));
+        }
+        if (strPageLength != null) {
+            page.setPageLength(Integer.parseInt(strPageLength));
+        }
+        return page;
+    }
+
+    private void setAttributesFromPage(final HttpServletRequest request, final Page page) {
+        request.setAttribute("pageNumber", page.getPageNumber());
+        request.setAttribute("pageLength", page.getPageLength());
+        List<ComputerDTO> computerList = validator.fetchWithOffset(page);
+        request.setAttribute("computerList", computerList);
     }
 }

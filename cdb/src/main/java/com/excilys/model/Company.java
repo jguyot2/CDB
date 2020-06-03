@@ -1,6 +1,7 @@
 package com.excilys.model;
 
 import java.util.Objects;
+
 /**
  * Classe représentant une entreprise par son nom + son
  * identifiant sur la base
@@ -13,11 +14,12 @@ public class Company {
      * Identifiant dans la BD de l'entreprise.
      */
     private long id = 0;
-    
+
     /**
      * Nom de l'entreprise.
      */
     private final String name;
+
     /**
      * Constructeur d'une entreprise à partir de son nom.
      *

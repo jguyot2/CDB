@@ -7,7 +7,6 @@ import com.excilys.model.Company;
 import com.excilys.model.Computer;
 import com.excilys.model.ComputerDTO;
 
-
 /**
  *
  * @author jguyot2

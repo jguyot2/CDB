@@ -8,8 +8,8 @@ import com.excilys.model.Page;
 import com.excilys.service.ComputerValidator;
 
 public class ComputerPagination {
-    private final static Scanner sc = new Scanner(System.in);
     private final static ComputerValidator computerValidator = new ComputerValidator();
+    private final static Scanner sc = new Scanner(System.in);
 
     public static void paginate() {
         ComputerPagination page = new ComputerPagination();
@@ -24,10 +24,10 @@ public class ComputerPagination {
     private Page page;
 
     private ComputerPagination() {
-        this.page = new Page(computerValidator.getNumberOfElements());
+        page = new Page(computerValidator.getNumberOfElements());
     }
 
-    public boolean executeCommand(PaginationCommand command) {
+    public boolean executeCommand(final PaginationCommand command) {
         switch (command) {
 
         case EXIT:
@@ -48,22 +48,24 @@ public class ComputerPagination {
     PaginationCommand getCommand() {
         printMenu();
         String userEntry = sc.nextLine().trim();
-        if ("n".equals(userEntry))
+        if ("n".equals(userEntry)) {
             return PaginationCommand.NEXT;
-        else if ("p".equals(userEntry))
+        } else if ("p".equals(userEntry)) {
             return PaginationCommand.PREVIOUS;
-        else if ("e".equals(userEntry))
+        } else if ("e".equals(userEntry)) {
             return PaginationCommand.EXIT;
-        else if ("c".equals(userEntry))
+        } else if ("c".equals(userEntry)) {
             return PaginationCommand.CURRENT;
+        }
         System.out.println("Commande invalide.");
         return getCommand();
     }
 
     private void printCurrentPage() {
         List<Computer> computers = computerValidator.fetchWithOffset(page);
-        for (Computer c : computers)
+        for (Computer c : computers) {
             System.out.println(c);
+        }
     }
 
     private void printMenu() {
@@ -76,16 +78,18 @@ public class ComputerPagination {
     }
 
     private void printNextPage() {
-        this.page.goToNextPage();
+        page.goToNextPage();
         List<Computer> computers = computerValidator.fetchWithOffset(page);
-        for (Computer c : computers)
+        for (Computer c : computers) {
             System.out.println(c.getShortDescription());
+        }
     }
 
     private void printPreviousPage() {
-        this.page.goToPreviousPage();
+        page.goToPreviousPage();
         List<Computer> computers = computerValidator.fetchWithOffset(page);
-        for (Computer c : computers)
+        for (Computer c : computers) {
             System.out.println(c);
+        }
     }
 }

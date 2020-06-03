@@ -68,7 +68,6 @@ public final class DateMapper {
         if (sqlDate == null) {
             return Optional.empty();
         }
-        //TODO : vérifier cet appel.
         return Optional.of(LocalDate.of(sqlDate.getYear() + 1900,
             sqlDate.getMonth() + 1, sqlDate.getDate()));
     }

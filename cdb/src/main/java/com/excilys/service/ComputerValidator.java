@@ -69,14 +69,15 @@ public class ComputerValidator implements SearchValidator<Computer> {
      * @param id
      *               l'identifiant de l'ordinateur à supprimer.
      *
-     * @return 1 si l'ordi a été supprimé, 0 sinon.
+     * @return 1 si l'ordi a été supprimé, 0 si l'id n'a pas été trouvé.
+     * -1 s'il y a eu une erreur dans la bd
      */
     public int deleteComputer(final long id) {
         try {
             return computerUpdater.deleteById(id);
         } catch (SQLException e) {
             LOG.error("deleteComputer :" + e.getMessage(), e);
-            return -1; // TODO : gestion propre des erreurs
+            return -1;
         }
     }
 
@@ -195,7 +196,6 @@ public class ComputerValidator implements SearchValidator<Computer> {
             return computerUpdater.updateComputer(newComputervalue);
         } catch (SQLException e) {
             LOG.error("updateComputer :" + e.getMessage(), e);
-            // TODO gestion propre des erreurs ici
             return -1;
         }
     }

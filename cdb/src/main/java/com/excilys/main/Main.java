@@ -1,17 +1,17 @@
 package com.excilys.main;
 
 public final class Main {
+    // TODO : «harmonisation» des noms de méthodes équivalentes dans les enums
+    // computerinstanceproblems/dtocomputerinstanceproblems
     // TODO Documentation des pages JSP
     // TODO les servlets
-    //  -> Servlet modification d'ordi
-    //  -> Servlet création d'ordi
-    //  -> Servlet suppression d'ordi
-    //  -> Servlet lecture paginée
+    // -> Servlet modification d'ordi
+    // -> Servlet création d'ordi
+    // -> Servlet suppression d'ordi
     // TODO automatisation avec Selenium ?
     // TODO Tests JUnit (prévoir la plus grosse couverture possible)
-    // TODO Création d'une classe ComputerDTOValidator séparée de
-    // ComputerValidator, même chose pour Company
-    
+
+
     /**
      * Classe principale.
      *

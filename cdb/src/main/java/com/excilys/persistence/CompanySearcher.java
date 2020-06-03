@@ -110,7 +110,7 @@ public class CompanySearcher implements Searcher<Company> {
 
             stmt.setInt(1, page.getPageLength());
             stmt.setInt(2, page.getOffset());
-            
+
             ResultSet res = stmt.executeQuery();
             while (res.next()) {
                 long companyId = res.getLong("id");

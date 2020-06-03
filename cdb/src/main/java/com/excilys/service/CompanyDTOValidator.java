@@ -11,10 +11,6 @@ import com.excilys.model.Page;
 
 public class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     private CompanyValidator companyValidator = new CompanyValidator();
-    
-    public void setCompanyValidator(CompanyValidator newCompanyValidator) {
-        companyValidator = newCompanyValidator;
-    }
 
     /**
      * Récupération de la liste des valeurs
@@ -24,7 +20,8 @@ public class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     public List<CompanyDTO> fetchList() {
         List<Company> companyList = companyValidator.fetchList();
         return companyList.stream()
-            .map(c -> CompanyMapper.companyToDTO(c).orElseThrow(() -> new IllegalArgumentException() ))
+            .map(c -> CompanyMapper.companyToDTO(c)
+                .orElseThrow(() -> new IllegalArgumentException()))
             .filter(dto -> dto != null)
             .collect(Collectors.toList());
     }
@@ -41,25 +38,24 @@ public class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     @Override
     public Optional<CompanyDTO> findById(final long id) {
         Optional<Company> foundCompanyOpt = companyValidator.findById(id);
-        if(foundCompanyOpt.isPresent()) {
+        if (foundCompanyOpt.isPresent()) {
             return CompanyMapper.companyToDTO(foundCompanyOpt.get());
         } else {
             return Optional.empty();
         }
     }
 
-    
     /**
      * Recherche d'une entreprise dans la BD à partir d'une instance de DTO contenant un
      * champ identifiant rempli.
-     * 
+     *
      * Si l'instance est invalide (le champ n'est pas un chiffre ou l'id n'existe pas),
-     * ajoute une valeur décrivant le problème dans la liste en paramètre. 
+     * ajoute une valeur décrivant le problème dans la liste en paramètre.
      * @param companyDTO instance non-nulle décrivant une entreprise, qui contient un champ
      * id rempli.
-     * @param problems Liste non nulleoù ajouter les valeurs décrivant les 
+     * @param problems Liste non nulleoù ajouter les valeurs décrivant les
      * problèmes s'il y en a
-     * @return un Optional vide si la valeur de l'identifiant est invalide ou nulle, 
+     * @return un Optional vide si la valeur de l'identifiant est invalide ou nulle,
      * Un optional contenant la valeur de l'entreprise dans la base sinon.
      */
     public Optional<Company> getCompanyFromCompanyDTOById(final CompanyDTO companyDTO,
@@ -84,5 +80,9 @@ public class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     @Override
     public int getNumberOfElements() {
         return companyValidator.getNumberOfElements();
+    }
+
+    public void setCompanyValidator(final CompanyValidator newCompanyValidator) {
+        companyValidator = newCompanyValidator;
     }
 }

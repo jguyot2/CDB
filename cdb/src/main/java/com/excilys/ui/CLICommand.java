@@ -3,21 +3,22 @@ package com.excilys.ui;
 /**
  * Enumération énumérant les commandes disponibles pour l'interface en ligne de
  * commande
- * 
+ *
  * @author jguyot2
  *
  */
 public enum CLICommand {
-    LIST_COMPUTERS, LIST_COMPANIES, SHOW_DETAILS, CREATE_COMPUTER, UPDATE_COMPUTER, DELETE_COMPUTER, EXIT,
-    COMPUTER_PAGINATION, COMPANY_PAGINATION;
+    COMPANY_PAGINATION, COMPUTER_PAGINATION, CREATE_COMPUTER, DELETE_COMPUTER, EXIT, LIST_COMPANIES,
+    LIST_COMPUTERS,
+    SHOW_DETAILS, UPDATE_COMPUTER;
 
     /**
      * Fonction associant un entier en paramètre à la commande à exécuter
-     * 
+     *
      * @param input l'entier rentré par l'utilisateur
      * @return la commande à exécuter
      */
-    public static CLICommand getCommandeFromInput(int input) {
+    public static CLICommand getCommandeFromInput(final int input) {
         switch (input) {
         case 0:
             return LIST_COMPUTERS;

@@ -62,7 +62,7 @@ public class CompanyDTO {
     public void setName(final String companyName) {
         name = companyName;
     }
-    
+
     @Override
     public String toString() {
         return name;

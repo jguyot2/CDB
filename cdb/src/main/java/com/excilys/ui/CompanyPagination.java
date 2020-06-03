@@ -8,8 +8,9 @@ import com.excilys.model.Page;
 import com.excilys.service.CompanyValidator;
 
 public class CompanyPagination {
-    private final static Scanner sc = new Scanner(System.in);
     private static CompanyValidator companyPagination = new CompanyValidator();
+    private final static Scanner sc = new Scanner(System.in);
+
     public static void paginate() {
         CompanyPagination page = new CompanyPagination();
         boolean exit = false;
@@ -22,10 +23,26 @@ public class CompanyPagination {
     private Page page;
 
     private CompanyPagination() {
-        this.page = new Page(companyPagination.getNumberOfElements());
+        page = new Page(companyPagination.getNumberOfElements());
     }
 
-    private boolean executeCommand(PaginationCommand command) {
+    PaginationCommand getCommand() {
+        printMenu();
+        String userEntry = sc.nextLine().trim();
+        if ("n".equals(userEntry)) {
+            return PaginationCommand.NEXT;
+        } else if ("p".equals(userEntry)) {
+            return PaginationCommand.PREVIOUS;
+        } else if ("e".equals(userEntry)) {
+            return PaginationCommand.EXIT;
+        } else if ("c".equals(userEntry)) {
+            return PaginationCommand.CURRENT;
+        }
+        System.out.println("Commande invalide.");
+        return getCommand();
+    }
+
+    private boolean executeCommand(final PaginationCommand command) {
         switch (command) {
         case EXIT:
             return true;
@@ -42,25 +59,11 @@ public class CompanyPagination {
         return false;
     }
 
-    PaginationCommand getCommand() {
-        printMenu();
-        String userEntry = sc.nextLine().trim();
-        if ("n".equals(userEntry))
-            return PaginationCommand.NEXT;
-        else if ("p".equals(userEntry))
-            return PaginationCommand.PREVIOUS;
-        else if ("e".equals(userEntry))
-            return PaginationCommand.EXIT;
-        else if ("c".equals(userEntry))
-            return PaginationCommand.CURRENT;
-        System.out.println("Commande invalide.");
-        return getCommand();
-    }
-
     private void printCurrentPage() {
         List<Company> companys = companyPagination.fetchWithOffset(page);
-        for (Company c : companys)
+        for (Company c : companys) {
             System.out.println(c);
+        }
     }
 
     private void printMenu() {
@@ -73,16 +76,18 @@ public class CompanyPagination {
     }
 
     private void printNextPage() {
-        this.page.goToNextPage();
+        page.goToNextPage();
         List<Company> companys = companyPagination.fetchWithOffset(page);
-        for (Company c : companys)
+        for (Company c : companys) {
             System.out.println(c);
+        }
     }
 
     private void printPreviousPage() {
-        this.page.goToPreviousPage();
+        page.goToPreviousPage();
         List<Company> companys = companyPagination.fetchWithOffset(page);
-        for (Company c : companys)
+        for (Company c : companys) {
             System.out.println(c);
+        }
     }
 }

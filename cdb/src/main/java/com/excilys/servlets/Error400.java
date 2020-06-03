@@ -5,28 +5,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/addComputer")
-public class CreateComputerServlet extends HttpServlet {
+/**
+ * TODO : Pê dégager ce servlet là
+ * @author jguyot2
+ *
+ */
+@WebServlet("/400")
+public class Error400 extends HttpServlet {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     /**
-     * @param request
-     * @param response
-     */
+    * @param
+    */
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) {
+
     }
 
-    /**
-     * @param request comprenant les paramètres : computerName, introduced, discontinued,
-     * companyId.
-     * @param response
-     */
     @Override
     public void doPost(final HttpServletRequest request, final HttpServletResponse response) {
+        doGet(request, response);
     }
 }

@@ -2,7 +2,6 @@ package com.excilys.ui;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -18,14 +17,42 @@ import com.excilys.service.InvalidComputerInstanceException;
 /**
  * Interface utilisateur permettant l'interaction avec la BD par ligne de
  * commande
- * 
+ *
  * @author jguyot2
  */
 public class CLInterface {
 
-    private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
-    private static ComputerValidator computerValidator = new ComputerValidator();
     private static CompanyValidator companyValidator = new CompanyValidator();
+    private static ComputerValidator computerValidator = new ComputerValidator();
+    private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
+
+    /**
+     * Fonction affichant un menu et exécutant une commande rentrée par
+     * l'utilisateur
+     */
+    public static void getCommande() {
+        printMenu();
+        String strCommandId = sc.nextLine();
+        int commandId = -1;
+        try {
+            commandId = Integer.parseInt(strCommandId);
+        } catch (NumberFormatException e) {
+            System.out.println("La commande rentrée est invalide");
+        }
+
+        try {
+            CLICommand commandToExecute = CLICommand.getCommandeFromInput(commandId);
+            executeCommand(commandToExecute);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erreur" + e.getMessage());
+        }
+    }
+
+    public static void start() {
+        while (true) {
+            CLInterface.getCommande();
+        }
+    }
 
     private static void createComputerCommand() {
         System.out.println("Entrez le nom de l'ordinateur");
@@ -33,7 +60,8 @@ public class CLInterface {
         String computerName = sc.nextLine().trim();
         System.out.println("Nom entré:'" + computerName + "'");
 
-        System.out.println("Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
+        System.out.println(
+            "Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
         String strCompanyId = sc.nextLine().trim();
         System.out.println("ID entré:" + strCompanyId);
 
@@ -44,47 +72,54 @@ public class CLInterface {
             try {
                 companyId = Long.parseLong(strCompanyId);
             } catch (NumberFormatException e) {
-                System.out.println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
+                System.out
+                    .println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
                 return;
             }
             Optional<Company> companyOpt = companyValidator.findById(companyId);
-            if (companyOpt.isPresent())
+            if (companyOpt.isPresent()) {
                 company = companyOpt.get();
-            else
+            } else {
                 System.out.println("Entreprise non trouvée dans la bd");
+            }
         }
         System.out.println("Company:" + company);
         System.out.println("Entrez la date d'introduction au format DD/MM/YYYY");
         String dateStr = sc.nextLine().trim();
         System.out.println("STR INTRO:" + dateStr);
         LocalDate introduced = null;
-        if (!dateStr.isEmpty())
+        if (!dateStr.isEmpty()) {
             try {
                 Optional<LocalDate> introducedOpt = DateMapper.stringToLocalDate(dateStr);
-                if (introducedOpt.isPresent())
+                if (introducedOpt.isPresent()) {
                     introduced = introducedOpt.get();
-                else
+                } else {
                     return;
+                }
             } catch (DateTimeParseException e) {
                 System.out.println(e.getMessage());
                 System.out.println("Fin de la saisie, car date no parsable");
                 return;
             }
+        }
         System.out.println("Date:" + introduced);
         System.out.println("Entrez la date d'arrêt de production au format DD/MM/YYYY");
         String strDiscontinuation = sc.nextLine().trim();
         LocalDate discontinued = null;
-        if (!strDiscontinuation.isEmpty())
+        if (!strDiscontinuation.isEmpty()) {
             try {
-                Optional<LocalDate> discontinuedOpt = DateMapper.stringToLocalDate(strDiscontinuation);
-                if (!discontinuedOpt.isPresent())
+                Optional<LocalDate> discontinuedOpt =
+                    DateMapper.stringToLocalDate(strDiscontinuation);
+                if (!discontinuedOpt.isPresent()) {
                     return;
+                }
                 discontinued = discontinuedOpt.get();
             } catch (DateTimeParseException e) {
                 System.out.println("Erreur : " + e.getMessage());
                 System.out.println("Date saisie invalide, fin de l'entrée");
                 return;
             }
+        }
 
         Computer createdComputer = new Computer(computerName, company, introduced, discontinued);
         long newIdComputer;
@@ -92,15 +127,17 @@ public class CLInterface {
             newIdComputer = computerValidator.createComputer(createdComputer);
         } catch (InvalidComputerInstanceException e) {
             System.out.println("Instance incorrecte de Computer crée");
-            for (ComputerInstanceProblems problem : e.getProblems())
+            for (ComputerInstanceProblems problem : e.getProblems()) {
                 System.out.println(problem.getExplanation());
+            }
             System.out.println("Fin de la saisie");
             return;
         }
-        if (newIdComputer == 0)
+        if (newIdComputer == 0) {
             System.out.println("L'ordinateur n'a pas été enregistré");
-        else
+        } else {
             System.out.println("L'ordinateur a été créé, et est d'id :" + newIdComputer);
+        }
     }
 
     private static void deleteComputerCommand() {
@@ -114,19 +151,20 @@ public class CLInterface {
             return;
         }
 
-        if (computerValidator.deleteComputer(id) > 0)
+        if (computerValidator.deleteComputer(id) > 0) {
             System.out.println("le PC a été supprimé");
-        else
+        } else {
             System.out.println("L'ordinateur de n'a pas été supprimé dans la BD");
+        }
 
     }
 
     /**
      * Exécution d'une commande donnée en paramètre
-     * 
+     *
      * @param commandToExecute La commande à exécuter
      */
-    private static void executeCommand(CLICommand commandToExecute) {
+    private static void executeCommand(final CLICommand commandToExecute) {
         switch (commandToExecute) {
         case LIST_COMPUTERS:
             listComputersCommand();
@@ -165,28 +203,6 @@ public class CLInterface {
         System.exit(0);
     }
 
-    /**
-     * Fonction affichant un menu et exécutant une commande rentrée par
-     * l'utilisateur
-     */
-    public static void getCommande() {
-        printMenu();
-        String strCommandId = sc.nextLine();
-        int commandId = -1;
-        try {
-            commandId = Integer.parseInt(strCommandId);
-        } catch (NumberFormatException e) {
-            System.out.println("La commande rentrée est invalide");
-        }
-
-        try {
-            CLICommand commandToExecute = CLICommand.getCommandeFromInput(commandId);
-            executeCommand(commandToExecute);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erreur" + e.getMessage());
-        }
-    }
-
     private static void getComputerDetailsCommand() {
         System.out.println("Entrez l'identifiant de l'ordinateur recherché");
         String strComputerId = sc.nextLine();
@@ -209,14 +225,16 @@ public class CLInterface {
 
     private static void listCompaniesCommand() {
         List<Company> companyList = companyValidator.fetchList();
-        for (Company c : companyList)
+        for (Company c : companyList) {
             System.out.println(c);
+        }
     }
 
     private static void listComputersCommand() {
         List<Computer> computerList = computerValidator.fetchList();
-        for (Computer c : computerList)
+        for (Computer c : computerList) {
             System.out.println(c.getShortDescription());
+        }
     }
 
     private static void printMenu() {
@@ -232,11 +250,6 @@ public class CLInterface {
         System.out.println("7:\t Pagination des ordinateurs");
         System.out.println("8:\t Pagination des entreprises");
         System.out.println("--------------------------------");
-    }
-
-    public static void start() {
-        while (true)
-            CLInterface.getCommande();
     }
 
     private static void updateComputerCommand() {
@@ -257,20 +270,22 @@ public class CLInterface {
         }
         Computer foundComputer = optFoundComputer.get();
 
-        System.out.println("Modification du nom: Ne rien entrer pour ne pas changer, entrer un nom sinon");
+        System.out.println(
+            "Modification du nom: Ne rien entrer pour ne pas changer, entrer un nom sinon");
         System.out.println("Nom courant: " + foundComputer.getName());
         String newName = sc.nextLine().trim();
-        if (!newName.isEmpty())
+        if (!newName.isEmpty()) {
             foundComputer.setName(newName);
+        }
         System.out.println("Modification de l'identifiant de l'entreprise: "
-                + "Ne rien entrer pour ne pas changer, entrer 'NONE' pour supprimer l'entreprise");
+            + "Ne rien entrer pour ne pas changer, entrer 'NONE' pour supprimer l'entreprise");
 
         System.out.println("Entreprise courante:" + foundComputer.getManufacturer());
         String newEnterpriseIdStr = sc.nextLine().trim();
-        if (!newEnterpriseIdStr.isEmpty())
-            if (newEnterpriseIdStr.equals("NONE"))
+        if (!newEnterpriseIdStr.isEmpty()) {
+            if (newEnterpriseIdStr.equals("NONE")) {
                 foundComputer.setId(0);
-            else {
+            } else {
                 long idComputer = 0;
                 try {
                     idComputer = Long.parseLong(newEnterpriseIdStr);
@@ -280,52 +295,58 @@ public class CLInterface {
                 }
                 foundComputer.setId(idComputer);
             }
+        }
         System.out.println("Entrez la date d'introduction sous forme `JJ/MM/AAAA`: "
-                + "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
-                + "pour supprimer cette date");
+            + "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
+            + "pour supprimer cette date");
         System.out.println("Date d'intro courante: " + foundComputer.getIntroduction());
 
         String strIntro = sc.nextLine().trim();
-        if (!strIntro.isEmpty())
-            if ("NONE".equals(strIntro))
+        if (!strIntro.isEmpty()) {
+            if ("NONE".equals(strIntro)) {
                 foundComputer.setIntroduction(null);
-            else {
+            } else {
                 Optional<LocalDate> introDateOpt = DateMapper.stringToLocalDate(strIntro);
                 if (!introDateOpt.isPresent()) {
                     return;
                 }
                 foundComputer.setIntroduction(introDateOpt.get());
             }
+        }
 
         System.out.println("Entrez la date de discontinuation sous forme `JJ/MM/AAAA`: "
-                + "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
-                + "pour supprimer cette date");
+            + "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
+            + "pour supprimer cette date");
         System.out.println("Date d'intro courante: " + foundComputer.getDiscontinuation());
 
         String strDiscontinuation = sc.nextLine().trim();
-        if (!strDiscontinuation.isEmpty())
-            if ("NONE".equals(strDiscontinuation))
+        if (!strDiscontinuation.isEmpty()) {
+            if ("NONE".equals(strDiscontinuation)) {
                 foundComputer.setDiscontinuation(null);
-            else {
+            } else {
                 Optional<LocalDate> localDateOpt = DateMapper.stringToLocalDate(strDiscontinuation);
-                if (!localDateOpt.isPresent())
+                if (!localDateOpt.isPresent()) {
                     return;
+                }
 
                 foundComputer.setDiscontinuation(localDateOpt.get());
             }
+        }
         int updated;
         try {
             updated = computerValidator.updateComputer(foundComputer);
         } catch (InvalidComputerInstanceException e) {
             System.out.println("Instance incorrecte de Computer crée");
-            for (ComputerInstanceProblems problem : e.getProblems())
+            for (ComputerInstanceProblems problem : e.getProblems()) {
                 System.out.println(problem.getExplanation());
+            }
             System.out.println("Fin de la saisie");
             return;
         }
         if (updated > 0) {
             System.out.println("La mise a jour a été effectuée");
-        } else
+        } else {
             System.out.println("La mise à jour n'a pas eu lieu");
+        }
     }
 }

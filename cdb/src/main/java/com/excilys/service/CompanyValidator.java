@@ -42,7 +42,7 @@ public class CompanyValidator implements SearchValidator<Company> {
     /**
      * Renvoie la liste des instances présentes dans la BD qui sont contenues dans
      * la page en paramètre.
-     * 
+     *
      * @param page la page à afficher.
      * @return La liste des entreprises présentes dans la page.
      */
@@ -51,8 +51,8 @@ public class CompanyValidator implements SearchValidator<Company> {
         try {
             return companySearcher.fetchWithOffset(page);
         } catch (SQLException e) {
-            LOG.error("Recherche de la liste : Aucun élément retourné");
-            return new ArrayList<>(); // TODO : gestion propre de ce cas
+            LOG.error("Recherche de la liste : Exception reçue. Renvoi d'une liste vide");
+            return new ArrayList<>();
         }
     }
 
@@ -89,7 +89,7 @@ public class CompanyValidator implements SearchValidator<Company> {
 
     /**
      * change l'instance de la couche persistance Uniquement utilisé pour les tests.
-     * 
+     *
      * @param newCompanySearcher la nouvelle
      */
     public void setCompanySearcher(final CompanySearcher newCompanySearcher) {

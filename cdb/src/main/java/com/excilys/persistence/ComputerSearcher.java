@@ -120,7 +120,7 @@ public class ComputerSearcher implements Searcher<Computer> {
         List<Computer> computerList = new ArrayList<>();
         try (PreparedStatement stmt = DBConnection.getConnection()
             .prepareStatement(QUERY_COMPUTER_WITH_OFFSET)) {
-            
+
             stmt.setInt(1, page.getPageLength());
             stmt.setInt(2, page.getOffset());
             ResultSet res = stmt.executeQuery();
@@ -134,7 +134,7 @@ public class ComputerSearcher implements Searcher<Computer> {
 
     /**
      * @return Le nombre d'éléments computer enregistrés dans la
-     *         base
+     *         base.
      */
     @Override
     public int getNumberOfElements() throws SQLException {
@@ -146,7 +146,7 @@ public class ComputerSearcher implements Searcher<Computer> {
             }
         }
         LOG.error("Récupération de la taille : Pas de résultat correct");
-        return -1; // TODO : lancer une exception dans ce cas
+        return -1;
     }
 
     /**
@@ -176,11 +176,11 @@ public class ComputerSearcher implements Searcher<Computer> {
         Optional<LocalDate> introducedDateOpt =
             DateMapper.sqlDateToLocalDate(res.getDate("introduced"));
         LocalDate introduced = introducedDateOpt.orElse(null);
-        
+
         Optional<LocalDate> discontinuedDateOpt =
             DateMapper.sqlDateToLocalDate(res.getDate("discontinued"));
         LocalDate discontinued = discontinuedDateOpt.orElse(null);
-        
+
         String companyName = res.getString("company.name");
         Company company =
             companyName == null ? null : new Company(companyName, res.getLong("company.id"));

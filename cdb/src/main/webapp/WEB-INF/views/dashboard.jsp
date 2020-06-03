@@ -1,9 +1,11 @@
-<!-- 
-
-	Page JSP permettant d'afficher l'ensemble des ordinateurs dans la base en une seule page.
-	paramètres nécessaires.
-		-> ComputerList : List<ComputerDTO>  Correspond à la liste des ordinateurs à afficher 
-
+<!--
+	Affichage d'une page de Computer.
+	paramètres
+		-> computerList : List<ComputerDTO> Une liste d'instances de Computer à afficher.
+ 	paramètres optionnels:
+ 		-> page : page courante.
+ 
+ TODO : mettre des params from/to ?
 -->
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -41,7 +43,7 @@
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer.html">Add
+					<a class="btn btn-success" id="addComputer" href="addComputer">Add
 						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
 						onclick="$.fn.toggleEditMode();">Edit</a>
 				</div>
@@ -78,20 +80,19 @@
 				<!-- Browse attribute computers -->
 				<tbody>
 					<%
-					    Object o = request.getAttribute("computerList");
-					
-					    List<ComputerDTO> computerList = (List<ComputerDTO>) o;
+					    List<ComputerDTO> computerList =
+					        (List<ComputerDTO>) request.getAttribute("computerList");
 					    for (ComputerDTO c : computerList) {
-
 					%>
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
 							class="cb" value="0"></td>
-						<td><a href="editComputer.html" onclick=""> <%=c.getName()%>
+						<td><a href="editComputerl" onclick=""> <%=c.getName()%>
 						</a></td>
 						<td><%=Objects.toString(c.getIntroductionDate(), "")%></td>
 						<td><%=Objects.toString(c.getDiscontinuationDate(), "")%></td>
-						<td><%=Objects.toString(c.getStrEntrepriseId(), "")%></td>
+						<td><%=Objects.toString(
+                    c.getStrEntrepriseId() == null ? "" : c.getStrEntrepriseId().getName(), "")%></td>
 						<%
 						    }
 						%>
@@ -101,6 +102,29 @@
 		</div>
 	</section>
 
+	<footer class="navbar-fixed-bottom">
+		<div class="container text-center">
+			<ul class="pagination">
+				<li><a href="#" aria-label="Previous"> <span
+						aria-hidden="true">&laquo;</span>
+				</a></li>
+				<!-- TODO -->
+				<li><a href="#">1</a></li>
+				<li><a href="#">2</a></li>
+				<li><a href="#">3</a></li>
+				<li><a href="#">4</a></li>
+				<li><a href="#">5</a></li>
+				<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+				</a></li>
+			</ul>
+		</div>
+		<div class="btn-group btn-group-sm pull-right" role="group">
+			<button type="button" class="btn btn-default">10</button>
+			<button type="button" class="btn btn-default">50</button>
+			<button type="button" class="btn btn-default">100</button>
+		</div>
+
+	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/dashboard.js"></script>
