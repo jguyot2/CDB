@@ -19,6 +19,12 @@ public final class ComputerMapper {
      */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerMapper.class);
 
+    public static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer) {
+        Company company =
+            CompanyMapper.companyDTOToCompany(dtoComputer.getStrEntrepriseId()).orElse(null);
+        return computerDTOToComputer(dtoComputer, company);
+    }
+
     /**
      *
      * @param dtoComputer un DTO représentant un ordinateur.
