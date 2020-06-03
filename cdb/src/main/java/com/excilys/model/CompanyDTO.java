@@ -1,6 +1,6 @@
 package com.excilys.model;
 
-public class CompanyDTO {
+public final class CompanyDTO {
     /**
      * Identifiant dans la BD.
      */

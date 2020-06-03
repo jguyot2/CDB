@@ -7,7 +7,7 @@ import com.excilys.service.NotImplementedException;
  *
  * @author jguyot2
  */
-public class Page {
+public final class Page {
     /**
      * Nombre d'éléments par page par défaut.
      */
@@ -19,12 +19,13 @@ public class Page {
     /** */
     private int pageLength = BASE_NUMBER_OF_ELEMENTS_PER_PAGE;
 
-    /** commence à 0 */
+    /** commence à 0. */
     private int pageNumber;
 
     /** */
     private int totalNumberOfElements;
 
+    /** */
     public Page() {
     }
 
@@ -41,8 +42,9 @@ public class Page {
         pageNumber = 0;
     }
 
+    /** */
     public Page(final int numberOfElements, final int pageNumber, final int elementsPerPage) {
-        throw new NotImplementedException();
+        throw new NotImplementedException(); // TODO
     }
 
     /** */

@@ -11,7 +11,6 @@ public final class Main {
     // TODO automatisation avec Selenium ?
     // TODO Tests JUnit (prévoir la plus grosse couverture possible)
 
-
     /**
      * Classe principale.
      *

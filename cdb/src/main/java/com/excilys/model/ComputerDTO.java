@@ -5,7 +5,7 @@ package com.excilys.model;
  *
  * @author jguyot2
  */
-public class ComputerDTO {
+public final class ComputerDTO {
     /**
      * Représentation de la date d'arrêt, au format DD/MM/YYYY.
      */

@@ -4,20 +4,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.mapper.CompanyMapper;
 import com.excilys.model.Company;
 import com.excilys.model.CompanyDTO;
 import com.excilys.model.Page;
 
-public class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
+public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
+    /**
+     */
     private CompanyValidator companyValidator = new CompanyValidator();
+    /**
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(CompanyDTOValidator.class);
 
     /**
-     * Récupération de la liste des valeurs
+     * Récupération de la liste des valeurs.
      * @return La liste des ordinateurs de la base sous forme de DTO
      */
     @Override
     public List<CompanyDTO> fetchList() {
+        LOG.info("DTOCompany : fetchlist");
         List<Company> companyList = companyValidator.fetchList();
         return companyList.stream()
             .map(c -> CompanyMapper.companyToDTO(c)
@@ -37,10 +46,12 @@ public class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
 
     @Override
     public Optional<CompanyDTO> findById(final long id) {
+        LOG.info("Recherche de l'id " + id);
         Optional<Company> foundCompanyOpt = companyValidator.findById(id);
         if (foundCompanyOpt.isPresent()) {
             return CompanyMapper.companyToDTO(foundCompanyOpt.get());
         } else {
+            LOG.debug("id non trouvé");
             return Optional.empty();
         }
     }
@@ -61,6 +72,7 @@ public class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     public Optional<Company> getCompanyFromCompanyDTOById(final CompanyDTO companyDTO,
         final List<ComputerDTOProblems> problems) {
         if (companyDTO == null) {
+            LOG.info("GetCompanyFromCompanyDtoById : param nul");
             return Optional.empty();
         }
         String idRepr = companyDTO.getId();
@@ -68,10 +80,12 @@ public class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
             long researchedId = Long.parseLong(idRepr, 10);
             Optional<Company> foundCompanyOpt = companyValidator.findById(researchedId);
             if (!foundCompanyOpt.isPresent()) {
+                LOG.debug("Entreprise non trouvée dans la base");
                 problems.add(ComputerDTOProblems.INEXISTANT_COMPANY_ID);
             }
             return foundCompanyOpt;
         } catch (NumberFormatException e) {
+            LOG.debug("Identifiant invalide");
             problems.add(ComputerDTOProblems.INVALID_MANUFACURER_ENTRY);
             return Optional.empty();
         }
@@ -82,6 +96,9 @@ public class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
         return companyValidator.getNumberOfElements();
     }
 
+    /**
+     * @param newCompanyValidator
+     */
     public void setCompanyValidator(final CompanyValidator newCompanyValidator) {
         companyValidator = newCompanyValidator;
     }

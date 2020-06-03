@@ -48,6 +48,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      *                                              de
      *                                              computer
      *                                              représentée ne l'est pas.
+     *                                              @return l'identifiant d
      */
     public long addComputerDTO(final ComputerDTO computerDTO)
         throws InvalidComputerDTOException, InvalidComputerInstanceException {
@@ -194,7 +195,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      *
      * @param computerDTO
      * @param problems
-     * @return
+     * @return le nom du DTO
      */
     private String getNameFromDTO(final ComputerDTO computerDTO,
         final List<ComputerDTOProblems> problems) {
