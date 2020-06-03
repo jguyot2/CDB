@@ -1,5 +1,7 @@
 package com.excilys.model;
 
+import java.util.Objects;
+
 public final class CompanyDTO {
     /**
      * Identifiant dans la BD.
@@ -61,6 +63,13 @@ public final class CompanyDTO {
      */
     public void setName(final String companyName) {
         name = companyName;
+    }
+
+    public boolean equals(CompanyDTO other) {
+        if(this == other) return true;
+        
+        return Objects.equals(name, other.name);
+        
     }
 
     @Override
