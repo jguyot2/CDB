@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Fonctions de conversion de formats de date, notamment entre LocalDate
- * et java.sql.Date
+ * et java.sql.Date .
  *
  * @author jguyot2
  */

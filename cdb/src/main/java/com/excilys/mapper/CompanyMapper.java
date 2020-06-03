@@ -2,6 +2,9 @@ package com.excilys.mapper;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.model.Company;
 import com.excilys.model.CompanyDTO;
 
@@ -11,13 +14,18 @@ import com.excilys.model.CompanyDTO;
  *
  */
 public final class CompanyMapper {
+    /**
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(CompanyMapper.class);
 
     /**
+     * Conversion CompanyDTO > Company.
     * @param companyDTO le companyDTO à transmettre
     * @return un optional contenant la valeur associée au DTO.
     */
     public static Optional<Company> companyDTOToCompany(final CompanyDTO companyDTO) {
         if (companyDTO == null) {
+            LOG.info("companyDTO > Company : param nul");
             return Optional.empty();
         }
         String name = null;
@@ -25,17 +33,18 @@ public final class CompanyMapper {
             name = companyDTO.getName();
         }
         long id = 0;
-        if (companyDTO.getId() != null) {
+        if (companyDTO.getId() != null && !"".equals(companyDTO.getId())) {
             try {
                 id = Long.parseLong(companyDTO.getId());
             } catch (NumberFormatException e) {
+                LOG.error("Identifiant du CompanyDTO invalide");
+                return Optional.empty();
             }
         }
         return Optional.of(new Company(name, id));
     }
 
     /**
-     *
      * @param company
      * @return un optional contenant une instance de
      * CompanyDTO correspondant au paramètre, ou un
