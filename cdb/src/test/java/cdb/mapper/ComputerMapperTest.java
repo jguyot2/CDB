@@ -46,7 +46,7 @@ public class ComputerMapperTest {
     }
 
     private static final ComputerDTO[] computerDTOList = {
-            new ComputerDTO("PouetComputer", "42", null, null, null),
+            new ComputerDTO("PouetComputer", "42", companyDTOs[0], null, null),
             new ComputerDTO("Raclette", "12", null, strDates[0], strDates[1]),
             new ComputerDTO("PIZZA", "3", companyDTOs[1], strDates[0], null),
             new ComputerDTO("PATES", "921", null, null, null),
@@ -70,7 +70,7 @@ public class ComputerMapperTest {
     public void dtoToComputerTest() {
         for (int i = 0; i < fakeComputerList.length; ++i) {
             assertEquals(ComputerMapper
-                .computerDTOToComputer(computerDTOList[i]), fakeComputerList[i]);
+                .computerDTOToComputer(computerDTOList[i]).get(), fakeComputerList[i]);
         }
     }
 

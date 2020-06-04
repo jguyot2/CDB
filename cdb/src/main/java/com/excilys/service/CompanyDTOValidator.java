@@ -15,10 +15,10 @@ import com.excilys.model.Page;
 public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     /**
      */
-    private CompanyValidator companyValidator = new CompanyValidator();
+    private static final Logger LOG = LoggerFactory.getLogger(CompanyDTOValidator.class);
     /**
      */
-    private static final Logger LOG = LoggerFactory.getLogger(CompanyDTOValidator.class);
+    private CompanyValidator companyValidator = new CompanyValidator();
 
     /**
      * Récupération de la liste des valeurs.

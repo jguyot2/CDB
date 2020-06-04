@@ -47,9 +47,9 @@ public class CompanyMapperTest {
     @Test
     public void dtoToCompanyTest() {
         for (int i = 0; i < validCompanyDTOs.length; ++i) {
-            assertEquals(CompanyMapper.companyDTOToCompany(validCompanyDTOs[i]), validCompanies[i]);
+            assertEquals(CompanyMapper.companyDTOToCompany(validCompanyDTOs[i]).get(), validCompanies[i]);
             assertEquals(
-                CompanyMapper.companyDTOToCompany(validCompanyDTOs[i]),
+                CompanyMapper.companyDTOToCompany(validCompanyDTOs[i]).get().getId(),
                 validCompanies[i].getId());
         }
     }

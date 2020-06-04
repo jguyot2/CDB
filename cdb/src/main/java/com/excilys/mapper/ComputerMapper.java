@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.model.Company;
+import com.excilys.model.CompanyDTO;
 import com.excilys.model.Computer;
 import com.excilys.model.ComputerDTO;
 
@@ -79,12 +80,12 @@ public final class ComputerMapper {
         String id = c.getId() == 0 ? null : String.valueOf(c.getId());
         Optional<String> dateIntro = DateMapper.localDateToString(c.getIntroduction());
         Optional<String> dateDisco = DateMapper.localDateToString(c.getDiscontinuation());
-
+        Optional<CompanyDTO> company = CompanyMapper.companyToDTO(c.getManufacturer());
         return Optional.of(
             new ComputerDTO(
                 name,
                 id,
-                null,
+                company.orElse(null),
                 dateIntro.orElse(null),
                 dateDisco.orElse(null)));
     }

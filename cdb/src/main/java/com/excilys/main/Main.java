@@ -17,7 +17,7 @@ public final class Main {
      * @param strings paramètres du programme
      */
     public static void main(final String... strings) {
-        com.excilys.ui.CLInterface.start();
+
     }
 
     private Main() {

@@ -16,13 +16,13 @@ import com.excilys.service.NotImplementedException;
 
 @WebServlet("/edit")
 public class EditComputerServlet extends HttpServlet {
+    /** */
+    private static final Logger LOG = LoggerFactory.getLogger(EditComputerServlet.class);
+
     private static final long serialVersionUID = 1L;
 
     /** */
     private ComputerDTOValidator validator = new ComputerDTOValidator();
-
-    /** */
-    private static final Logger LOG = LoggerFactory.getLogger(EditComputerServlet.class);
 
     /**
      * Affiche la page permettant la modification d'un ordinateur de la base (ou l'affichage d'une
