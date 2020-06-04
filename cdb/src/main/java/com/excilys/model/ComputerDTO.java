@@ -27,7 +27,7 @@ public final class ComputerDTO {
      * Représentation de l'identifiant de l'entreprise par son
      * identifiant.
      */
-    private CompanyDTO strEntrepriseId;
+    private CompanyDTO company;
 
     /**
      * Représentation de l'identifiant de l'ordinateur.
@@ -44,10 +44,9 @@ public final class ComputerDTO {
     public ComputerDTO(final String computerName, final String computerId,
         final CompanyDTO companyId, final String strIntroductionDate,
         final String strDiscontinuationDate) {
-        super();
         name = computerName;
         strId = computerId;
-        strEntrepriseId = companyId;
+        company = companyId;
         introductionDate = strIntroductionDate;
         discontinuationDate = strDiscontinuationDate;
     }
@@ -67,7 +66,7 @@ public final class ComputerDTO {
         return Objects.equals(name, other.name)
             && Objects.equals(discontinuationDate, other.discontinuationDate)
             && Objects.equals(introductionDate, other.introductionDate)
-            && Objects.equals(strEntrepriseId, other.strEntrepriseId);
+            && Objects.equals(company, other.company);
 
     }
 
@@ -101,15 +100,15 @@ public final class ComputerDTO {
      * @return la chaîne de caractères correspondant à
      *         l'identifiant de l'entreprise
      */
-    public CompanyDTO getStrEntrepriseId() {
-        return strEntrepriseId;
+    public CompanyDTO getCompany() {
+        return company;
     }
 
     /**
      * @return une chaine représentant l'identifiant de
      *         l'ordinateur dans la base
      */
-    public String getStrId() {
+    public String getId() {
         return strId;
     }
 
@@ -137,14 +136,14 @@ public final class ComputerDTO {
     /**
      * @param newStrEntrepriseId
      */
-    public void setStrEntrepriseId(final CompanyDTO newStrEntrepriseId) {
-        strEntrepriseId = newStrEntrepriseId;
+    public void setCompany(final CompanyDTO newStrEntrepriseId) {
+        company = newStrEntrepriseId;
     }
 
     /**
      * @param newStrId
      */
-    public void setStrId(final String newStrId) {
+    public void setId(final String newStrId) {
         strId = newStrId;
     }
 
@@ -152,6 +151,6 @@ public final class ComputerDTO {
     public String toString() {
         return "(" + name + ", " + introductionDate + "-" + discontinuationDate
             + "\t"
-            + strId + "\t" + strEntrepriseId;
+            + strId + "\t" + company;
     }
 }

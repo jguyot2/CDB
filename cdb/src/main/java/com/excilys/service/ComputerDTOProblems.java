@@ -16,7 +16,7 @@ public enum ComputerDTOProblems {
         message = s;
     }
 
-    public String getMessage() {
+    public String getExplanation() {
         return message;
     }
 }

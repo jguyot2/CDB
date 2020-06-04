@@ -22,7 +22,7 @@ public final class ComputerMapper {
 
     public static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer) {
         Company company =
-            CompanyMapper.companyDTOToCompany(dtoComputer.getStrEntrepriseId()).orElse(null);
+            CompanyMapper.companyDTOToCompany(dtoComputer.getCompany()).orElse(null);
         return computerDTOToComputer(dtoComputer, company);
     }
 
@@ -42,7 +42,7 @@ public final class ComputerMapper {
 
         long id = 0;
         try {
-            id = Long.parseLong(dtoComputer.getStrId());
+            id = Long.parseLong(dtoComputer.getId());
         } catch (NumberFormatException e) {
             LOG.debug("DTO > computer : id du dto incohérent");
             return Optional.empty();

@@ -104,7 +104,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      */
     private Optional<Company> getCompanyFromDTOById(final ComputerDTO computerDTO,
         final List<ComputerDTOProblems> problems) {
-        CompanyDTO companyDTO = computerDTO.getStrEntrepriseId();
+        CompanyDTO companyDTO = computerDTO.getCompany();
         if (companyDTO == null || companyDTO.getId() == null || "0".equals(companyDTO.getId())
             || companyDTO.getId().isEmpty()) {
             return Optional.empty();
@@ -158,7 +158,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      */
     private long getIdFromDTO(final ComputerDTO computerDTO,
         final List<ComputerDTOProblems> problems) {
-        String idRepr = computerDTO.getStrId();
+        String idRepr = computerDTO.getId();
         if (idRepr == null || idRepr.isEmpty() || "0".equals(idRepr)) {
             return 0;
         }

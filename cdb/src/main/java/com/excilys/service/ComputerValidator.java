@@ -101,8 +101,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
     }
 
     /**
-     * @param page
-     *                 la page à afficher
+     * @param page la page à afficher
      *
      * @return la liste des ordinateurs présents sur la page.
      */

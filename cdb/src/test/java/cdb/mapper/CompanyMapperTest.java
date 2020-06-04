@@ -13,7 +13,7 @@ import com.excilys.model.CompanyDTO;
 
 public class CompanyMapperTest {
 
-    // Séparer les entreprises avec ou sans ID ?
+
     private final Company[] validCompanies =
         {
                 new Company("Company1", 1),

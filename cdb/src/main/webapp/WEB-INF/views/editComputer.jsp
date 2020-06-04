@@ -51,7 +51,7 @@
                         <div class="actions pull-right">
                             <input type="submit" value="Edit" class="btn btn-primary">
                             or
-                            <a href="dashboard.html" class="btn btn-default">Cancel</a>
+                            <a href="page" class="btn btn-default">Cancel</a>
                         </div>
                     </form>
                 </div>

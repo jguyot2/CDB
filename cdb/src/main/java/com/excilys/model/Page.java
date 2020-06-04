@@ -1,7 +1,5 @@
 package com.excilys.model;
 
-import com.excilys.service.NotImplementedException;
-
 /**
  * Classe permettant la pagination. Garde l'identifiant
  *
@@ -44,7 +42,9 @@ public final class Page {
 
     /** */
     public Page(final int numberOfElements, final int pageNumber, final int elementsPerPage) {
-        throw new NotImplementedException(); // TODO
+        this.totalNumberOfElements = numberOfElements;
+        this.pageNumber = pageNumber;
+        this.pageLength = elementsPerPage;
     }
 
     /** */

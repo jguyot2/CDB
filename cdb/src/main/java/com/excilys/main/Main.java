@@ -1,11 +1,8 @@
 package com.excilys.main;
 
 public final class Main {
-    // TODO : «harmonisation» des noms de méthodes équivalentes dans les enums
-    // computerinstanceproblems/dtocomputerinstanceproblems
     // TODO Documentation des pages JSP
     // TODO les servlets
-    // -> Servlet modification d'ordi
     // -> Servlet création d'ordi
     // -> Servlet suppression d'ordi
     // TODO automatisation avec Selenium ?
@@ -17,7 +14,7 @@ public final class Main {
      * @param strings paramètres du programme
      */
     public static void main(final String... strings) {
-
+        System.out.println("p");
     }
 
     private Main() {

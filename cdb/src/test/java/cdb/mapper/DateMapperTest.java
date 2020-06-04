@@ -1,10 +1,11 @@
 package cdb.mapper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
-import java.sql.Date;
+
 import org.junit.Test;
 
 import com.excilys.mapper.DateMapper;
@@ -18,7 +19,7 @@ public class DateMapperTest {
             Date.valueOf(localDates[0]), Date.valueOf(localDates[1]), Date.valueOf(localDates[2])
     };
     private static final String[] strDates = {
-            "11/05/1981", "06/02/2021", "29/02/2020"
+            "1981-05-11", "2021-02-06", "2020-02-29"
     };
 
     @Test
