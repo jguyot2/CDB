@@ -1,6 +1,6 @@
-<!-- TODO
+<!--
 	Erreur 500.
-	Paramètres: 
+	Attributs: 
 		"exn" : Exception ayant causé l'erreur.
 -->
 <!DOCTYPE html>

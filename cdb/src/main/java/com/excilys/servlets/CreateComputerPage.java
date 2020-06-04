@@ -27,6 +27,7 @@ public class CreateComputerPage extends HttpServlet {
     private static final CompanyDTOValidator companyValidator = new CompanyDTOValidator();
     private static final ComputerDTOValidator computerValidator = new ComputerDTOValidator();
 
+
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(CreateComputerPage.class);
 
@@ -45,6 +46,8 @@ public class CreateComputerPage extends HttpServlet {
         try {
             LOG.info("Création d'un pc (get)");
             List<CompanyDTO> companyList = companyValidator.fetchList();
+            companyList.add(0, new CompanyDTO("no company", "0")); // legit ?
+
             request.setAttribute("companyList", companyList);
             RequestDispatcher rd = request
                 .getRequestDispatcher("WEB-INF/views/addComputer.jsp");
@@ -67,18 +70,22 @@ public class CreateComputerPage extends HttpServlet {
     @Override
     public void doPost(final HttpServletRequest request, final HttpServletResponse response)
         throws ServletException {
+
         LOG.info("ajout d'un pc dans la base");
         ComputerDTO cpt = getComputerDTOFromParameters(request);
         LOG.info("PC ajouté : " + cpt);
+
         try {
+
             computerValidator.addComputerDTO(cpt);
+
         } catch (InvalidComputerDTOException e) {
             LOG.debug("DTO invalide");
             List<ComputerDTOProblems> problems = e.getProblems();
             StringBuilder problemsDescription = new StringBuilder();
             for (ComputerDTOProblems problem : problems) {
-                problemsDescription.append(problem.getMessage() + "\n");
-                LOG.debug("Cause : " + problem.getMessage());
+                problemsDescription.append(problem.getExplanation() + "\n");
+                LOG.debug("Cause : " + problem.getExplanation());
             }
             RequestDispatcher rd = request.getRequestDispatcher("/400");
             request.setAttribute("errorCause", problemsDescription.toString());
@@ -87,6 +94,8 @@ public class CreateComputerPage extends HttpServlet {
             } catch (IOException e1) {
                 throw new ServletException(e1);
             }
+
+            return;
         } catch (InvalidComputerInstanceException e) {
             LOG.debug("Instance représentée invalide");
             List<ComputerInstanceProblems> problems = e.getProblems();
@@ -97,16 +106,22 @@ public class CreateComputerPage extends HttpServlet {
             }
             RequestDispatcher rd = request.getRequestDispatcher("/400");
             request.setAttribute("errorCause", problemsDescription.toString());
+
             try {
                 rd.forward(request, response);
             } catch (IOException e1) {
                 LOG.error(e.getMessage());
                 throw new ServletException(e1);
             }
+
+            return;
         }
-        // Succès : envoyer sur la page du computer créé
-        // TODO
-        // TODO refacto
+
+        try {
+            response.sendRedirect("page");
+        } catch (IOException e) {
+            throw new ServletException(e);
+        }
     }
 
     private CompanyDTO getCompanyDTOFromParameters(final HttpServletRequest request)
@@ -123,6 +138,7 @@ public class CreateComputerPage extends HttpServlet {
     private ComputerDTO getComputerDTOFromParameters(final HttpServletRequest request)
         throws NumberFormatException {
         String computerName = request.getParameter("computerName");
+        LOG.debug("computer name =" + computerName);
         String introStr = request.getParameter("introduced");
         String discoStr = request.getParameter("discontinued");
         CompanyDTO company = getCompanyDTOFromParameters(request);
