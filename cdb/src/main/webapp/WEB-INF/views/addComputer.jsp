@@ -1,6 +1,6 @@
 <!-- 
 	Page JSP permettant la saisie pour d'ajouter un ordinateur dans la base de donnée 
-	Paramètres nécessaires
+	Attributs nécessaires
 		-> companyList : List<CompanyDTO> la liste des entreprises présentes dans la base
 -->
 
@@ -14,6 +14,41 @@
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="css/main.css" rel="stylesheet" media="screen">
+
+<!--  -->
+
+<script>
+	function validateForm() {
+		var form = document.forms["addComputer"];
+		var name = form["computerName"].value;
+		if (name.trim() == "") {
+			alert("Pas de nom");
+			console.log("no name");
+			return false;
+		}
+		console.log("récup des dates");
+		var introDateStr = form["introduced"].value;
+		var discoDateStr = form["discontinued"].value;
+		var companyId = form["companyId"].value; // Inutile
+		console.log("intro:");
+		console.log(introDateStr);
+		
+		if (introDateStr.trim() != "") {
+			var introDate = Date.parse(introDateStr);
+			if (discoDateStr.trim() != "") {
+				var discoDate = Date.parse(discoDateStr);
+				if (discoDate < introDate) {
+					alert("Arrêt avant début de la production");
+					return false;
+				}
+			}
+		} else if (discoDateStr != "") {
+			alert("La date d'arrêt de production est définie mais pas la date d'intro");
+			return false;
+		}
+		return true;
+	}
+</script>
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
@@ -27,26 +62,27 @@
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>Add Computer</h1>
-					<form action="addComputer" method="POST">
+					<form name="addComputer" action="addComputer" method="POST"
+						onsubmit="return validateForm()">
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
-									placeholder="Computer name">
+									name="computerName" placeholder="Computer name">
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control" id="introduced"
-									placeholder="Introduced date">
+									name="introduced" placeholder="Introduced date">
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
 									type="date" class="form-control" id="discontinued"
-									placeholder="Discontinued date">
+									name="discontinued" placeholder="Discontinued date">
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
-									class="form-control" id="companyId">
+									class="form-control" id="companyId" name="companyId">
 									<%
 									    List<CompanyDTO> companyList = (List<CompanyDTO>) request.getAttribute("companyList");
 									    for (CompanyDTO company : companyList) {

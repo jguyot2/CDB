@@ -1,6 +1,6 @@
 <!--
 	Affichage d'une page de Computer.
-	paramètres
+	Attributs
 		-> computerList : List<ComputerDTO> Une liste d'instances de Computer à afficher.
  	paramètres optionnels:
  		-> page : page courante.
@@ -92,7 +92,7 @@
 						<td><%=Objects.toString(c.getIntroductionDate(), "")%></td>
 						<td><%=Objects.toString(c.getDiscontinuationDate(), "")%></td>
 						<td><%=Objects.toString(
-                    c.getStrEntrepriseId() == null ? "" : c.getStrEntrepriseId().getName(), "")%></td>
+                    c.getCompany() == null ? "" : c.getCompany().getName(), "")%></td>
 						<%
 						    }
 						%>

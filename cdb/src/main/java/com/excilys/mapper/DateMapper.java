@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author jguyot2
  */
 public final class DateMapper {
+    public static final String DATE_PATTERN = "yyyy-MM-dd";
     /**
      *
      */
@@ -47,7 +48,7 @@ public final class DateMapper {
         if (ld == null) {
             return Optional.empty();
         }
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(DATE_PATTERN);
         return Optional.of(ld.format(df));
     }
 
@@ -93,7 +94,7 @@ public final class DateMapper {
         if (dateRepr == null) {
             return Optional.empty();
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
         try {
             LocalDate date = LocalDate.parse(dateRepr, formatter);
             return Optional.of(date);
