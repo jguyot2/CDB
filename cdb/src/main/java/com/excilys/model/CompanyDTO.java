@@ -34,6 +34,21 @@ public final class CompanyDTO {
         id = companyId;
     }
 
+    public boolean equals(final CompanyDTO other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+        return Objects.equals(this.name, other.name);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        return (o instanceof CompanyDTO) ? equals((CompanyDTO) o) : false;
+    }
+
     /**
      * @return une chaîne de caractères représentant
      * l'identifiant de l'entreprise
@@ -63,13 +78,6 @@ public final class CompanyDTO {
      */
     public void setName(final String companyName) {
         name = companyName;
-    }
-
-    public boolean equals(CompanyDTO other) {
-        if(this == other) return true;
-        
-        return Objects.equals(name, other.name);
-        
     }
 
     @Override

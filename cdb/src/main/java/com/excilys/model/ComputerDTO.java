@@ -1,5 +1,7 @@
 package com.excilys.model;
 
+import java.util.Objects;
+
 /**
  * Classe pour la transmission des valeurs.
  *
@@ -48,6 +50,30 @@ public final class ComputerDTO {
         strEntrepriseId = companyId;
         introductionDate = strIntroductionDate;
         discontinuationDate = strDiscontinuationDate;
+    }
+
+    /**
+     *
+     * @param other
+     * @return .
+     */
+    public boolean equals(final ComputerDTO other) {
+        if (this == other) {
+            return true;
+        }
+        if (null == other) {
+            return false;
+        }
+        return Objects.equals(name, other.name)
+            && Objects.equals(discontinuationDate, other.discontinuationDate)
+            && Objects.equals(introductionDate, other.introductionDate)
+            && Objects.equals(strEntrepriseId, other.strEntrepriseId);
+
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        return o instanceof ComputerDTO ? equals((ComputerDTO) o) : false;
     }
 
     /**
@@ -120,5 +146,12 @@ public final class ComputerDTO {
      */
     public void setStrId(final String newStrId) {
         strId = newStrId;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + name + ", " + introductionDate + "-" + discontinuationDate
+            + "\t"
+            + strId + "\t" + strEntrepriseId;
     }
 }

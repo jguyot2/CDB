@@ -55,6 +55,11 @@ public class Company {
         return Objects.equals(name, other.name);
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        return (o instanceof Company) ? equals((Company) o) : false;
+    }
+
     /**
      * Getter de l'attribut identifiant.
      * @return l'identifiant.

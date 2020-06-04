@@ -111,6 +111,15 @@ public class Computer {
             && Objects.equals(manufacturer, other.manufacturer);
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (o instanceof Computer) {
+            return equals((Computer) o);
+        } else {
+            return false;
+        }
+    }
+
     /**
      * @return la date d'interruption de la vente
      */
