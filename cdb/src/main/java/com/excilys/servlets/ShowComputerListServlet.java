@@ -1,5 +1,6 @@
 package com.excilys.servlets;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.model.ComputerDTO;
+import com.excilys.model.Page;
 import com.excilys.service.ComputerDTOValidator;
 
 // TODO : Pê dégager cette classe
@@ -36,15 +38,19 @@ public class ShowComputerListServlet extends HttpServlet {
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
         throws ServletException {
         try {
+
             List<ComputerDTO> computerList = computerDTOValidator.fetchList();
-            // TODO : modifier pour que ça affiche tous les ordis
+
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp");
             request.setAttribute("computerList", computerList);
-            if (computerList == null) {
-                throw new AssertionError();
-            }
-            assert (rd != null);
+            int nbElements = computerDTOValidator.getNumberOfElements();
+            Page p = new Page(nbElements, 0, nbElements);
+            request.setAttribute("page", p);
+            List<Integer> pagesToShow = new ArrayList<>();
+
+            request.setAttribute("pageList", pagesToShow);
             rd.forward(request, response);
+
         } catch (Exception e) {
             LOG.error(e.getMessage());
             throw new ServletException(e);

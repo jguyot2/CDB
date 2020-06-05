@@ -1,16 +1,24 @@
 <!--
 	Affichage d'une page de Computer.
-	Attributs
+	Attributs demandés
 		-> computerList : List<ComputerDTO> Une liste d'instances de Computer à afficher.
- 	paramètres optionnels:
  		-> page : page courante.
- 
+ 		-> pageList : Liste des pages affichables
  TODO : mettre des params from/to ?
 -->
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page
-	import="com.excilys.model.ComputerDTO,java.util.List,java.util.Objects"%>
+	import="com.excilys.model.ComputerDTO,com.excilys.model.Page,java.util.ArrayList,java.util.List,java.util.Objects"%>
+<%
+    List<ComputerDTO> computerList =
+        (List<ComputerDTO>) request.getAttribute("computerList");
+    Page currentPage = (Page) request.getAttribute("page");
+    List<Integer> pageList = (List<Integer>) request.getAttribute("pageList");
+    if (pageList == null) {
+        pageList = new ArrayList<>();
+    }
+%>
 <html>
 <head>
 <title>Computer Database</title>
@@ -31,7 +39,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">121 Computers found</h1>
+			<h1 id="homeTitle"><%= currentPage.getTotalNumberOfElements() %> Computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -80,8 +88,6 @@
 				<!-- Browse attribute computers -->
 				<tbody>
 					<%
-					    List<ComputerDTO> computerList =
-					        (List<ComputerDTO>) request.getAttribute("computerList");
 					    for (ComputerDTO c : computerList) {
 					%>
 					<tr>
@@ -105,16 +111,24 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="#" aria-label="Previous"> <span
-						aria-hidden="true">&laquo;</span>
+				<li><a
+					href="page?pageNumber=<%=Math.max(1, currentPage.getPageNumber() - 1) %>&pageLength=<%=currentPage.getPageLength()%>"
+					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
+
 				<!-- TODO -->
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
-				<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+				<%
+				    for (Integer pageNumber : pageList) {
+				%>
+				<li><a href="page?pageNumber=<%=pageNumber%>&pageLength=
+					<%=currentPage.getPageLength()%>"> <%=pageNumber%>
+				</a></li>
+				<%
+				    }
+				%>
+				<li><a
+					href="page?pageNumber=<%=Math.min(currentPage.getNbOfPages(), currentPage.getPageNumber() + 1)%>&pageLength=<%=currentPage.getPageLength()%>"
+					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 		</div>

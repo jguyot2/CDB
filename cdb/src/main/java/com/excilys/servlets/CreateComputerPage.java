@@ -27,7 +27,6 @@ public class CreateComputerPage extends HttpServlet {
     private static final CompanyDTOValidator companyValidator = new CompanyDTOValidator();
     private static final ComputerDTOValidator computerValidator = new ComputerDTOValidator();
 
-
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(CreateComputerPage.class);
 

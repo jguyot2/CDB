@@ -1,6 +1,7 @@
 package com.excilys.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -32,7 +33,7 @@ public class ComputerPageServlet extends HttpServlet {
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
         throws ServletException {
         try {
-            Page page = this.getPageFromRequest(request);
+            Page page = getPageFromRequest(request);
             setAttributesFromPage(request, page);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
             rd.forward(request, response);
@@ -55,19 +56,30 @@ public class ComputerPageServlet extends HttpServlet {
         String strPageNumber = request.getParameter("pageNumber");
         String strPageLength = request.getParameter("pageLength");
         Page page = new Page();
+        page.setTotalNumberOfElements(validator.getNumberOfElements());
+
         if (strPageNumber != null) {
             page.setPageNumber(Integer.parseInt(strPageNumber));
         }
         if (strPageLength != null) {
             page.setPageLength(Integer.parseInt(strPageLength));
         }
+
         return page;
     }
 
     private void setAttributesFromPage(final HttpServletRequest request, final Page page) {
-        request.setAttribute("pageNumber", page.getPageNumber());
-        request.setAttribute("pageLength", page.getPageLength());
         List<ComputerDTO> computerList = validator.fetchWithOffset(page);
+
+        List<Integer> pagesToShow = new ArrayList<>();
+        int firstPageToShow = Math.max(1, page.getPageNumber() - 2);
+        int nbPages = page.getNbOfPages();
+        for (int i = 0; i < 5 && firstPageToShow + i < nbPages; ++i) {
+            pagesToShow.add(firstPageToShow + i);
+        }
+
+        request.setAttribute("page", page);
         request.setAttribute("computerList", computerList);
+        request.setAttribute("pageList", pagesToShow);
     }
 }
