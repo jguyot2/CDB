@@ -33,23 +33,24 @@ public class CreateComputerPage extends HttpServlet {
     /** */
     private static final long serialVersionUID = 1L;
 
-    /** Affichage de la page de création d'un ordinateur.
+    /**
+     * Affichage de la page de création d'un ordinateur.
+     * 
      * @param request
      * @param response
-     * @throws ServletException Si une exception quelconque s'est produite
-     * pendant l'appel,
+     * @throws ServletException Si une exception quelconque s'est produite pendant
+     *         l'appel,
      */
     @Override
-    public void doGet(final HttpServletRequest request,
-        final HttpServletResponse response) throws ServletException {
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException {
         try {
             LOG.info("Création d'un pc (get)");
             List<CompanyDTO> companyList = companyValidator.fetchList();
             companyList.add(0, new CompanyDTO("no company", "0")); // legit ?
 
             request.setAttribute("companyList", companyList);
-            RequestDispatcher rd = request
-                .getRequestDispatcher("WEB-INF/views/addComputer.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
             rd.forward(request, response);
         } catch (IOException e) {
             LOG.error(e.getMessage());
@@ -59,16 +60,16 @@ public class CreateComputerPage extends HttpServlet {
 
     /**
      * Ajoute un ordinateur dans la base.
-     * @param request requête avec les paramètres suivants:
-     * - computerName : le nom de l'ordinateur
-     * - introduced : Date d'introduction (TODO : Vérifier le format)
-     * - discontinued : Date d'arrêt de production
-     * - companyId : id de l'entreprise
+     * 
+     * @param request requête avec les paramètres suivants: - computerName : le nom
+     *        de l'ordinateur - introduced : Date d'introduction (TODO : Vérifier le
+     *        format) - discontinued : Date d'arrêt de production - companyId : id de
+     *        l'entreprise
      * @param response
      */
     @Override
     public void doPost(final HttpServletRequest request, final HttpServletResponse response)
-        throws ServletException {
+            throws ServletException {
 
         LOG.info("ajout d'un pc dans la base");
         ComputerDTO cpt = getComputerDTOFromParameters(request);
@@ -124,7 +125,7 @@ public class CreateComputerPage extends HttpServlet {
     }
 
     private CompanyDTO getCompanyDTOFromParameters(final HttpServletRequest request)
-        throws NumberFormatException {
+            throws NumberFormatException {
         String companyId = request.getParameter("companyId");
         CompanyDTO company = null;
         if (companyId != null && !"".equals(companyId) && !"0".equals(companyId)) {
@@ -135,7 +136,7 @@ public class CreateComputerPage extends HttpServlet {
     }
 
     private ComputerDTO getComputerDTOFromParameters(final HttpServletRequest request)
-        throws NumberFormatException {
+            throws NumberFormatException {
         String computerName = request.getParameter("computerName");
         LOG.debug("computer name =" + computerName);
         String introStr = request.getParameter("introduced");

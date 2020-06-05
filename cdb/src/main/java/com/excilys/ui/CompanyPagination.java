@@ -26,6 +26,23 @@ public class CompanyPagination {
         this.page = new Page(companyPagination.getNumberOfElements());
     }
 
+    private boolean executeCommand(final PaginationCommand command) {
+        switch (command) {
+            case EXIT:
+                return true;
+            case NEXT:
+                printNextPage();
+                return false;
+            case PREVIOUS:
+                printPreviousPage();
+                return false;
+            case CURRENT:
+                printCurrentPage();
+                return false;
+        }
+        return false;
+    }
+
     PaginationCommand getCommand() {
         printMenu();
         String userEntry = sc.nextLine().trim();
@@ -40,23 +57,6 @@ public class CompanyPagination {
         }
         System.out.println("Commande invalide.");
         return getCommand();
-    }
-
-    private boolean executeCommand(final PaginationCommand command) {
-        switch (command) {
-        case EXIT:
-            return true;
-        case NEXT:
-            printNextPage();
-            return false;
-        case PREVIOUS:
-            printPreviousPage();
-            return false;
-        case CURRENT:
-            printCurrentPage();
-            return false;
-        }
-        return false;
     }
 
     private void printCurrentPage() {

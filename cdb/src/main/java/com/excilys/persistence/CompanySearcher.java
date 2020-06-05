@@ -15,8 +15,7 @@ import com.excilys.model.Company;
 import com.excilys.model.Page;
 
 /**
- * Classe utilisée pour les requêtes associées à la table
- * company.
+ * Classe utilisée pour les requêtes associées à la table company.
  *
  * @author jguyot2
  */
@@ -26,8 +25,7 @@ public class CompanySearcher implements Searcher<Company> {
     /** */
     private static final String REQUEST_COMPANIES = "SELECT name, id FROM company";
     /**  */
-    private static final String REQUEST_COMPANIES_OFFSET =
-        "SELECT name, id FROM company ORDER BY id LIMIT ? OFFSET ?";
+    private static final String REQUEST_COMPANIES_OFFSET = "SELECT name, id FROM company ORDER BY id LIMIT ? OFFSET ?";
     /** */
     private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM company";
     /** */
@@ -38,23 +36,17 @@ public class CompanySearcher implements Searcher<Company> {
     }
 
     /**
-     * Recherche une compagnie par son identifiant dans la base
-     * de données.
+     * Recherche une compagnie par son identifiant dans la base de données.
      *
-     * @param searchedId
-     *                       l'identifiant de l'entreprise
-     *                       identifiée
+     * @param searchedId l'identifiant de l'entreprise identifiée
      *
-     * @return Optional.empty() si aucune entreprise n'a été
-     *         trouvée, ou une
-     *         instance de Optional contenant l'entreprise
-     *         trouvée sinon
+     * @return Optional.empty() si aucune entreprise n'a été trouvée, ou une instance
+     *         de Optional contenant l'entreprise trouvée sinon
      */
     @Override
     public Optional<Company> fetchById(final long searchedId) throws SQLException {
         LOG.info("Recherche d'un pc avec l'id " + searchedId);
-        try (PreparedStatement stmt = DBConnection.getConnection()
-            .prepareStatement(REQUEST_SEARCH_BY_ID)) {
+        try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(REQUEST_SEARCH_BY_ID)) {
             stmt.setLong(1, searchedId);
             ResultSet res = stmt.executeQuery();
             if (!res.next()) {
@@ -69,12 +61,10 @@ public class CompanySearcher implements Searcher<Company> {
     }
 
     /**
-     * Rend la liste des entreprises présentes dans la base de
-     * données, sous la
-     * forme d'instance de Company.
+     * Rend la liste des entreprises présentes dans la base de données, sous la forme
+     * d'instance de Company.
      *
-     * @return La liste des entreprises présentes dans la base
-     *         de données
+     * @return La liste des entreprises présentes dans la base de données
      */
     @Override
     public List<Company> fetchList() throws SQLException {
@@ -84,7 +74,7 @@ public class CompanySearcher implements Searcher<Company> {
             while (res.next()) {
                 long id = res.getLong("id");
                 String name = res.getString("name");
-                assert (name != null);
+                assert name != null;
                 companiesList.add(new Company(name, id));
             }
         }
@@ -92,21 +82,17 @@ public class CompanySearcher implements Searcher<Company> {
     }
 
     /**
-     * Recherche une "page" de la liste des entreprises, en
-     * fonction du paramètre.
+     * Recherche une "page" de la liste des entreprises, en fonction du paramètre.
      *
-     * @param page
-     *                 la page à afficher
+     * @param page la page à afficher
      *
-     * @return la liste des Company de la BD comprises dans la
-     *         page
-     *         en paramètre
+     * @return la liste des Company de la BD comprises dans la page en paramètre
      */
     @Override
     public List<Company> fetchWithOffset(final Page page) throws SQLException {
         List<Company> ret = new ArrayList<>();
         try (PreparedStatement stmt = DBConnection.getConnection()
-            .prepareStatement(REQUEST_COMPANIES_OFFSET)) {
+                .prepareStatement(REQUEST_COMPANIES_OFFSET)) {
 
             stmt.setInt(1, page.getPageLength());
             stmt.setInt(2, page.getOffset());

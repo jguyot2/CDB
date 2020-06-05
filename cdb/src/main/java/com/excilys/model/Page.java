@@ -25,8 +25,7 @@ public final class Page {
     }
 
     /**
-     * Création d'une page sur un ensemble contenant <limit>
-     * éléments.
+     * Création d'une page sur un ensemble contenant <limit> éléments.
      *
      * @param numberOfElements
      */
@@ -49,13 +48,12 @@ public final class Page {
     }
 
     public int getNbOfPages() {
-        return (totalNumberOfElements / this.pageLength)
-            + (totalNumberOfElements % this.pageLength == 0 ? 0 : 1);
+        return totalNumberOfElements / this.pageLength
+                + (totalNumberOfElements % this.pageLength == 0 ? 0 : 1);
     }
 
     /**
-     * @return le nombre d'éléments avant le premier élément
-     * de la page courante.
+     * @return le nombre d'éléments avant le premier élément de la page courante.
      */
     public int getOffset() {
         return this.pageNumber * this.pageLength;
@@ -101,8 +99,7 @@ public final class Page {
      */
     public void setPageLength(final int newElementsPerPage) {
         this.pageLength = newElementsPerPage;
-        this.pageNumber =
-            this.getNbOfPages() < this.pageNumber ? this.getNbOfPages() - 1 : this.pageNumber;
+        this.pageNumber = this.getNbOfPages() < this.pageNumber ? this.getNbOfPages() - 1 : this.pageNumber;
     }
 
     public void setPageNumber(final int pageNumber) {

@@ -10,6 +10,7 @@ import com.excilys.model.CompanyDTO;
 
 /**
  * Classe permettant le mapping entre Company et CompanyDTO.
+ * 
  * @author jguyot2
  *
  */
@@ -20,9 +21,10 @@ public final class CompanyMapper {
 
     /**
      * Conversion CompanyDTO > Company.
-    * @param companyDTO le companyDTO à transmettre
-    * @return un optional contenant la valeur associée au DTO.
-    */
+     * 
+     * @param companyDTO le companyDTO à transmettre
+     * @return un optional contenant la valeur associée au DTO.
+     */
     public static Optional<Company> companyDTOToCompany(final CompanyDTO companyDTO) {
         if (companyDTO == null) {
             LOG.info("companyDTO > Company : param nul");
@@ -46,9 +48,8 @@ public final class CompanyMapper {
 
     /**
      * @param company
-     * @return un optional contenant une instance de
-     * CompanyDTO correspondant au paramètre, ou un
-     * optional vide sinon
+     * @return un optional contenant une instance de CompanyDTO correspondant au
+     *         paramètre, ou un optional vide sinon
      */
     public static Optional<CompanyDTO> companyToDTO(final Company company) {
         if (company == null) {

@@ -30,17 +30,17 @@ public class ComputerPagination {
     public boolean executeCommand(final PaginationCommand command) {
         switch (command) {
 
-        case EXIT:
-            return true;
-        case NEXT:
-            printNextPage();
-            return false;
-        case PREVIOUS:
-            printPreviousPage();
-            return false;
-        case CURRENT:
-            printCurrentPage();
-            return false;
+            case EXIT:
+                return true;
+            case NEXT:
+                printNextPage();
+                return false;
+            case PREVIOUS:
+                printPreviousPage();
+                return false;
+            case CURRENT:
+                printCurrentPage();
+                return false;
         }
         return false;
     }

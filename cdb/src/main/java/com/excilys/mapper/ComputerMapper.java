@@ -21,8 +21,7 @@ public final class ComputerMapper {
     private static final Logger LOG = LoggerFactory.getLogger(ComputerMapper.class);
 
     public static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer) {
-        Company company =
-            CompanyMapper.companyDTOToCompany(dtoComputer.getCompany()).orElse(null);
+        Company company = CompanyMapper.companyDTOToCompany(dtoComputer.getCompany()).orElse(null);
         return computerDTOToComputer(dtoComputer, company);
     }
 
@@ -33,7 +32,7 @@ public final class ComputerMapper {
      * @return l'ordinateur associé.
      */
     public static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer,
-        final Company company) {
+            final Company company) {
 
         if (dtoComputer == null) {
             LOG.info("DTO > computer : param nul");
@@ -55,15 +54,11 @@ public final class ComputerMapper {
         }
 
         Optional<LocalDate> intro = DateMapper.stringToLocalDate(dtoComputer.getIntroductionDate());
-        Optional<LocalDate> discontinuation =
-            DateMapper.stringToLocalDate(dtoComputer.getDiscontinuationDate());
+        Optional<LocalDate> discontinuation = DateMapper
+                .stringToLocalDate(dtoComputer.getDiscontinuationDate());
 
         return Optional.of(
-            new Computer(computerName,
-                company,
-                intro.orElse(null),
-                discontinuation.orElse(null),
-                id));
+                new Computer(computerName, company, intro.orElse(null), discontinuation.orElse(null), id));
     }
 
     /**
@@ -81,12 +76,7 @@ public final class ComputerMapper {
         Optional<String> dateIntro = DateMapper.localDateToString(c.getIntroduction());
         Optional<String> dateDisco = DateMapper.localDateToString(c.getDiscontinuation());
         Optional<CompanyDTO> company = CompanyMapper.companyToDTO(c.getManufacturer());
-        return Optional.of(
-            new ComputerDTO(
-                name,
-                id,
-                company.orElse(null),
-                dateIntro.orElse(null),
+        return Optional.of(new ComputerDTO(name, id, company.orElse(null), dateIntro.orElse(null),
                 dateDisco.orElse(null)));
     }
 

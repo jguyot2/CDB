@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Fonctions de conversion de formats de date, notamment entre LocalDate
- * et java.sql.Date .
+ * Fonctions de conversion de formats de date, notamment entre LocalDate et
+ * java.sql.Date .
  *
  * @author jguyot2
  */
@@ -23,8 +23,9 @@ public final class DateMapper {
     private static final Logger LOG = LoggerFactory.getLogger(DateMapper.class);
 
     /**
-     * Fonction de conversion d'une instance de LocalDate vers une
-     * instance de java.sql.Date équivalente.
+     * Fonction de conversion d'une instance de LocalDate vers une instance de
+     * java.sql.Date équivalente.
+     * 
      * @param localDate la date à laquelle appliquer la conversion
      * @return une instance de java.sql.date correspondante
      */
@@ -39,9 +40,10 @@ public final class DateMapper {
 
     /**
      * Conversion d'une date en chaîne de caractères au format JJ/MM/YYYY.
+     * 
      * @param ld la date à convertir
-     * @return une instance de String correspondant à la date en paramètre
-     * au format JJ/MM/AAAA
+     * @return une instance de String correspondant à la date en paramètre au format
+     *         JJ/MM/AAAA
      */
     public static Optional<String> localDateToString(final LocalDate ld) {
         LOG.info("Conversion de localDate vers Str. localDate = " + ld);
@@ -53,15 +55,12 @@ public final class DateMapper {
     }
 
     /**
-     * Fonction de conversion d'une instance de
-     * java.sql.Date
-     * vers une instance de
+     * Fonction de conversion d'une instance de java.sql.Date vers une instance de
      * LocalDate.
      *
      * @param sqlDate
      *
-     * @return La date LocalDate correspondant à la
-     *         date passée en param
+     * @return La date LocalDate correspondant à la date passée en param
      */
     @SuppressWarnings("deprecation")
     public static Optional<LocalDate> sqlDateToLocalDate(final Date sqlDate) {
@@ -69,25 +68,18 @@ public final class DateMapper {
         if (sqlDate == null) {
             return Optional.empty();
         }
-        return Optional.of(LocalDate.of(sqlDate.getYear() + 1900,
-            sqlDate.getMonth() + 1, sqlDate.getDate()));
+        return Optional.of(LocalDate.of(sqlDate.getYear() + 1900, sqlDate.getMonth() + 1, sqlDate.getDate()));
     }
 
     /**
-     * Convertit une date au format 'jj/mm/aaaa' en
-     * une instance de LocalDate.
+     * Convertit une date au format 'jj/mm/aaaa' en une instance de LocalDate.
      *
-     * @param dateRepr une chaine de caractères
-     *                 correspondant à une date au
-     *                 format
-     *                 'jj/mm/aaaa'
+     * @param dateRepr une chaine de caractères correspondant à une date au format
+     *        'jj/mm/aaaa'
      *
-     * @return une instance de LocalDate
-     *         correspondante
+     * @return une instance de LocalDate correspondante
      *
-     * @throws DateTimeParseException si la date n'est
-     *                                pas au bon
-     *                                format
+     * @throws DateTimeParseException si la date n'est pas au bon format
      */
     public static Optional<LocalDate> stringToLocalDate(final String dateRepr) {
         LOG.info("Conversion de str vers localDate. str =" + dateRepr);

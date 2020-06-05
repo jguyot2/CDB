@@ -25,33 +25,15 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      *
      * @return
      *
-     * @throws InvalidComputerDTOException
-     *                                              Si les
-     *                                              champs du
-     *                                              DTO ne sont
-     *                                              pas des
-     *                                              valeurs
-     *                                              valides.
-     *                                              Contient des
-     *                                              valeurs de
-     *                                              ComputerDTOProblems
-     *                                              décrivant
-     *                                              les valeurs
-     *                                              posant
-     *                                              problème
-     * @throws InvalidComputerInstanceException
-     *                                              si les
-     *                                              champs sont
-     *                                              valides,
-     *                                              mais que
-     *                                              l'instance
-     *                                              de
-     *                                              computer
-     *                                              représentée ne l'est pas.
-     *                                              @return l'identifiant d
+     * @throws InvalidComputerDTOException Si les champs du DTO ne sont pas des
+     *         valeurs valides. Contient des valeurs de ComputerDTOProblems décrivant
+     *         les valeurs posant problème
+     * @throws InvalidComputerInstanceException si les champs sont valides, mais que
+     *         l'instance de computer représentée ne l'est pas.
+     * @return l'identifiant d
      */
     public long addComputerDTO(final ComputerDTO computerDTO)
-        throws InvalidComputerDTOException, InvalidComputerInstanceException {
+            throws InvalidComputerDTOException, InvalidComputerInstanceException {
 
         List<ComputerDTOProblems> dtoInstanceProblems = new ArrayList<>();
         Computer computer = getComputerFromDTOWithoutCompany(computerDTO, dtoInstanceProblems);
@@ -65,18 +47,14 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
 
     @Override
     public List<ComputerDTO> fetchList() {
-        return this.computerValidator.fetchList().stream()
-            .map(c -> ComputerMapper.computerToDTO(c)
-                .get())
-            .collect(Collectors.toList());
+        return this.computerValidator.fetchList().stream().map(c -> ComputerMapper.computerToDTO(c).get())
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ComputerDTO> fetchWithOffset(final Page page) {
         return this.computerValidator.fetchWithOffset(page).stream()
-            .map(c -> ComputerMapper.computerToDTO(c)
-                .get())
-            .collect(Collectors.toList());
+                .map(c -> ComputerMapper.computerToDTO(c).get()).collect(Collectors.toList());
     }
 
     @Override
@@ -89,24 +67,20 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
         }
     }
 
-    @Override
-    public int getNumberOfElements() {
-        return this.computerValidator.getNumberOfElements();
-    }
-
     /**
-     * Récupération d'une instance de Company à partir de l'identifiant compris dans le DTO
-     * en paramètre.
+     * Récupération d'une instance de Company à partir de l'identifiant compris dans
+     * le DTO en paramètre.
+     * 
      * @param computerDTO le dto de l'ordinateur
      * @param problems liste de problèmes, mise à jour à la rencontre d'une erreur
-     * @return Un optional contenant une Company si l'id correspond à une entreprise, ou
-     * vide s'il n'y a aucune entreprise associée
+     * @return Un optional contenant une Company si l'id correspond à une entreprise,
+     *         ou vide s'il n'y a aucune entreprise associée
      */
     private Optional<Company> getCompanyFromDTOById(final ComputerDTO computerDTO,
-        final List<ComputerDTOProblems> problems) {
+            final List<ComputerDTOProblems> problems) {
         CompanyDTO companyDTO = computerDTO.getCompany();
         if (companyDTO == null || companyDTO.getId() == null || "0".equals(companyDTO.getId())
-            || companyDTO.getId().isEmpty()) {
+                || companyDTO.getId().isEmpty()) {
             return Optional.empty();
         }
         return this.companyDTOValidator.getCompanyFromCompanyDTOById(companyDTO, problems);
@@ -114,13 +88,14 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
 
     /**
      * Récupération d'un ordi sans l'attribut "company" à partir d'un DTO.
+     * 
      * @param computerDTO le DTO à "convertir"
-     * @param problems L'éventuelle liste des problèmes associés à la DTO en paramètre,
-     * à laquelle on ajoute des éléments s'il y a des problèmes.
+     * @param problems L'éventuelle liste des problèmes associés à la DTO en
+     *        paramètre, à laquelle on ajoute des éléments s'il y a des problèmes.
      * @return Une instance de Computer associée à computerDTO
      */
     private Computer getComputerFromDTOWithoutCompany(final ComputerDTO computerDTO,
-        final List<ComputerDTOProblems> problems) {
+            final List<ComputerDTOProblems> problems) {
 
         String name = getNameFromDTO(computerDTO, problems);
         LocalDate intro = getIntroductionDateFromDTO(computerDTO, problems).orElse(null);
@@ -136,14 +111,12 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      * @return
      */
     private Optional<LocalDate> getDiscontinuationDateFromDTO(final ComputerDTO computerDTO,
-        final List<ComputerDTOProblems> problems) {
+            final List<ComputerDTOProblems> problems) {
 
-        if (computerDTO.getDiscontinuationDate() == null
-            || computerDTO.getDiscontinuationDate().isEmpty()) {
+        if (computerDTO.getDiscontinuationDate() == null || computerDTO.getDiscontinuationDate().isEmpty()) {
             return Optional.empty();
         }
-        Optional<LocalDate> discoOpt = DateMapper
-            .stringToLocalDate(computerDTO.getDiscontinuationDate());
+        Optional<LocalDate> discoOpt = DateMapper.stringToLocalDate(computerDTO.getDiscontinuationDate());
         if (!discoOpt.isPresent()) {
             problems.add(ComputerDTOProblems.INVALID_DATE_DISCO);
         }
@@ -156,8 +129,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      * @param problems
      * @return
      */
-    private long getIdFromDTO(final ComputerDTO computerDTO,
-        final List<ComputerDTOProblems> problems) {
+    private long getIdFromDTO(final ComputerDTO computerDTO, final List<ComputerDTOProblems> problems) {
         String idRepr = computerDTO.getId();
         if (idRepr == null || idRepr.isEmpty() || "0".equals(idRepr)) {
             return 0;
@@ -177,14 +149,12 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      * @return
      */
     private Optional<LocalDate> getIntroductionDateFromDTO(final ComputerDTO computerDTO,
-        final List<ComputerDTOProblems> problems) {
+            final List<ComputerDTOProblems> problems) {
 
-        if (computerDTO.getIntroductionDate() == null
-            || computerDTO.getIntroductionDate().isEmpty()) {
+        if (computerDTO.getIntroductionDate() == null || computerDTO.getIntroductionDate().isEmpty()) {
             return Optional.empty();
         }
-        Optional<LocalDate> introOpt =
-            DateMapper.stringToLocalDate(computerDTO.getIntroductionDate());
+        Optional<LocalDate> introOpt = DateMapper.stringToLocalDate(computerDTO.getIntroductionDate());
         if (!introOpt.isPresent()) {
             problems.add(ComputerDTOProblems.INVALID_DATE_INTRO);
         }
@@ -197,13 +167,17 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      * @param problems
      * @return le nom du DTO
      */
-    private String getNameFromDTO(final ComputerDTO computerDTO,
-        final List<ComputerDTOProblems> problems) {
+    private String getNameFromDTO(final ComputerDTO computerDTO, final List<ComputerDTOProblems> problems) {
 
         if (computerDTO.getName() == null || computerDTO.getName().isEmpty()) {
             problems.add(ComputerDTOProblems.INVALID_NAME);
             return "";
         }
         return computerDTO.getName();
+    }
+
+    @Override
+    public int getNumberOfElements() {
+        return this.computerValidator.getNumberOfElements();
     }
 }

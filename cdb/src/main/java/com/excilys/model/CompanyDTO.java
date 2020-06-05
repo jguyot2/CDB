@@ -46,12 +46,11 @@ public final class CompanyDTO {
 
     @Override
     public boolean equals(final Object o) {
-        return (o instanceof CompanyDTO) ? equals((CompanyDTO) o) : false;
+        return o instanceof CompanyDTO ? equals((CompanyDTO) o) : false;
     }
 
     /**
-     * @return une chaîne de caractères représentant
-     * l'identifiant de l'entreprise
+     * @return une chaîne de caractères représentant l'identifiant de l'entreprise
      */
     public String getId() {
         return this.id;
@@ -66,6 +65,7 @@ public final class CompanyDTO {
 
     /**
      * setter pour la représentation de l'identifiant.
+     * 
      * @param companyId
      */
     public void setId(final String companyId) {
@@ -74,6 +74,7 @@ public final class CompanyDTO {
 
     /**
      * Setter pour le nom de l'entreprise.
+     * 
      * @param companyName
      */
     public void setName(final String companyName) {

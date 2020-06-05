@@ -40,8 +40,8 @@ public class CompanyValidator implements SearchValidator<Company> {
     }
 
     /**
-     * Renvoie la liste des instances présentes dans la BD qui sont contenues dans
-     * la page en paramètre.
+     * Renvoie la liste des instances présentes dans la BD qui sont contenues dans la
+     * page en paramètre.
      *
      * @param page la page à afficher.
      * @return La liste des entreprises présentes dans la page.
@@ -75,7 +75,8 @@ public class CompanyValidator implements SearchValidator<Company> {
     }
 
     /**
-     * @return le nombre d'entreprises dans la BD, ou -1 s'il y a eu un problème dans la base
+     * @return le nombre d'entreprises dans la BD, ou -1 s'il y a eu un problème dans
+     *         la base
      */
     @Override
     public int getNumberOfElements() {

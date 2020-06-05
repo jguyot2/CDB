@@ -31,12 +31,13 @@ public class ShowComputerListServlet extends HttpServlet {
 
     /**
      * Envoi de la page affichant tous les ordinateurs.
+     * 
      * @param request
      * @param response
      */
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
-        throws ServletException {
+            throws ServletException {
         try {
 
             List<ComputerDTO> computerList = computerDTOValidator.fetchList();

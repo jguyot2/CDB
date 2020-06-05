@@ -24,14 +24,15 @@ public class ComputerPageServlet extends HttpServlet {
 
     /**
      * Envoi d'une page représentant un certain nombre d'instances de Computer
+     * 
      * @param request la requête, qui peut contenir les params suivants :
-     * "pageNumber" représentant le numéro de page courante (Première page par défaut)
-     * "pageLength" Représentant le nombre d'éléments par page.
+     *        "pageNumber" représentant le numéro de page courante (Première page par
+     *        défaut) "pageLength" Représentant le nombre d'éléments par page.
      * @throws ServletException
      */
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
-        throws ServletException {
+            throws ServletException {
         try {
             Page page = getPageFromRequest(request);
             setAttributesFromPage(request, page);
@@ -42,8 +43,7 @@ public class ComputerPageServlet extends HttpServlet {
             throw new ServletException(e);
         } catch (NumberFormatException e) {
             RequestDispatcher rd = request.getRequestDispatcher("/400");
-            request.setAttribute("errorCause",
-                "the page number or page length parameter is invalid");
+            request.setAttribute("errorCause", "the page number or page length parameter is invalid");
             try {
                 rd.forward(request, response);
             } catch (IOException e1) {

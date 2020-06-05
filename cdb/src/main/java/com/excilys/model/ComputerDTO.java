@@ -9,6 +9,11 @@ import java.util.Objects;
  */
 public final class ComputerDTO {
     /**
+     * Représentation de l'identifiant de l'entreprise par son identifiant.
+     */
+    private CompanyDTO company;
+
+    /**
      * Représentation de la date d'arrêt, au format DD/MM/YYYY.
      */
     private String discontinuationDate;
@@ -24,12 +29,6 @@ public final class ComputerDTO {
     private String name;
 
     /**
-     * Représentation de l'identifiant de l'entreprise par son
-     * identifiant.
-     */
-    private CompanyDTO company;
-
-    /**
      * Représentation de l'identifiant de l'ordinateur.
      */
     private String strId;
@@ -41,9 +40,8 @@ public final class ComputerDTO {
      * @param strIntroductionDate
      * @param strDiscontinuationDate
      */
-    public ComputerDTO(final String computerName, final String computerId,
-        final CompanyDTO companyId, final String strIntroductionDate,
-        final String strDiscontinuationDate) {
+    public ComputerDTO(final String computerName, final String computerId, final CompanyDTO companyId,
+            final String strIntroductionDate, final String strDiscontinuationDate) {
         this.name = computerName;
         this.strId = computerId;
         this.company = companyId;
@@ -64,9 +62,9 @@ public final class ComputerDTO {
             return false;
         }
         return Objects.equals(this.name, other.name)
-            && Objects.equals(this.discontinuationDate, other.discontinuationDate)
-            && Objects.equals(this.introductionDate, other.introductionDate)
-            && Objects.equals(this.company, other.company);
+                && Objects.equals(this.discontinuationDate, other.discontinuationDate)
+                && Objects.equals(this.introductionDate, other.introductionDate)
+                && Objects.equals(this.company, other.company);
 
     }
 
@@ -76,8 +74,7 @@ public final class ComputerDTO {
     }
 
     /**
-     * @return la chaîne de caractères correspondant à
-     *         l'identifiant de l'entreprise
+     * @return la chaîne de caractères correspondant à l'identifiant de l'entreprise
      */
     public CompanyDTO getCompany() {
         return this.company;
@@ -91,8 +88,7 @@ public final class ComputerDTO {
     }
 
     /**
-     * @return une chaine représentant l'identifiant de
-     *         l'ordinateur dans la base
+     * @return une chaine représentant l'identifiant de l'ordinateur dans la base
      */
     public String getId() {
         return this.strId;
@@ -149,8 +145,7 @@ public final class ComputerDTO {
 
     @Override
     public String toString() {
-        return "(" + this.name + ", " + this.introductionDate + "-" + this.discontinuationDate
-            + "\t"
-            + this.strId + "\t" + this.company;
+        return "(" + this.name + ", " + this.introductionDate + "-" + this.discontinuationDate + "\t"
+                + this.strId + "\t" + this.company;
     }
 }

@@ -14,16 +14,14 @@ import com.excilys.mapper.DateMapper;
 import com.excilys.model.Computer;
 
 /**
- * Classe permettant d'effectuer des mises à jour sur les
- * éléments de la table
+ * Classe permettant d'effectuer des mises à jour sur les éléments de la table
  * computer à partir d'instances de Computer.
  *
  * @author jguyot2
  */
 public class ComputerUpdater {
     /** */
-    private static final String CREATE_COMPUTER =
-        "INSERT INTO computer(name, introduced, discontinued, company_id) "
+    private static final String CREATE_COMPUTER = "INSERT INTO computer(name, introduced, discontinued, company_id) "
             + "VALUES (?, ?, ?, ?)";
 
     /** */
@@ -34,37 +32,31 @@ public class ComputerUpdater {
 
     /** */
     private static final String UPDATE_COMPUTER = "UPDATE computer SET "
-        + "name = ?, introduced = ?, discontinued = ?, company_id = ?" + "WHERE id = ?";
+            + "name = ?, introduced = ?, discontinued = ?, company_id = ?" + "WHERE id = ?";
 
     /** */
     public ComputerUpdater() {
     }
 
     /**
-     * Ajoute une ligne à la base de données, correspondant
-     * à l'instance de Computer donnée en paramètre.
+     * Ajoute une ligne à la base de données, correspondant à l'instance de Computer
+     * donnée en paramètre.
      *
-     * @param newComputer
-     *                        l'instance de Computer à
-     *                        enregistrer
-     *                        dans la base de
-     *                        données
+     * @param newComputer l'instance de Computer à enregistrer dans la base de
+     *        données
      *
-     * @return le nouvel identifiant correspondant à la
-     *         ligne ajoutée si l'ajout a réussi, 0 si l'ajout a
-     *         raté
+     * @return le nouvel identifiant correspondant à la ligne ajoutée si l'ajout a
+     *         réussi, 0 si l'ajout a raté
      */
     public long createComputer(final Computer newComputer) throws SQLException {
         LOG.info("Création de l'instance de Computer suivante: " + newComputer);
         try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(CREATE_COMPUTER,
-            Statement.RETURN_GENERATED_KEYS)) {
+                Statement.RETURN_GENERATED_KEYS)) {
 
-            Optional<Date> introDateOpt =
-                DateMapper.localDateToSqlDate(newComputer.getIntroduction());
+            Optional<Date> introDateOpt = DateMapper.localDateToSqlDate(newComputer.getIntroduction());
             Date introDate = introDateOpt.orElse(null);
 
-            Optional<Date> discoDateOpt = DateMapper
-                .localDateToSqlDate(newComputer.getDiscontinuation());
+            Optional<Date> discoDateOpt = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation());
             Date discoDate = discoDateOpt.orElse(null);
 
             stmt.setString(1, newComputer.getName());
@@ -88,11 +80,9 @@ public class ComputerUpdater {
     }
 
     /**
-     * Suppression d'un ordinateur de la base à partir de son
-     * identifiant.
+     * Suppression d'un ordinateur de la base à partir de son identifiant.
      *
-     * @param id
-     *               l'identifiant
+     * @param id l'identifiant
      *
      * @return 1 si la suppression est effective, 0 sinon
      *
@@ -100,37 +90,29 @@ public class ComputerUpdater {
      */
     public int deleteById(final long id) throws SQLException {
         LOG.info("Suppression du pc d'id : " + id);
-        try (PreparedStatement stmt = DBConnection.getConnection()
-            .prepareStatement(DELETE_COMPUTER)) {
+        try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(DELETE_COMPUTER)) {
             stmt.setLong(1, id);
             return stmt.executeUpdate();
         }
     }
 
     /**
-     * Met à jour l'ordinateur en paramètre, dont l'identifiant
-     * est intialisé.
+     * Met à jour l'ordinateur en paramètre, dont l'identifiant est intialisé.
      *
-     * @param newComputer
-     *                        la valeur de l'ordinateur à
-     *                        laquelle
-     *                        on veut faire
-     *                        correspondre la ligne
+     * @param newComputer la valeur de l'ordinateur à laquelle on veut faire
+     *        correspondre la ligne
      *
      * @return 1 si la mise à jour a eu lieu, 0 sinon
      */
     public int updateComputer(final Computer newComputer) throws SQLException {
         LOG.info("Mise à jour de l'instance de Computer suivante " + newComputer.toString());
 
-        try (PreparedStatement stmt =
-            DBConnection.getConnection().prepareStatement(UPDATE_COMPUTER)) {
+        try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(UPDATE_COMPUTER)) {
 
             long id = newComputer.getId();
-            Optional<Date> introDateOpt =
-                DateMapper.localDateToSqlDate(newComputer.getIntroduction());
+            Optional<Date> introDateOpt = DateMapper.localDateToSqlDate(newComputer.getIntroduction());
             Date introDate = introDateOpt.orElse(null);
-            Optional<Date> discoDateOpt =
-                DateMapper.localDateToSqlDate(newComputer.getDiscontinuation());
+            Optional<Date> discoDateOpt = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation());
             Date discoDate = discoDateOpt.orElse(null);
 
             stmt.setLong(1, id);

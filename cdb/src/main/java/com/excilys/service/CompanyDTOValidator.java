@@ -22,6 +22,7 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
 
     /**
      * Récupération de la liste des valeurs.
+     * 
      * @return La liste des ordinateurs de la base sous forme de DTO
      */
     @Override
@@ -29,19 +30,15 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
         LOG.info("DTOCompany : fetchlist");
         List<Company> companyList = this.companyValidator.fetchList();
         return companyList.stream()
-            .map(c -> CompanyMapper.companyToDTO(c)
-                .orElseThrow(() -> new IllegalArgumentException()))
-            .filter(dto -> dto != null)
-            .collect(Collectors.toList());
+                .map(c -> CompanyMapper.companyToDTO(c).orElseThrow(() -> new IllegalArgumentException()))
+                .filter(dto -> dto != null).collect(Collectors.toList());
     }
 
     @Override
     public List<CompanyDTO> fetchWithOffset(final Page page) {
         List<Company> companyList = this.companyValidator.fetchWithOffset(page);
-        return companyList.stream()
-            .map(c -> CompanyMapper.companyToDTO(c).orElse(null))
-            .filter(dto -> dto != null)
-            .collect(Collectors.toList());
+        return companyList.stream().map(c -> CompanyMapper.companyToDTO(c).orElse(null))
+                .filter(dto -> dto != null).collect(Collectors.toList());
     }
 
     @Override
@@ -57,20 +54,21 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     }
 
     /**
-     * Recherche d'une entreprise dans la BD à partir d'une instance de DTO contenant un
-     * champ identifiant rempli.
+     * Recherche d'une entreprise dans la BD à partir d'une instance de DTO contenant
+     * un champ identifiant rempli.
      *
-     * Si l'instance est invalide (le champ n'est pas un chiffre ou l'id n'existe pas),
-     * ajoute une valeur décrivant le problème dans la liste en paramètre.
-     * @param companyDTO instance non-nulle décrivant une entreprise, qui contient un champ
-     * id rempli.
-     * @param problems Liste non nulleoù ajouter les valeurs décrivant les
-     * problèmes s'il y en a
+     * Si l'instance est invalide (le champ n'est pas un chiffre ou l'id n'existe
+     * pas), ajoute une valeur décrivant le problème dans la liste en paramètre.
+     * 
+     * @param companyDTO instance non-nulle décrivant une entreprise, qui contient un
+     *        champ id rempli.
+     * @param problems Liste non nulleoù ajouter les valeurs décrivant les problèmes
+     *        s'il y en a
      * @return un Optional vide si la valeur de l'identifiant est invalide ou nulle,
-     * Un optional contenant la valeur de l'entreprise dans la base sinon.
+     *         Un optional contenant la valeur de l'entreprise dans la base sinon.
      */
     public Optional<Company> getCompanyFromCompanyDTOById(final CompanyDTO companyDTO,
-        final List<ComputerDTOProblems> problems) {
+            final List<ComputerDTOProblems> problems) {
         if (companyDTO == null) {
             LOG.info("GetCompanyFromCompanyDtoById : param nul");
             return Optional.empty();

@@ -20,13 +20,13 @@ public class Error400 extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
-    * @param request comprendant un attribut optionnel
-    * "errorCause", qui décrit la cause de l'erreur.
+     * @param request comprendant un attribut optionnel "errorCause", qui décrit la
+     *        cause de l'erreur.
      * @throws ServletException
-    */
+     */
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
-        throws ServletException {
+            throws ServletException {
         String errorCause = (String) request.getAttribute("errorCause");
         if (errorCause != null) {
             String htmlErrorCause = errorCause.replace("\n", "<br/>");
@@ -45,7 +45,7 @@ public class Error400 extends HttpServlet {
 
     @Override
     public void doPost(final HttpServletRequest request, final HttpServletResponse response)
-        throws ServletException {
+            throws ServletException {
         doGet(request, response);
     }
 }

@@ -3,8 +3,7 @@ package com.excilys.model;
 import java.util.Objects;
 
 /**
- * Classe représentant une entreprise par son nom + son
- * identifiant sur la base
+ * Classe représentant une entreprise par son nom + son identifiant sur la base
  * de données.
  *
  * @author jguyot2
@@ -33,7 +32,7 @@ public class Company {
      * Constructeur avec indication de l'identifiant.
      *
      * @param companyName le nom de l'entreprise
-     * @param companyId   l'identifiant de l'entreprise
+     * @param companyId l'identifiant de l'entreprise
      */
     public Company(final String companyName, final long companyId) {
         this.name = companyName;
@@ -42,6 +41,7 @@ public class Company {
 
     /**
      * Test d'égalité, uniquement à partir des noms des entreprises.
+     * 
      * @param other
      * @return true si les deux entreprises sont égales, false sinon
      */
@@ -57,11 +57,12 @@ public class Company {
 
     @Override
     public boolean equals(final Object o) {
-        return (o instanceof Company) ? equals((Company) o) : false;
+        return o instanceof Company ? equals((Company) o) : false;
     }
 
     /**
      * Getter de l'attribut identifiant.
+     * 
      * @return l'identifiant.
      */
     public long getId() {
@@ -70,6 +71,7 @@ public class Company {
 
     /**
      * Getter du nom.
+     * 
      * @return Le nom de l'entreprise
      */
     public String getName() {
@@ -78,6 +80,7 @@ public class Company {
 
     /**
      * Setter de l'identifiant.
+     * 
      * @param companyId l'identifiant.
      */
     public void setId(final long companyId) {

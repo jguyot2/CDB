@@ -21,8 +21,8 @@ public class Error404 extends HttpServlet {
      * @throws ServletException
      */
     @Override
-    public void doGet(final HttpServletRequest request,
-        final HttpServletResponse response) throws ServletException {
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException {
         try {
             response.sendRedirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
         } catch (IOException e) {

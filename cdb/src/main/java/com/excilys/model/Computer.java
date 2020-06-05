@@ -58,10 +58,8 @@ public class Computer {
      * @param computerIntroduction
      * @param computerDiscontinuation
      */
-    public Computer(final String computerName,
-        final Company computerManufacturer,
-        final LocalDate computerIntroduction,
-        final LocalDate computerDiscontinuation) {
+    public Computer(final String computerName, final Company computerManufacturer,
+            final LocalDate computerIntroduction, final LocalDate computerDiscontinuation) {
 
         this.name = computerName;
         this.manufacturer = computerManufacturer;
@@ -77,10 +75,9 @@ public class Computer {
      * @param computerDiscontinuation
      * @param computerId
      */
-    public Computer(final String computerName,
-        final Company computerManufacturer,
-        final LocalDate computerIntroduction,
-        final LocalDate computerDiscontinuation, final long computerId) {
+    public Computer(final String computerName, final Company computerManufacturer,
+            final LocalDate computerIntroduction, final LocalDate computerDiscontinuation,
+            final long computerId) {
 
         this.name = computerName;
         this.manufacturer = computerManufacturer;
@@ -94,8 +91,7 @@ public class Computer {
      *
      * @param other
      *
-     * @return true si les deux instances sont égales, false
-     *         sinon.
+     * @return true si les deux instances sont égales, false sinon.
      */
     public boolean equals(final Computer other) {
         if (other == null) {
@@ -105,10 +101,9 @@ public class Computer {
 
             return true;
         }
-        return Objects.equals(this.name, other.name)
-            && Objects.equals(this.introduction, other.introduction)
-            && Objects.equals(this.discontinuation, other.discontinuation)
-            && Objects.equals(this.manufacturer, other.manufacturer);
+        return Objects.equals(this.name, other.name) && Objects.equals(this.introduction, other.introduction)
+                && Objects.equals(this.discontinuation, other.discontinuation)
+                && Objects.equals(this.manufacturer, other.manufacturer);
     }
 
     @Override
@@ -129,9 +124,8 @@ public class Computer {
     }
 
     /**
-     * @return l'identifiant du Computer dans la Bd associée, ou
-     *         0 si
-     *         l'identifiant n'a pas été défini
+     * @return l'identifiant du Computer dans la Bd associée, ou 0 si l'identifiant
+     *         n'a pas été défini
      */
     public long getId() {
         return this.id;
@@ -161,8 +155,7 @@ public class Computer {
     /**
      * Décrit brièvement une instance de Computer.
      *
-     * @return une chaîne contenant l'id et le nom de l'instance
-     *         courante
+     * @return une chaîne contenant l'id et le nom de l'instance courante
      */
     public String getShortDescription() {
         return "(" + this.id + ", " + this.name + " )";

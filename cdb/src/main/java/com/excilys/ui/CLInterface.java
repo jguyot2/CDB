@@ -26,34 +26,6 @@ public class CLInterface {
     private static ComputerValidator computerValidator = new ComputerValidator();
     private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
 
-    /**
-     * Fonction affichant un menu et exécutant une commande rentrée par
-     * l'utilisateur
-     */
-    public static void getCommande() {
-        printMenu();
-        String strCommandId = sc.nextLine();
-        int commandId = -1;
-        try {
-            commandId = Integer.parseInt(strCommandId);
-        } catch (NumberFormatException e) {
-            System.out.println("La commande rentrée est invalide");
-        }
-
-        try {
-            CLICommand commandToExecute = CLICommand.getCommandeFromInput(commandId);
-            executeCommand(commandToExecute);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erreur" + e.getMessage());
-        }
-    }
-
-    public static void start() {
-        while (true) {
-            CLInterface.getCommande();
-        }
-    }
-
     private static void createComputerCommand() {
         System.out.println("Entrez le nom de l'ordinateur");
 
@@ -61,7 +33,7 @@ public class CLInterface {
         System.out.println("Nom entré:'" + computerName + "'");
 
         System.out.println(
-            "Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
+                "Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
         String strCompanyId = sc.nextLine().trim();
         System.out.println("ID entré:" + strCompanyId);
 
@@ -72,8 +44,7 @@ public class CLInterface {
             try {
                 companyId = Long.parseLong(strCompanyId);
             } catch (NumberFormatException e) {
-                System.out
-                    .println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
+                System.out.println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
                 return;
             }
             Optional<Company> companyOpt = companyValidator.findById(companyId);
@@ -108,8 +79,7 @@ public class CLInterface {
         LocalDate discontinued = null;
         if (!strDiscontinuation.isEmpty()) {
             try {
-                Optional<LocalDate> discontinuedOpt =
-                    DateMapper.stringToLocalDate(strDiscontinuation);
+                Optional<LocalDate> discontinuedOpt = DateMapper.stringToLocalDate(strDiscontinuation);
                 if (!discontinuedOpt.isPresent()) {
                     return;
                 }
@@ -166,41 +136,62 @@ public class CLInterface {
      */
     private static void executeCommand(final CLICommand commandToExecute) {
         switch (commandToExecute) {
-        case LIST_COMPUTERS:
-            listComputersCommand();
-            break;
-        case LIST_COMPANIES:
-            listCompaniesCommand();
-            break;
-        case SHOW_DETAILS:
-            getComputerDetailsCommand();
-            break;
-        case CREATE_COMPUTER:
-            createComputerCommand();
-            break;
-        case UPDATE_COMPUTER:
-            updateComputerCommand();
-            break;
-        case DELETE_COMPUTER:
-            deleteComputerCommand();
-            break;
-        case EXIT:
-            exitCommand();
-            break;
-        case COMPUTER_PAGINATION:
-            ComputerPagination.paginate();
-            break;
-        case COMPANY_PAGINATION:
-            CompanyPagination.paginate();
-            break;
-        default:
-            throw new RuntimeException("arrivée dans le default alors que c'est pas censé arriver");
+            case LIST_COMPUTERS:
+                listComputersCommand();
+                break;
+            case LIST_COMPANIES:
+                listCompaniesCommand();
+                break;
+            case SHOW_DETAILS:
+                getComputerDetailsCommand();
+                break;
+            case CREATE_COMPUTER:
+                createComputerCommand();
+                break;
+            case UPDATE_COMPUTER:
+                updateComputerCommand();
+                break;
+            case DELETE_COMPUTER:
+                deleteComputerCommand();
+                break;
+            case EXIT:
+                exitCommand();
+                break;
+            case COMPUTER_PAGINATION:
+                ComputerPagination.paginate();
+                break;
+            case COMPANY_PAGINATION:
+                CompanyPagination.paginate();
+                break;
+            default:
+                throw new RuntimeException("arrivée dans le default alors que c'est pas censé arriver");
         }
     }
 
     private static void exitCommand() {
         System.out.println("Sortie du programme");
         System.exit(0);
+    }
+
+    /**
+     * Fonction affichant un menu et exécutant une commande rentrée par l'utilisateur
+     */
+    public static void getCommande() {
+        printMenu();
+        String strCommandId = sc.nextLine();
+        int commandId = -1;
+        try {
+            commandId = Integer.parseInt(strCommandId);
+        } catch (NumberFormatException e) {
+            System.out.println("La commande rentrée est invalide");
+        }
+
+        try {
+            CLICommand commandToExecute = CLICommand.getCommandeFromInput(commandId);
+            executeCommand(commandToExecute);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erreur" + e.getMessage());
+        }
     }
 
     private static void getComputerDetailsCommand() {
@@ -252,6 +243,12 @@ public class CLInterface {
         System.out.println("--------------------------------");
     }
 
+    public static void start() {
+        while (true) {
+            CLInterface.getCommande();
+        }
+    }
+
     private static void updateComputerCommand() {
         System.out.println("Entrez l'id de l'ordinateur à modifier");
         String idString = sc.nextLine().trim();
@@ -270,15 +267,14 @@ public class CLInterface {
         }
         Computer foundComputer = optFoundComputer.get();
 
-        System.out.println(
-            "Modification du nom: Ne rien entrer pour ne pas changer, entrer un nom sinon");
+        System.out.println("Modification du nom: Ne rien entrer pour ne pas changer, entrer un nom sinon");
         System.out.println("Nom courant: " + foundComputer.getName());
         String newName = sc.nextLine().trim();
         if (!newName.isEmpty()) {
             foundComputer.setName(newName);
         }
         System.out.println("Modification de l'identifiant de l'entreprise: "
-            + "Ne rien entrer pour ne pas changer, entrer 'NONE' pour supprimer l'entreprise");
+                + "Ne rien entrer pour ne pas changer, entrer 'NONE' pour supprimer l'entreprise");
 
         System.out.println("Entreprise courante:" + foundComputer.getManufacturer());
         String newEnterpriseIdStr = sc.nextLine().trim();
@@ -297,8 +293,8 @@ public class CLInterface {
             }
         }
         System.out.println("Entrez la date d'introduction sous forme `JJ/MM/AAAA`: "
-            + "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
-            + "pour supprimer cette date");
+                + "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
+                + "pour supprimer cette date");
         System.out.println("Date d'intro courante: " + foundComputer.getIntroduction());
 
         String strIntro = sc.nextLine().trim();
@@ -315,8 +311,8 @@ public class CLInterface {
         }
 
         System.out.println("Entrez la date de discontinuation sous forme `JJ/MM/AAAA`: "
-            + "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
-            + "pour supprimer cette date");
+                + "Ne rien entrer pour laisser la date d'intro telle quelle, entrer `NONE` "
+                + "pour supprimer cette date");
         System.out.println("Date d'intro courante: " + foundComputer.getDiscontinuation());
 
         String strDiscontinuation = sc.nextLine().trim();
