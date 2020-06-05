@@ -15,21 +15,18 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="page"> Application -
-				Computer Database </a>
+			<a class="navbar-brand" href="page"> Application - Computer
+				Database </a>
 		</div>
 	</header>
 
 	<section id="main">
 		<div class="container">
 			<div class="alert alert-danger">
-				Error 400: Bad request ! <br />
-				<%
-				    String cause = (String) request.getAttribute("errorCause");
-				    if (cause != null) {
-				        out.println(cause);
-				    }
-				%>
+			<img src="<%=request.getContextPath() %>/imgs/400.jpeg" alt="error 400">
+			<br/>	Cause(s) :
+				<% String cause = (String) request.getAttribute("errorCause"); %>
+				<%= (cause == null ? "" : cause) %>
 				<br />
 			</div>
 		</div>
