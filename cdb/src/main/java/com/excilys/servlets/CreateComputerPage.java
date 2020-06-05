@@ -124,6 +124,11 @@ public class CreateComputerPage extends HttpServlet {
         }
     }
 
+    private void invalidComputerCase(HttpServletRequest request, HttpServletResponse response,
+            InvalidComputerInstanceException exnInvalidComputer) throws IOException {
+        
+    }
+
     private CompanyDTO getCompanyDTOFromParameters(final HttpServletRequest request)
             throws NumberFormatException {
         String companyId = request.getParameter("companyId");

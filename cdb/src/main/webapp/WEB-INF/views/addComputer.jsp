@@ -16,6 +16,8 @@
 <link href="css/main.css" rel="stylesheet" media="screen">
 
 <!--  -->
+<%  List<CompanyDTO> companyList = (List<CompanyDTO>) request.getAttribute("companyList"); %>
+
 
 <script>
 	function validateForm() {
@@ -84,7 +86,7 @@
 								<label for="companyId">Company</label> <select
 									class="form-control" id="companyId" name="companyId">
 									<%
-									    List<CompanyDTO> companyList = (List<CompanyDTO>) request.getAttribute("companyList");
+									   
 									    for (CompanyDTO company : companyList) {
 									%>
 									<option value="<%=company.getId()%>"><%=company.getName()%></option>

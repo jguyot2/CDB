@@ -13,9 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebServlet("/400")
-public class Error400 extends HttpServlet {
+public class Error400Servlet extends HttpServlet {
     /** */
-    private static final Logger LOG = LoggerFactory.getLogger(Error400.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Error400Servlet.class);
 
     private static final long serialVersionUID = 1L;
 

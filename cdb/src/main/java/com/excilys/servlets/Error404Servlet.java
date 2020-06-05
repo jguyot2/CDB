@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/404")
-public class Error404 extends HttpServlet {
+public class Error404Servlet extends HttpServlet {
     /** */
     private static final long serialVersionUID = 1L;
 
