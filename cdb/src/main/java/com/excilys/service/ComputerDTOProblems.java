@@ -13,10 +13,10 @@ public enum ComputerDTOProblems {
     private String message;
 
     private ComputerDTOProblems(final String s) {
-        message = s;
+        this.message = s;
     }
 
     public String getExplanation() {
-        return message;
+        return this.message;
     }
 }

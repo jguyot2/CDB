@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>POUET</title>
+	<title>POUET</title>
 </head>
 
 <body>

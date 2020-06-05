@@ -27,7 +27,7 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     @Override
     public List<CompanyDTO> fetchList() {
         LOG.info("DTOCompany : fetchlist");
-        List<Company> companyList = companyValidator.fetchList();
+        List<Company> companyList = this.companyValidator.fetchList();
         return companyList.stream()
             .map(c -> CompanyMapper.companyToDTO(c)
                 .orElseThrow(() -> new IllegalArgumentException()))
@@ -37,7 +37,7 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
 
     @Override
     public List<CompanyDTO> fetchWithOffset(final Page page) {
-        List<Company> companyList = companyValidator.fetchWithOffset(page);
+        List<Company> companyList = this.companyValidator.fetchWithOffset(page);
         return companyList.stream()
             .map(c -> CompanyMapper.companyToDTO(c).orElse(null))
             .filter(dto -> dto != null)
@@ -47,7 +47,7 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     @Override
     public Optional<CompanyDTO> findById(final long id) {
         LOG.info("Recherche de l'id " + id);
-        Optional<Company> foundCompanyOpt = companyValidator.findById(id);
+        Optional<Company> foundCompanyOpt = this.companyValidator.findById(id);
         if (foundCompanyOpt.isPresent()) {
             return CompanyMapper.companyToDTO(foundCompanyOpt.get());
         } else {
@@ -78,7 +78,7 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
         String idRepr = companyDTO.getId();
         try {
             long researchedId = Long.parseLong(idRepr, 10);
-            Optional<Company> foundCompanyOpt = companyValidator.findById(researchedId);
+            Optional<Company> foundCompanyOpt = this.companyValidator.findById(researchedId);
             if (!foundCompanyOpt.isPresent()) {
                 LOG.debug("Entreprise non trouvée dans la base");
                 problems.add(ComputerDTOProblems.INEXISTANT_COMPANY_ID);
@@ -93,13 +93,13 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
 
     @Override
     public int getNumberOfElements() {
-        return companyValidator.getNumberOfElements();
+        return this.companyValidator.getNumberOfElements();
     }
 
     /**
      * @param newCompanyValidator
      */
     public void setCompanyValidator(final CompanyValidator newCompanyValidator) {
-        companyValidator = newCompanyValidator;
+        this.companyValidator = newCompanyValidator;
     }
 }

@@ -21,7 +21,7 @@ public final class CompanyDTO {
      * @param companyName
      */
     public CompanyDTO(final String companyName) {
-        name = companyName;
+        this.name = companyName;
     }
 
     /**
@@ -30,8 +30,8 @@ public final class CompanyDTO {
      * @param companyId
      */
     public CompanyDTO(final String companyName, final String companyId) {
-        name = companyName;
-        id = companyId;
+        this.name = companyName;
+        this.id = companyId;
     }
 
     public boolean equals(final CompanyDTO other) {
@@ -54,14 +54,14 @@ public final class CompanyDTO {
      * l'identifiant de l'entreprise
      */
     public String getId() {
-        return id;
+        return this.id;
     }
 
     /**
      * @return le nom de l'entreprise
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -69,7 +69,7 @@ public final class CompanyDTO {
      * @param companyId
      */
     public void setId(final String companyId) {
-        id = companyId;
+        this.id = companyId;
     }
 
     /**
@@ -77,11 +77,11 @@ public final class CompanyDTO {
      * @param companyName
      */
     public void setName(final String companyName) {
-        name = companyName;
+        this.name = companyName;
     }
 
     @Override
     public String toString() {
-        return name;
+        return this.name;
     }
 }

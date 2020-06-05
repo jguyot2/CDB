@@ -19,13 +19,13 @@ public enum ComputerInstanceProblems {
      * @param errorExplanation explication de l'erreur
      */
     ComputerInstanceProblems(final String errorExplanation) {
-        explanation = errorExplanation;
+        this.explanation = errorExplanation;
     }
 
     /**
      * @return l'explication associée à l'erreur
      */
     public String getExplanation() {
-        return explanation;
+        return this.explanation;
     }
 }

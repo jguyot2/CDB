@@ -21,7 +21,7 @@ public class CompanyValidator implements SearchValidator<Company> {
 
     /** */
     public CompanyValidator() {
-        companySearcher = new CompanySearcher();
+        this.companySearcher = new CompanySearcher();
     }
 
     /**
@@ -32,7 +32,7 @@ public class CompanyValidator implements SearchValidator<Company> {
     @Override
     public List<Company> fetchList() {
         try {
-            return companySearcher.fetchList();
+            return this.companySearcher.fetchList();
         } catch (SQLException e) {
             LOG.error("fetchList: " + e.getMessage(), e);
             return new ArrayList<>();
@@ -49,7 +49,7 @@ public class CompanyValidator implements SearchValidator<Company> {
     @Override
     public List<Company> fetchWithOffset(final Page page) {
         try {
-            return companySearcher.fetchWithOffset(page);
+            return this.companySearcher.fetchWithOffset(page);
         } catch (SQLException e) {
             LOG.error("Recherche de la liste : Exception reçue. Renvoi d'une liste vide");
             return new ArrayList<>();
@@ -67,7 +67,7 @@ public class CompanyValidator implements SearchValidator<Company> {
     @Override
     public Optional<Company> findById(final long id) {
         try {
-            return companySearcher.fetchById(id);
+            return this.companySearcher.fetchById(id);
         } catch (SQLException e) {
             LOG.debug("findById" + e.getMessage(), e);
             return Optional.empty();
@@ -80,7 +80,7 @@ public class CompanyValidator implements SearchValidator<Company> {
     @Override
     public int getNumberOfElements() {
         try {
-            return companySearcher.getNumberOfElements();
+            return this.companySearcher.getNumberOfElements();
         } catch (SQLException e) {
             LOG.error("getNbOfElements : " + e.getMessage(), e);
             return -1;
@@ -93,6 +93,6 @@ public class CompanyValidator implements SearchValidator<Company> {
      * @param newCompanySearcher la nouvelle
      */
     public void setCompanySearcher(final CompanySearcher newCompanySearcher) {
-        companySearcher = newCompanySearcher;
+        this.companySearcher = newCompanySearcher;
     }
 }

@@ -35,8 +35,8 @@ public class EditComputerServlet extends HttpServlet {
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) {
         String strId = request.getParameter("id");
         long id = Long.parseLong(strId);
-        Optional<ComputerDTO> computer = validator.findById(id);
-        throw new NotImplementedException(); // TODO mais pas avant le sprint 3
+        Optional<ComputerDTO> computer = this.validator.findById(id);
+        throw new NotImplementedException();
     }
 
     /**
@@ -44,6 +44,6 @@ public class EditComputerServlet extends HttpServlet {
      */
     @Override
     public void doPost(final HttpServletRequest request, final HttpServletResponse response) {
-        // TODO mais pas avant le sprint 3
+        // TODO mais pas avant le sprint 3²
     }
 }

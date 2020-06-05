@@ -60,12 +60,12 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
         if (dtoInstanceProblems.size() > 0) {
             throw new InvalidComputerDTOException(dtoInstanceProblems);
         }
-        return computerValidator.createComputer(computer);
+        return this.computerValidator.createComputer(computer);
     }
 
     @Override
     public List<ComputerDTO> fetchList() {
-        return computerValidator.fetchList().stream()
+        return this.computerValidator.fetchList().stream()
             .map(c -> ComputerMapper.computerToDTO(c)
                 .get())
             .collect(Collectors.toList());
@@ -73,7 +73,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
 
     @Override
     public List<ComputerDTO> fetchWithOffset(final Page page) {
-        return computerValidator.fetchWithOffset(page).stream()
+        return this.computerValidator.fetchWithOffset(page).stream()
             .map(c -> ComputerMapper.computerToDTO(c)
                 .get())
             .collect(Collectors.toList());
@@ -81,7 +81,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
 
     @Override
     public Optional<ComputerDTO> findById(final long id) {
-        Optional<Computer> cv = computerValidator.findById(id);
+        Optional<Computer> cv = this.computerValidator.findById(id);
         if (cv.isPresent()) {
             return ComputerMapper.computerToDTO(cv.get());
         } else {
@@ -91,7 +91,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
 
     @Override
     public int getNumberOfElements() {
-        return computerValidator.getNumberOfElements();
+        return this.computerValidator.getNumberOfElements();
     }
 
     /**
@@ -109,7 +109,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
             || companyDTO.getId().isEmpty()) {
             return Optional.empty();
         }
-        return companyDTOValidator.getCompanyFromCompanyDTOById(companyDTO, problems);
+        return this.companyDTOValidator.getCompanyFromCompanyDTOById(companyDTO, problems);
     }
 
     /**

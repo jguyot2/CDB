@@ -45,11 +45,11 @@ public class Computer {
      * @param computerName
      */
     public Computer(final String computerName) {
-        name = computerName;
-        manufacturer = null;
-        introduction = null;
-        discontinuation = null;
-        id = 0;
+        this.name = computerName;
+        this.manufacturer = null;
+        this.introduction = null;
+        this.discontinuation = null;
+        this.id = 0;
     }
 
     /**
@@ -63,11 +63,11 @@ public class Computer {
         final LocalDate computerIntroduction,
         final LocalDate computerDiscontinuation) {
 
-        name = computerName;
-        manufacturer = computerManufacturer;
-        introduction = computerIntroduction;
-        discontinuation = computerDiscontinuation;
-        id = 0;
+        this.name = computerName;
+        this.manufacturer = computerManufacturer;
+        this.introduction = computerIntroduction;
+        this.discontinuation = computerDiscontinuation;
+        this.id = 0;
     }
 
     /**
@@ -82,11 +82,11 @@ public class Computer {
         final LocalDate computerIntroduction,
         final LocalDate computerDiscontinuation, final long computerId) {
 
-        name = computerName;
-        manufacturer = computerManufacturer;
-        introduction = computerIntroduction;
-        discontinuation = computerDiscontinuation;
-        id = computerId;
+        this.name = computerName;
+        this.manufacturer = computerManufacturer;
+        this.introduction = computerIntroduction;
+        this.discontinuation = computerDiscontinuation;
+        this.id = computerId;
     }
 
     /**
@@ -105,10 +105,10 @@ public class Computer {
 
             return true;
         }
-        return Objects.equals(name, other.name)
-            && Objects.equals(introduction, other.introduction)
-            && Objects.equals(discontinuation, other.discontinuation)
-            && Objects.equals(manufacturer, other.manufacturer);
+        return Objects.equals(this.name, other.name)
+            && Objects.equals(this.introduction, other.introduction)
+            && Objects.equals(this.discontinuation, other.discontinuation)
+            && Objects.equals(this.manufacturer, other.manufacturer);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class Computer {
      * @return la date d'interruption de la vente
      */
     public LocalDate getDiscontinuation() {
-        return discontinuation;
+        return this.discontinuation;
 
     }
 
@@ -134,28 +134,28 @@ public class Computer {
      *         l'identifiant n'a pas été défini
      */
     public long getId() {
-        return id;
+        return this.id;
     }
 
     /**
      * @return la date de début de vente de l'instance.
      */
     public LocalDate getIntroduction() {
-        return introduction;
+        return this.introduction;
     }
 
     /**
      * @return le fabricant de l'ordinateur
      */
     public Company getManufacturer() {
-        return manufacturer;
+        return this.manufacturer;
     }
 
     /**
      * @return le nom de l'ordinateur
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -165,14 +165,14 @@ public class Computer {
      *         courante
      */
     public String getShortDescription() {
-        return "(" + id + ", " + name + " )";
+        return "(" + this.id + ", " + this.name + " )";
     }
 
     /**
      * @param newDiscontinuation
      */
     public void setDiscontinuation(final LocalDate newDiscontinuation) {
-        discontinuation = newDiscontinuation;
+        this.discontinuation = newDiscontinuation;
     }
 
     /**
@@ -180,28 +180,28 @@ public class Computer {
      * @param newId
      */
     public void setId(final long newId) {
-        id = newId;
+        this.id = newId;
     }
 
     /**
      * @param newIntroduction
      */
     public void setIntroduction(final LocalDate newIntroduction) {
-        introduction = newIntroduction;
+        this.introduction = newIntroduction;
     }
 
     /**
      * @param newManufacturer
      */
     public void setManufacturer(final Company newManufacturer) {
-        manufacturer = newManufacturer;
+        this.manufacturer = newManufacturer;
     }
 
     /**
      * @param newName
      */
     public void setName(final String newName) {
-        name = newName;
+        this.name = newName;
     }
 
     /**
@@ -209,10 +209,10 @@ public class Computer {
     @Override
     public String toString() {
         String representation = "";
-        representation += "name=" + name + "\t";
-        representation += "manufacturer=" + String.valueOf(manufacturer) + "\t";
-        representation += "intro=" + String.valueOf(introduction) + "\t";
-        representation += "dicontinuation=" + String.valueOf(discontinuation);
+        representation += "name=" + this.name + "\t";
+        representation += "manufacturer=" + String.valueOf(this.manufacturer) + "\t";
+        representation += "intro=" + String.valueOf(this.introduction) + "\t";
+        representation += "dicontinuation=" + String.valueOf(this.discontinuation);
         return representation;
     }
 }

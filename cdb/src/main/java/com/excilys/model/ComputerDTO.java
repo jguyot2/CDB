@@ -44,11 +44,11 @@ public final class ComputerDTO {
     public ComputerDTO(final String computerName, final String computerId,
         final CompanyDTO companyId, final String strIntroductionDate,
         final String strDiscontinuationDate) {
-        name = computerName;
-        strId = computerId;
-        company = companyId;
-        introductionDate = strIntroductionDate;
-        discontinuationDate = strDiscontinuationDate;
+        this.name = computerName;
+        this.strId = computerId;
+        this.company = companyId;
+        this.introductionDate = strIntroductionDate;
+        this.discontinuationDate = strDiscontinuationDate;
     }
 
     /**
@@ -63,10 +63,10 @@ public final class ComputerDTO {
         if (null == other) {
             return false;
         }
-        return Objects.equals(name, other.name)
-            && Objects.equals(discontinuationDate, other.discontinuationDate)
-            && Objects.equals(introductionDate, other.introductionDate)
-            && Objects.equals(company, other.company);
+        return Objects.equals(this.name, other.name)
+            && Objects.equals(this.discontinuationDate, other.discontinuationDate)
+            && Objects.equals(this.introductionDate, other.introductionDate)
+            && Objects.equals(this.company, other.company);
 
     }
 
@@ -76,32 +76,18 @@ public final class ComputerDTO {
     }
 
     /**
-     * @return la date d'arrêt de production
-     */
-    public String getDiscontinuationDate() {
-        return discontinuationDate;
-    }
-
-    /**
-     * @return la date d'introduction à la vente
-     */
-    public String getIntroductionDate() {
-        return introductionDate;
-    }
-
-    /**
-     * @return le nom de l'ordinateur
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
      * @return la chaîne de caractères correspondant à
      *         l'identifiant de l'entreprise
      */
     public CompanyDTO getCompany() {
-        return company;
+        return this.company;
+    }
+
+    /**
+     * @return la date d'arrêt de production
+     */
+    public String getDiscontinuationDate() {
+        return this.discontinuationDate;
     }
 
     /**
@@ -109,48 +95,62 @@ public final class ComputerDTO {
      *         l'ordinateur dans la base
      */
     public String getId() {
-        return strId;
+        return this.strId;
     }
 
     /**
-     * @param newDiscontinuationDate
+     * @return la date d'introduction à la vente
      */
-    public void setDiscontinuationDate(final String newDiscontinuationDate) {
-        discontinuationDate = newDiscontinuationDate;
+    public String getIntroductionDate() {
+        return this.introductionDate;
     }
 
     /**
-     * @param newIntroductionDate
+     * @return le nom de l'ordinateur
      */
-    public void setIntroductionDate(final String newIntroductionDate) {
-        introductionDate = newIntroductionDate;
-    }
-
-    /**
-     * @param newName
-     */
-    public void setName(final String newName) {
-        name = newName;
+    public String getName() {
+        return this.name;
     }
 
     /**
      * @param newStrEntrepriseId
      */
     public void setCompany(final CompanyDTO newStrEntrepriseId) {
-        company = newStrEntrepriseId;
+        this.company = newStrEntrepriseId;
+    }
+
+    /**
+     * @param newDiscontinuationDate
+     */
+    public void setDiscontinuationDate(final String newDiscontinuationDate) {
+        this.discontinuationDate = newDiscontinuationDate;
     }
 
     /**
      * @param newStrId
      */
     public void setId(final String newStrId) {
-        strId = newStrId;
+        this.strId = newStrId;
+    }
+
+    /**
+     * @param newIntroductionDate
+     */
+    public void setIntroductionDate(final String newIntroductionDate) {
+        this.introductionDate = newIntroductionDate;
+    }
+
+    /**
+     * @param newName
+     */
+    public void setName(final String newName) {
+        this.name = newName;
     }
 
     @Override
     public String toString() {
-        return "(" + name + ", " + introductionDate + "-" + discontinuationDate
+        return "(" + this.name + ", " + this.introductionDate + "-" + this.discontinuationDate
             + "\t"
-            + strId + "\t" + company;
+            + this.strId + "\t" + this.company;
     }
 }

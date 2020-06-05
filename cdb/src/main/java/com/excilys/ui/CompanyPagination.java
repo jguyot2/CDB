@@ -23,7 +23,7 @@ public class CompanyPagination {
     private Page page;
 
     private CompanyPagination() {
-        page = new Page(companyPagination.getNumberOfElements());
+        this.page = new Page(companyPagination.getNumberOfElements());
     }
 
     PaginationCommand getCommand() {
@@ -60,7 +60,7 @@ public class CompanyPagination {
     }
 
     private void printCurrentPage() {
-        List<Company> companys = companyPagination.fetchWithOffset(page);
+        List<Company> companys = companyPagination.fetchWithOffset(this.page);
         for (Company c : companys) {
             System.out.println(c);
         }
@@ -76,16 +76,16 @@ public class CompanyPagination {
     }
 
     private void printNextPage() {
-        page.goToNextPage();
-        List<Company> companys = companyPagination.fetchWithOffset(page);
+        this.page.goToNextPage();
+        List<Company> companys = companyPagination.fetchWithOffset(this.page);
         for (Company c : companys) {
             System.out.println(c);
         }
     }
 
     private void printPreviousPage() {
-        page.goToPreviousPage();
-        List<Company> companys = companyPagination.fetchWithOffset(page);
+        this.page.goToPreviousPage();
+        List<Company> companys = companyPagination.fetchWithOffset(this.page);
         for (Company c : companys) {
             System.out.println(c);
         }

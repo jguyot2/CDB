@@ -32,8 +32,8 @@ public class ComputerValidator implements SearchValidator<Computer> {
 
     /** */
     public ComputerValidator() {
-        computerSearcher = new ComputerSearcher();
-        computerUpdater = new ComputerUpdater();
+        this.computerSearcher = new ComputerSearcher();
+        this.computerUpdater = new ComputerUpdater();
     }
 
     /**
@@ -55,7 +55,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
         throws InvalidComputerInstanceException {
         checkComputerValidity(createdComputer);
         try {
-            return computerUpdater.createComputer(createdComputer);
+            return this.computerUpdater.createComputer(createdComputer);
         } catch (SQLException e) {
             LOG.error("createComputer :" + e.getMessage(), e);
             return 0;
@@ -74,7 +74,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
      */
     public int deleteComputer(final long id) {
         try {
-            return computerUpdater.deleteById(id);
+            return this.computerUpdater.deleteById(id);
         } catch (SQLException e) {
             LOG.error("deleteComputer :" + e.getMessage(), e);
             return -1;
@@ -93,7 +93,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
     @Override
     public List<Computer> fetchList() {
         try {
-            return computerSearcher.fetchList();
+            return this.computerSearcher.fetchList();
         } catch (SQLException e) {
             LOG.error("fetchlist: " + e.getMessage(), e);
             return new ArrayList<>();
@@ -108,7 +108,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
     @Override
     public List<Computer> fetchWithOffset(final Page page) {
         try {
-            return computerSearcher.fetchWithOffset(page);
+            return this.computerSearcher.fetchWithOffset(page);
         } catch (SQLException e) {
             LOG.error("fetchListWithOffset: " + e.getMessage(), e);
             return new ArrayList<>();
@@ -131,7 +131,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
     @Override
     public Optional<Computer> findById(final long id) {
         try {
-            return computerSearcher.fetchById(id);
+            return this.computerSearcher.fetchById(id);
         } catch (SQLException e) {
             LOG.error("findbyId(id = " + id + "): " + e.getMessage(), e);
             return Optional.empty();
@@ -144,7 +144,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
     @Override
     public int getNumberOfElements() {
         try {
-            return computerSearcher.getNumberOfElements();
+            return this.computerSearcher.getNumberOfElements();
         } catch (SQLException e) {
             LOG.error("getNumberOfElements : " + e.getMessage(), e);
             return -1;
@@ -162,8 +162,8 @@ public class ComputerValidator implements SearchValidator<Computer> {
     public void setComputerSearcher(final ComputerSearcher newComputerSearcher,
         final ComputerUpdater newComputerUpdater) {
 
-        computerSearcher = newComputerSearcher;
-        computerUpdater = newComputerUpdater;
+        this.computerSearcher = newComputerSearcher;
+        this.computerUpdater = newComputerUpdater;
     }
 
     /**
@@ -192,7 +192,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
         checkComputerValidity(newComputervalue);
         LOG.info("Instance valide : Mise à jour de la base.");
         try {
-            return computerUpdater.updateComputer(newComputervalue);
+            return this.computerUpdater.updateComputer(newComputervalue);
         } catch (SQLException e) {
             LOG.error("updateComputer :" + e.getMessage(), e);
             return -1;

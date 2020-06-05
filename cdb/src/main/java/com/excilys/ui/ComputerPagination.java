@@ -24,7 +24,7 @@ public class ComputerPagination {
     private Page page;
 
     private ComputerPagination() {
-        page = new Page(computerValidator.getNumberOfElements());
+        this.page = new Page(computerValidator.getNumberOfElements());
     }
 
     public boolean executeCommand(final PaginationCommand command) {
@@ -62,7 +62,7 @@ public class ComputerPagination {
     }
 
     private void printCurrentPage() {
-        List<Computer> computers = computerValidator.fetchWithOffset(page);
+        List<Computer> computers = computerValidator.fetchWithOffset(this.page);
         for (Computer c : computers) {
             System.out.println(c);
         }
@@ -78,16 +78,16 @@ public class ComputerPagination {
     }
 
     private void printNextPage() {
-        page.goToNextPage();
-        List<Computer> computers = computerValidator.fetchWithOffset(page);
+        this.page.goToNextPage();
+        List<Computer> computers = computerValidator.fetchWithOffset(this.page);
         for (Computer c : computers) {
             System.out.println(c.getShortDescription());
         }
     }
 
     private void printPreviousPage() {
-        page.goToPreviousPage();
-        List<Computer> computers = computerValidator.fetchWithOffset(page);
+        this.page.goToPreviousPage();
+        List<Computer> computers = computerValidator.fetchWithOffset(this.page);
         for (Computer c : computers) {
             System.out.println(c);
         }

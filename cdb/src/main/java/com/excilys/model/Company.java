@@ -26,7 +26,7 @@ public class Company {
      * @param companyName le nom de l'entreprise
      */
     public Company(final String companyName) {
-        name = companyName;
+        this.name = companyName;
     }
 
     /**
@@ -36,8 +36,8 @@ public class Company {
      * @param companyId   l'identifiant de l'entreprise
      */
     public Company(final String companyName, final long companyId) {
-        name = companyName;
-        id = companyId;
+        this.name = companyName;
+        this.id = companyId;
     }
 
     /**
@@ -52,7 +52,7 @@ public class Company {
         if (this == other) {
             return true;
         }
-        return Objects.equals(name, other.name);
+        return Objects.equals(this.name, other.name);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class Company {
      * @return l'identifiant.
      */
     public long getId() {
-        return id;
+        return this.id;
     }
 
     /**
@@ -73,7 +73,7 @@ public class Company {
      * @return Le nom de l'entreprise
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -81,12 +81,12 @@ public class Company {
      * @param companyId l'identifiant.
      */
     public void setId(final long companyId) {
-        id = companyId;
+        this.id = companyId;
     }
 
     /** */
     @Override
     public String toString() {
-        return name;
+        return this.name;
     }
 }

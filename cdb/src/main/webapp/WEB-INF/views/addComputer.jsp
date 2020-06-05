@@ -1,8 +1,8 @@
-<!-- 
+<%-- 
 	Page JSP permettant la saisie pour d'ajouter un ordinateur dans la base de donnée 
 	Attributs nécessaires
 		-> companyList : List<CompanyDTO> la liste des entreprises présentes dans la base
--->
+--%>
 
 <!DOCTYPE html>
 <%@ page import="com.excilys.model.CompanyDTO,java.util.List"%>

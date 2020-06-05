@@ -12,10 +12,10 @@ public class InvalidComputerDTOException extends Exception {
 
     public InvalidComputerDTOException(final List<ComputerDTOProblems> problemList) {
         super();
-        problems = problemList;
+        this.problems = problemList;
     }
 
     public List<ComputerDTOProblems> getProblems() {
-        return problems;
+        return this.problems;
     }
 }

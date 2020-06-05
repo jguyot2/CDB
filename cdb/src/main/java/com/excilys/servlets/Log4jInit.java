@@ -1,6 +1,5 @@
 package com.excilys.servlets;
 
-
 import java.util.Properties;
 
 import javax.servlet.http.HttpServlet;
@@ -10,6 +9,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.PropertyConfigurator;
 
 public class Log4jInit extends HttpServlet {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(final HttpServletRequest req, final HttpServletResponse res) {
+    }
 
     @Override
     public void init() {
@@ -31,9 +39,5 @@ public class Log4jInit extends HttpServlet {
             "%d{yyyy/MM/dd HH:mm:ss.SSS} [%5p] %t (%F) - %m%n");
 
         PropertyConfigurator.configure(properties);
-    }
-
-    @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse res) {
     }
 }
