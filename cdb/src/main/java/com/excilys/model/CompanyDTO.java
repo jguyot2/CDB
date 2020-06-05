@@ -65,7 +65,7 @@ public final class CompanyDTO {
 
     /**
      * setter pour la représentation de l'identifiant.
-     * 
+     *
      * @param companyId
      */
     public void setId(final String companyId) {
@@ -74,7 +74,7 @@ public final class CompanyDTO {
 
     /**
      * Setter pour le nom de l'entreprise.
-     * 
+     *
      * @param companyName
      */
     public void setName(final String companyName) {

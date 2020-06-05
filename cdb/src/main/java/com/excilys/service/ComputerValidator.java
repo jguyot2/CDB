@@ -35,14 +35,6 @@ public class ComputerValidator implements SearchValidator<Computer> {
         this.computerUpdater = new ComputerUpdater();
     }
 
-    private void checkComputerValidity(final Computer computer) throws InvalidComputerInstanceException {
-        List<ComputerInstanceProblems> problems = getComputerInstanceProblems(computer);
-        if (problems.size() > 0) {
-            LOG.debug("Détection d'une instance de Computer invalide : " + computer);
-            throw new InvalidComputerInstanceException(problems);
-        }
-    }
-
     /**
      * Ajout d'un ordinateur dans la base.
      *
@@ -131,28 +123,6 @@ public class ComputerValidator implements SearchValidator<Computer> {
     }
 
     /**
-     * @param computer l'instance de Computer à tester.
-     *
-     * @return Une liste contenant la liste des problèmes sur l'instance de Computer
-     *         passée en paramètre
-     */
-    private List<ComputerInstanceProblems> getComputerInstanceProblems(final Computer computer) {
-        List<ComputerInstanceProblems> problems = new ArrayList<>();
-        if (computer.getName() == null || computer.getName().trim().isEmpty()) {
-            problems.add(ComputerInstanceProblems.INVALID_NAME);
-        }
-        if (computer.getIntroduction() != null) {
-            if (computer.getDiscontinuation() != null
-                    && computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0) {
-                problems.add(ComputerInstanceProblems.INVALID_DISCONTINUATION_DATE);
-            }
-        } else if (computer.getDiscontinuation() != null) {
-            problems.add(ComputerInstanceProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION);
-        }
-        return problems;
-    }
-
-    /**
      * @return le nombre d'ordinateurs dans la base
      */
     @Override
@@ -201,5 +171,35 @@ public class ComputerValidator implements SearchValidator<Computer> {
             LOG.error("updateComputer :" + e.getMessage(), e);
             return -1;
         }
+    }
+
+    private void checkComputerValidity(final Computer computer) throws InvalidComputerInstanceException {
+        List<ComputerInstanceProblems> problems = getComputerInstanceProblems(computer);
+        if (problems.size() > 0) {
+            LOG.debug("Détection d'une instance de Computer invalide : " + computer);
+            throw new InvalidComputerInstanceException(problems);
+        }
+    }
+
+    /**
+     * @param computer l'instance de Computer à tester.
+     *
+     * @return Une liste contenant la liste des problèmes sur l'instance de Computer
+     *         passée en paramètre
+     */
+    private List<ComputerInstanceProblems> getComputerInstanceProblems(final Computer computer) {
+        List<ComputerInstanceProblems> problems = new ArrayList<>();
+        if (computer.getName() == null || computer.getName().trim().isEmpty()) {
+            problems.add(ComputerInstanceProblems.INVALID_NAME);
+        }
+        if (computer.getIntroduction() != null) {
+            if (computer.getDiscontinuation() != null
+                    && computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0) {
+                problems.add(ComputerInstanceProblems.INVALID_DISCONTINUATION_DATE);
+            }
+        } else if (computer.getDiscontinuation() != null) {
+            problems.add(ComputerInstanceProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION);
+        }
+        return problems;
     }
 }

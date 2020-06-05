@@ -31,7 +31,7 @@ public class ShowComputerListServlet extends HttpServlet {
 
     /**
      * Envoi de la page affichant tous les ordinateurs.
-     * 
+     *
      * @param request
      * @param response
      */

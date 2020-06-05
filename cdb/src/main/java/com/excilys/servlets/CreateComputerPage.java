@@ -35,7 +35,7 @@ public class CreateComputerPage extends HttpServlet {
 
     /**
      * Affichage de la page de création d'un ordinateur.
-     * 
+     *
      * @param request
      * @param response
      * @throws ServletException Si une exception quelconque s'est produite pendant
@@ -60,7 +60,7 @@ public class CreateComputerPage extends HttpServlet {
 
     /**
      * Ajoute un ordinateur dans la base.
-     * 
+     *
      * @param request requête avec les paramètres suivants: - computerName : le nom
      *        de l'ordinateur - introduced : Date d'introduction (TODO : Vérifier le
      *        format) - discontinued : Date d'arrêt de production - companyId : id de
@@ -70,63 +70,32 @@ public class CreateComputerPage extends HttpServlet {
     @Override
     public void doPost(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException {
-
         LOG.info("ajout d'un pc dans la base");
         ComputerDTO cpt = getComputerDTOFromParameters(request);
         LOG.info("PC ajouté : " + cpt);
-
         try {
-
             computerValidator.addComputerDTO(cpt);
-
         } catch (InvalidComputerDTOException e) {
-            LOG.debug("DTO invalide");
-            List<ComputerDTOProblems> problems = e.getProblems();
-            StringBuilder problemsDescription = new StringBuilder();
-            for (ComputerDTOProblems problem : problems) {
-                problemsDescription.append(problem.getExplanation() + "\n");
-                LOG.debug("Cause : " + problem.getExplanation());
-            }
-            RequestDispatcher rd = request.getRequestDispatcher("/400");
-            request.setAttribute("errorCause", problemsDescription.toString());
             try {
-                rd.forward(request, response);
-            } catch (IOException e1) {
-                throw new ServletException(e1);
+                invalidDTOComputerProblem(request, response, e);
+            } catch (IOException ioException) {
+                throw new ServletException(e);
             }
-
             return;
         } catch (InvalidComputerInstanceException e) {
             LOG.debug("Instance représentée invalide");
-            List<ComputerInstanceProblems> problems = e.getProblems();
-            StringBuilder problemsDescription = new StringBuilder();
-            for (ComputerInstanceProblems problem : problems) {
-                problemsDescription.append(problem.getExplanation() + "\n");
-                LOG.debug("Cause : " + problem.getExplanation());
-            }
-            RequestDispatcher rd = request.getRequestDispatcher("/400");
-            request.setAttribute("errorCause", problemsDescription.toString());
-
             try {
-                rd.forward(request, response);
-            } catch (IOException e1) {
-                LOG.error(e.getMessage());
-                throw new ServletException(e1);
+                this.invalidComputerCase(request, response, e);
+            } catch (IOException ioExn) {
+                throw new ServletException(ioExn);
             }
-
             return;
         }
-
         try {
             response.sendRedirect("page");
         } catch (IOException e) {
             throw new ServletException(e);
         }
-    }
-
-    private void invalidComputerCase(HttpServletRequest request, HttpServletResponse response,
-            InvalidComputerInstanceException exnInvalidComputer) throws IOException {
-        
     }
 
     private CompanyDTO getCompanyDTOFromParameters(final HttpServletRequest request)
@@ -148,5 +117,36 @@ public class CreateComputerPage extends HttpServlet {
         String discoStr = request.getParameter("discontinued");
         CompanyDTO company = getCompanyDTOFromParameters(request);
         return new ComputerDTO(computerName, null, company, introStr, discoStr);
+    }
+
+    private void invalidComputerCase(final HttpServletRequest request, final HttpServletResponse response,
+            final InvalidComputerInstanceException exnInvalidComputer) throws IOException, ServletException {
+        List<ComputerInstanceProblems> problems = exnInvalidComputer.getProblems();
+        StringBuilder problemsDescription = new StringBuilder();
+        for (ComputerInstanceProblems problem : problems) {
+            problemsDescription.append(problem.getExplanation() + "\n");
+            LOG.debug("Cause : " + problem.getExplanation());
+        }
+        RequestDispatcher rd = request.getRequestDispatcher("/400");
+        request.setAttribute("errorCause", problemsDescription.toString());
+
+        rd.forward(request, response);
+
+    }
+
+    private void invalidDTOComputerProblem(final HttpServletRequest request,
+            final HttpServletResponse response, final InvalidComputerDTOException catchedException)
+            throws IOException, ServletException {
+        LOG.debug("DTO invalide");
+        List<ComputerDTOProblems> problems = catchedException.getProblems();
+        StringBuilder problemsDescription = new StringBuilder();
+        for (ComputerDTOProblems problem : problems) {
+            problemsDescription.append(problem.getExplanation() + "\n");
+            LOG.debug("Cause : " + problem.getExplanation());
+        }
+        RequestDispatcher rd = request.getRequestDispatcher("/400");
+        request.setAttribute("errorCause", problemsDescription.toString());
+
+        rd.forward(request, response);
     }
 }

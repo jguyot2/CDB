@@ -24,7 +24,7 @@ public class ComputerPageServlet extends HttpServlet {
 
     /**
      * Envoi d'une page représentant un certain nombre d'instances de Computer
-     * 
+     *
      * @param request la requête, qui peut contenir les params suivants :
      *        "pageNumber" représentant le numéro de page courante (Première page par
      *        défaut) "pageLength" Représentant le nombre d'éléments par page.

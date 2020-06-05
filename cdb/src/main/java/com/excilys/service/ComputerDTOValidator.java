@@ -67,10 +67,15 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
         }
     }
 
+    @Override
+    public int getNumberOfElements() {
+        return this.computerValidator.getNumberOfElements();
+    }
+
     /**
      * Récupération d'une instance de Company à partir de l'identifiant compris dans
      * le DTO en paramètre.
-     * 
+     *
      * @param computerDTO le dto de l'ordinateur
      * @param problems liste de problèmes, mise à jour à la rencontre d'une erreur
      * @return Un optional contenant une Company si l'id correspond à une entreprise,
@@ -88,7 +93,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
 
     /**
      * Récupération d'un ordi sans l'attribut "company" à partir d'un DTO.
-     * 
+     *
      * @param computerDTO le DTO à "convertir"
      * @param problems L'éventuelle liste des problèmes associés à la DTO en
      *        paramètre, à laquelle on ajoute des éléments s'il y a des problèmes.
@@ -174,10 +179,5 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
             return "";
         }
         return computerDTO.getName();
-    }
-
-    @Override
-    public int getNumberOfElements() {
-        return this.computerValidator.getNumberOfElements();
     }
 }

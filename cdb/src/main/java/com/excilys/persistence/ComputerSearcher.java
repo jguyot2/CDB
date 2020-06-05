@@ -119,6 +119,22 @@ public class ComputerSearcher implements Searcher<Computer> {
     }
 
     /**
+     * @return Le nombre d'éléments computer enregistrés dans la base.
+     */
+    @Override
+    public int getNumberOfElements() throws SQLException {
+        try (Statement stmt = DBConnection.getConnection().createStatement()) {
+
+            ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
+            if (res.next()) {
+                return res.getInt(1);
+            }
+        }
+        LOG.error("Récupération de la taille : Pas de résultat correct");
+        return -1;
+    }
+
+    /**
      * Fonction permettant de récupérer une instance de Computer à partir d'une ligne
      * de ResultSet à partir de requêtes comportant un schéma défini.
      *
@@ -145,21 +161,5 @@ public class ComputerSearcher implements Searcher<Computer> {
         Company company = companyName == null ? null : new Company(companyName, res.getLong("company.id"));
 
         return new Computer(computerName, company, introduced, discontinued, computerId);
-    }
-
-    /**
-     * @return Le nombre d'éléments computer enregistrés dans la base.
-     */
-    @Override
-    public int getNumberOfElements() throws SQLException {
-        try (Statement stmt = DBConnection.getConnection().createStatement()) {
-
-            ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
-            if (res.next()) {
-                return res.getInt(1);
-            }
-        }
-        LOG.error("Récupération de la taille : Pas de résultat correct");
-        return -1;
     }
 }

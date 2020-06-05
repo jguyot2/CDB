@@ -41,7 +41,7 @@ public class Company {
 
     /**
      * Test d'égalité, uniquement à partir des noms des entreprises.
-     * 
+     *
      * @param other
      * @return true si les deux entreprises sont égales, false sinon
      */
@@ -62,7 +62,7 @@ public class Company {
 
     /**
      * Getter de l'attribut identifiant.
-     * 
+     *
      * @return l'identifiant.
      */
     public long getId() {
@@ -71,7 +71,7 @@ public class Company {
 
     /**
      * Getter du nom.
-     * 
+     *
      * @return Le nom de l'entreprise
      */
     public String getName() {
@@ -80,7 +80,7 @@ public class Company {
 
     /**
      * Setter de l'identifiant.
-     * 
+     *
      * @param companyId l'identifiant.
      */
     public void setId(final long companyId) {

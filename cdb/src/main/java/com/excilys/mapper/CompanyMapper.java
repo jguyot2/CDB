@@ -10,7 +10,7 @@ import com.excilys.model.CompanyDTO;
 
 /**
  * Classe permettant le mapping entre Company et CompanyDTO.
- * 
+ *
  * @author jguyot2
  *
  */
@@ -21,7 +21,7 @@ public final class CompanyMapper {
 
     /**
      * Conversion CompanyDTO > Company.
-     * 
+     *
      * @param companyDTO le companyDTO à transmettre
      * @return un optional contenant la valeur associée au DTO.
      */

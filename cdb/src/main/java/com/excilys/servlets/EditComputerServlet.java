@@ -27,7 +27,7 @@ public class EditComputerServlet extends HttpServlet {
     /**
      * Affiche la page permettant la modification d'un ordinateur de la base (ou
      * l'affichage d'une erreur si l'entrée est invalide).
-     * 
+     *
      * @param request requête get contenant le paramètre (nécessaire) "id"
      *        représentant l'identifiant de l'ordinateur.
      * @param response

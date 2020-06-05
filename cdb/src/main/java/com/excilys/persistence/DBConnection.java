@@ -1,10 +1,7 @@
 package com.excilys.persistence;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,36 +16,29 @@ import com.zaxxer.hikari.HikariDataSource;
  *
  */
 public final class DBConnection {
-    /** */
-    private static final String DB_NAME = "computer-database-db";
-    /** Instance unique de la connexion à la base. */
-    private static DBConnection dbConnInstance;
+    /////////////////////////////////////////////////////////
+    private static HikariConfig config = new HikariConfig();
 
     /** */
+    private static final String DB_NAME = "computer-database-db";
+    /** */
     private static final String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
+    private static HikariDataSource ds;
+
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerUpdater.class);
+
     /** */
     private static final String PASSWORD = "qwerty1234";
 
     /** */
-    private static final String TEST_DB_NAME = "computer-database-db-test";
-    /** */
-    private static boolean testMode = false;
-
-    /** */
     private static final String URL_DB = "jdbc:mysql://localhost:3306/";
-
     /** */
     private static final String USERNAME = "admincdb";
 
-    /////////////////////////////////////////////////////////
-    private static HikariConfig config = new HikariConfig();
-    private static HikariDataSource ds;
-
     static {
         config.setDriverClassName(DRIVER_NAME);
-        config.setJdbcUrl(URL_DB+DB_NAME+"?useLegacyDatetimeCode=false&serverTimezone=Europe/Paris");
+        config.setJdbcUrl(URL_DB + DB_NAME + "?useLegacyDatetimeCode=false&serverTimezone=Europe/Paris");
         config.setUsername(USERNAME);
         config.setPassword(PASSWORD);
         config.addDataSourceProperty("cachePrepStmts", "true");

@@ -22,7 +22,7 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
 
     /**
      * Récupération de la liste des valeurs.
-     * 
+     *
      * @return La liste des ordinateurs de la base sous forme de DTO
      */
     @Override
@@ -59,7 +59,7 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
      *
      * Si l'instance est invalide (le champ n'est pas un chiffre ou l'id n'existe
      * pas), ajoute une valeur décrivant le problème dans la liste en paramètre.
-     * 
+     *
      * @param companyDTO instance non-nulle décrivant une entreprise, qui contient un
      *        champ id rempli.
      * @param problems Liste non nulleoù ajouter les valeurs décrivant les problèmes

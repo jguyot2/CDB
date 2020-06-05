@@ -1,11 +1,11 @@
-<!--
+<%--
 	Affichage d'une page de Computer.
 	Attributs demandés
 		-> computerList : List<ComputerDTO> Une liste d'instances de Computer à afficher.
  		-> page : page courante.
  		-> pageList : Liste des pages affichables
- TODO : mettre des params from/to ?
--->
+
+--%>
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page

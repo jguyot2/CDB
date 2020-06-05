@@ -25,7 +25,7 @@ public final class DateMapper {
     /**
      * Fonction de conversion d'une instance de LocalDate vers une instance de
      * java.sql.Date équivalente.
-     * 
+     *
      * @param localDate la date à laquelle appliquer la conversion
      * @return une instance de java.sql.date correspondante
      */
@@ -40,7 +40,7 @@ public final class DateMapper {
 
     /**
      * Conversion d'une date en chaîne de caractères au format JJ/MM/YYYY.
-     * 
+     *
      * @param ld la date à convertir
      * @return une instance de String correspondant à la date en paramètre au format
      *         JJ/MM/AAAA
