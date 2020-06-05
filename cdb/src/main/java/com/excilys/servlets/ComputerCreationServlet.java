@@ -23,12 +23,12 @@ import com.excilys.service.InvalidComputerDTOException;
 import com.excilys.service.InvalidComputerInstanceException;
 
 @WebServlet("/addComputer")
-public class CreateComputerPage extends HttpServlet {
+public class ComputerCreationServlet extends HttpServlet {
     private static final CompanyDTOValidator companyValidator = new CompanyDTOValidator();
     private static final ComputerDTOValidator computerValidator = new ComputerDTOValidator();
 
     /** */
-    private static final Logger LOG = LoggerFactory.getLogger(CreateComputerPage.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ComputerCreationServlet.class);
 
     /** */
     private static final long serialVersionUID = 1L;
@@ -70,28 +70,20 @@ public class CreateComputerPage extends HttpServlet {
     @Override
     public void doPost(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException {
-        LOG.info("ajout d'un pc dans la base");
-        ComputerDTO cpt = getComputerDTOFromParameters(request);
-        LOG.info("PC ajouté : " + cpt);
         try {
-            computerValidator.addComputerDTO(cpt);
-        } catch (InvalidComputerDTOException e) {
+            LOG.info("ajout d'un pc dans la base");
+            ComputerDTO cpt = getComputerDTOFromParameters(request);
+            LOG.info("PC ajouté : " + cpt);
             try {
-                invalidDTOComputerProblem(request, response, e);
-            } catch (IOException ioException) {
-                throw new ServletException(e);
-            }
-            return;
-        } catch (InvalidComputerInstanceException e) {
-            LOG.debug("Instance représentée invalide");
-            try {
+                computerValidator.addComputerDTO(cpt);
+            } catch (InvalidComputerDTOException e) {
+                LOG.debug("Instance invalide de DTO passée en param");
+                invalidComputerDTOCase(request, response, e);
+                return;
+            } catch (InvalidComputerInstanceException e) {
                 this.invalidComputerCase(request, response, e);
-            } catch (IOException ioExn) {
-                throw new ServletException(ioExn);
+                return;
             }
-            return;
-        }
-        try {
             response.sendRedirect("page");
         } catch (IOException e) {
             throw new ServletException(e);
@@ -119,7 +111,7 @@ public class CreateComputerPage extends HttpServlet {
         return new ComputerDTO(computerName, null, company, introStr, discoStr);
     }
 
-    private void invalidComputerCase(final HttpServletRequest request, final HttpServletResponse response,
+    private static void invalidComputerCase(final HttpServletRequest request, final HttpServletResponse response,
             final InvalidComputerInstanceException exnInvalidComputer) throws IOException, ServletException {
         List<ComputerInstanceProblems> problems = exnInvalidComputer.getProblems();
         StringBuilder problemsDescription = new StringBuilder();
@@ -134,7 +126,7 @@ public class CreateComputerPage extends HttpServlet {
 
     }
 
-    private void invalidDTOComputerProblem(final HttpServletRequest request,
+    private static void invalidComputerDTOCase(final HttpServletRequest request,
             final HttpServletResponse response, final InvalidComputerDTOException catchedException)
             throws IOException, ServletException {
         LOG.debug("DTO invalide");

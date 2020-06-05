@@ -52,6 +52,12 @@ public class ComputerPageServlet extends HttpServlet {
         }
     }
 
+    /**
+     * A partir de la requête en paramètre, crée un objet Page correspondant
+     * @param request la requête
+     * @return 
+     * @throws NumberFormatException si les paramètres ne correspondent pas à des nombres
+     */
     private Page getPageFromRequest(final HttpServletRequest request) throws NumberFormatException {
         String strPageNumber = request.getParameter("pageNumber");
         String strPageLength = request.getParameter("pageLength");

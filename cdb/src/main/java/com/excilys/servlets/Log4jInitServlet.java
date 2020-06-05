@@ -8,11 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.PropertyConfigurator;
 
-public class Log4jInit extends HttpServlet {
+/**
+ * Servlet permettant l'initialisation de log4j
+ * @author jguyot2
+ *
+ */
+public class Log4jInitServlet extends HttpServlet {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     @Override
