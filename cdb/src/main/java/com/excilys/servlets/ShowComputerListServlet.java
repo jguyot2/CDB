@@ -17,7 +17,11 @@ import com.excilys.model.ComputerDTO;
 import com.excilys.model.Page;
 import com.excilys.service.ComputerDTOValidator;
 
-// TODO : Pê dégager cette classe
+/**
+ * Affichage de l'ensemble des ordinateurs dans une page unique.
+ * @author jguyot2
+ *
+ */
 @WebServlet("/list")
 public class ShowComputerListServlet extends HttpServlet {
     /** */
@@ -32,7 +36,7 @@ public class ShowComputerListServlet extends HttpServlet {
     /**
      * Envoi de la page affichant tous les ordinateurs.
      *
-     * @param request
+     * @param request requête sans paramètre particulier.
      * @param response
      */
     @Override

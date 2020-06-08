@@ -74,6 +74,11 @@ public class ComputerPageServlet extends HttpServlet {
         return page;
     }
 
+    /**
+     * Ajout des attributs qui seront passés au .jsp à la requête courante
+     * @param request
+     * @param page
+     */
     private void setAttributesFromPage(final HttpServletRequest request, final Page page) {
         List<ComputerDTO> computerList = validator.fetchWithOffset(page);
 

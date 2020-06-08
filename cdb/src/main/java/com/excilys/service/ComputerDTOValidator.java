@@ -180,4 +180,22 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
         }
         return computerDTO.getName();
     }
+    
+    /**
+     * 
+     * @param computerValue
+     * @return
+     * @throws InvalidComputerDTOException 
+     * @throws InvalidComputerInstanceException 
+     */
+    public int updateComputer(ComputerDTO computerValue) throws InvalidComputerDTOException, InvalidComputerInstanceException {
+        List<ComputerDTOProblems> problems = new ArrayList<>();
+        Computer computer = getComputerFromDTOWithoutCompany(computerValue, problems);
+        Company company = getCompanyFromDTOById(computerValue, problems).orElse(null);
+        computer.setManufacturer(company);
+        if(problems.size() > 0) {
+            throw new InvalidComputerDTOException(problems);
+        }
+        return computerValidator.updateComputer(computer);
+    }
 }

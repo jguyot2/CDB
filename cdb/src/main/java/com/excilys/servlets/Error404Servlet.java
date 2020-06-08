@@ -8,6 +8,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 
+ * @author jguyot2
+ *
+ */
 @WebServlet("/404")
 public class Error404Servlet extends HttpServlet {
     /** */

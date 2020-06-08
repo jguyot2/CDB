@@ -12,6 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Servlet correspondant à l'erreur 400 (= l'utilisateur fait de la merde)
+ * @author jguyot2
+ *
+ */
 @WebServlet("/400")
 public class Error400Servlet extends HttpServlet {
     /** */

@@ -24,8 +24,16 @@ import com.excilys.service.InvalidComputerInstanceException;
 
 @WebServlet("/addComputer")
 public class ComputerCreationServlet extends HttpServlet {
-    private static final CompanyDTOValidator companyValidator = new CompanyDTOValidator();
-    private static final ComputerDTOValidator computerValidator = new ComputerDTOValidator();
+    private static CompanyDTOValidator companyValidator = new CompanyDTOValidator();
+    private static ComputerDTOValidator computerValidator = new ComputerDTOValidator();
+
+    public static void setCompanyValidator(CompanyDTOValidator dtv) {
+        companyValidator = dtv;
+    }
+
+    public static void setComputerValidator(ComputerDTOValidator dtv) {
+        computerValidator = dtv;
+    }
 
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerCreationServlet.class);
@@ -47,8 +55,6 @@ public class ComputerCreationServlet extends HttpServlet {
         try {
             LOG.info("Création d'un pc (get)");
             List<CompanyDTO> companyList = companyValidator.fetchList();
-            companyList.add(0, new CompanyDTO("no company", "0")); // legit ?
-
             request.setAttribute("companyList", companyList);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
             rd.forward(request, response);
@@ -81,7 +87,7 @@ public class ComputerCreationServlet extends HttpServlet {
                 invalidComputerDTOCase(request, response, e);
                 return;
             } catch (InvalidComputerInstanceException e) {
-                this.invalidComputerCase(request, response, e);
+                invalidComputerCase(request, response, e);
                 return;
             }
             response.sendRedirect("page");
@@ -111,8 +117,9 @@ public class ComputerCreationServlet extends HttpServlet {
         return new ComputerDTO(computerName, null, company, introStr, discoStr);
     }
 
-    private static void invalidComputerCase(final HttpServletRequest request, final HttpServletResponse response,
-            final InvalidComputerInstanceException exnInvalidComputer) throws IOException, ServletException {
+    private static void invalidComputerCase(final HttpServletRequest request,
+            final HttpServletResponse response, final InvalidComputerInstanceException exnInvalidComputer)
+            throws IOException, ServletException {
         List<ComputerInstanceProblems> problems = exnInvalidComputer.getProblems();
         StringBuilder problemsDescription = new StringBuilder();
         for (ComputerInstanceProblems problem : problems) {

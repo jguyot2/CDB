@@ -4,8 +4,10 @@
 		-> companyList : List<CompanyDTO> la liste des entreprises présentes dans la base
 --%>
 
-<!DOCTYPE html>
 <%@ page import="com.excilys.model.CompanyDTO,java.util.List"%>
+<%  List<CompanyDTO> companyList = (List<CompanyDTO>) request.getAttribute("companyList"); %>
+
+<!DOCTYPE html>
 <html>
 <head>
 <title>Computer Database</title>
@@ -14,9 +16,6 @@
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="css/main.css" rel="stylesheet" media="screen">
-
-<!--  -->
-<%  List<CompanyDTO> companyList = (List<CompanyDTO>) request.getAttribute("companyList"); %>
 
 
 <script>
@@ -85,8 +84,8 @@
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
 									class="form-control" id="companyId" name="companyId">
+									   <option value="0">--</option>
 									<%
-									   
 									    for (CompanyDTO company : companyList) {
 									%>
 									<option value="<%=company.getId()%>"><%=company.getName()%></option>

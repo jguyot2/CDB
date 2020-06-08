@@ -93,7 +93,7 @@
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
 							class="cb" value="0"></td>
-						<td><a href="editComputerl" onclick=""> <%=c.getName()%>
+						<td><a href="editComputer?id=<%=c.getId()%>" onclick=""> <%=c.getName()%>
 						</a></td>
 						<td><%=Objects.toString(c.getIntroductionDate(), "")%></td>
 						<td><%=Objects.toString(c.getDiscontinuationDate(), "")%></td>
