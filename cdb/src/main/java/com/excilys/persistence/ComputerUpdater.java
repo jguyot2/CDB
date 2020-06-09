@@ -32,7 +32,7 @@ public class ComputerUpdater {
 
     /** */
     private static final String UPDATE_COMPUTER = "UPDATE computer SET "
-            + "name = ?, introduced = ?, discontinued = ?, company_id = ?" + "WHERE id = ?";
+            + "name = ?, introduced = ?, discontinued = ?, company_id = ?" + " WHERE id = ?";
 
     /** */
     public ComputerUpdater() {
@@ -115,15 +115,15 @@ public class ComputerUpdater {
             Optional<Date> discoDateOpt = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation());
             Date discoDate = discoDateOpt.orElse(null);
 
-            stmt.setLong(1, id);
-            stmt.setString(2, newComputer.getName());
-            stmt.setDate(3, introDate);
-            stmt.setDate(4, discoDate);
+            stmt.setString(1, newComputer.getName());
+            stmt.setDate(2, introDate);
+            stmt.setDate(3, discoDate);
             if (newComputer.getManufacturer() == null) {
-                stmt.setNull(5, java.sql.Types.BIGINT);
+                stmt.setNull(4, java.sql.Types.BIGINT);
             } else {
-                stmt.setLong(5, newComputer.getManufacturer().getId());
+                stmt.setLong(4, newComputer.getManufacturer().getId());
             }
+            stmt.setLong(5, id);
             return stmt.executeUpdate();
         }
     }

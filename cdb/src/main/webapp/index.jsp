@@ -4,6 +4,6 @@
 </head>
 
 <body>
-	<h2>Pouet !</h2>
+	<a href="page"> page</a>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.excilys.main;
 
+import com.excilys.ui.CLInterface;
+
 public final class Main {
     // TODO Documentation des pages JSP
     // TODO les servlets
@@ -14,7 +16,7 @@ public final class Main {
      * @param strings paramètres du programme
      */
     public static void main(final String... strings) {
-        System.out.println("p");
+        CLInterface.start();
     }
 
     private Main() {

@@ -6,7 +6,7 @@
   <display-name>Archetype Created Web Application</display-name>
   <servlet>
     <servlet-name>log4j-init</servlet-name>
-    <servlet-class>com.excilys.servlets.Log4jInit</servlet-class>
+    <servlet-class>com.excilys.servlets.Log4jInitServlet</servlet-class>
 
     <init-param>
       <param-name>log4j-init-file</param-name>
