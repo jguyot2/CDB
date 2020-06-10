@@ -1,5 +1,6 @@
 package com.excilys.persistence;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,7 +47,8 @@ public class CompanySearcher implements Searcher<Company> {
     @Override
     public Optional<Company> fetchById(final long searchedId) throws SQLException {
         LOG.info("Recherche d'un pc avec l'id " + searchedId);
-        try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(REQUEST_SEARCH_BY_ID)) {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(REQUEST_SEARCH_BY_ID)) {
             stmt.setLong(1, searchedId);
             ResultSet res = stmt.executeQuery();
             if (!res.next()) {
@@ -69,7 +71,7 @@ public class CompanySearcher implements Searcher<Company> {
     @Override
     public List<Company> fetchList() throws SQLException {
         List<Company> companiesList = new ArrayList<>();
-        try (Statement stmt = DBConnection.getConnection().createStatement()) {
+        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement()) {
             ResultSet res = stmt.executeQuery(REQUEST_COMPANIES);
             while (res.next()) {
                 long id = res.getLong("id");
@@ -91,8 +93,8 @@ public class CompanySearcher implements Searcher<Company> {
     @Override
     public List<Company> fetchWithOffset(final Page page) throws SQLException {
         List<Company> ret = new ArrayList<>();
-        try (PreparedStatement stmt = DBConnection.getConnection()
-                .prepareStatement(REQUEST_COMPANIES_OFFSET)) {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(REQUEST_COMPANIES_OFFSET)) {
 
             stmt.setInt(1, page.getPageLength());
             stmt.setInt(2, page.getOffset());
@@ -114,7 +116,7 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public int getNumberOfElements() throws SQLException {
-        try (Statement stmt = DBConnection.getConnection().createStatement()) {
+        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement()) {
             ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
             if (res.next()) {
                 return res.getInt(1);

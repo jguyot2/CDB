@@ -1,5 +1,6 @@
 package com.excilys.persistence;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -60,7 +61,8 @@ public class ComputerSearcher implements Searcher<Computer> {
     @Override
     public Optional<Computer> fetchById(final long searchedId) throws SQLException {
 
-        try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(QUERY_COMPUTER_FROM_ID)) {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_FROM_ID)) {
 
             stmt.setLong(1, searchedId);
             ResultSet res = stmt.executeQuery();
@@ -84,7 +86,7 @@ public class ComputerSearcher implements Searcher<Computer> {
     @Override
     public List<Computer> fetchList() throws SQLException {
         List<Computer> computerList = new ArrayList<>();
-        try (Statement stmt = DBConnection.getConnection().createStatement()) {
+        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement()) {
             ResultSet res = stmt.executeQuery(QUERY_COMPUTER_LIST);
             while (res.next()) {
                 Computer computer = getComputerFromResultSet(res);
@@ -104,8 +106,8 @@ public class ComputerSearcher implements Searcher<Computer> {
     @Override
     public List<Computer> fetchWithOffset(final Page page) throws SQLException {
         List<Computer> computerList = new ArrayList<>();
-        try (PreparedStatement stmt = DBConnection.getConnection()
-                .prepareStatement(QUERY_COMPUTER_WITH_OFFSET)) {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_WITH_OFFSET)) {
 
             stmt.setInt(1, page.getPageLength());
             stmt.setInt(2, page.getOffset());
@@ -123,7 +125,7 @@ public class ComputerSearcher implements Searcher<Computer> {
      */
     @Override
     public int getNumberOfElements() throws SQLException {
-        try (Statement stmt = DBConnection.getConnection().createStatement()) {
+        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement()) {
 
             ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
             if (res.next()) {

@@ -45,6 +45,9 @@ public final class DBConnection {
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.setMaximumPoolSize(10);
+        config.addDataSourceProperty("maxReconnects", 5);
+        config.addDataSourceProperty("autoReconnect", true);
         ds = new HikariDataSource(config);
     }
 

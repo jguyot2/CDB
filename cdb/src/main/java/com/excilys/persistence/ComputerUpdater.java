@@ -1,5 +1,6 @@
 package com.excilys.persistence;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,8 +51,9 @@ public class ComputerUpdater {
      */
     public long createComputer(final Computer newComputer) throws SQLException {
         LOG.info("Création de l'instance de Computer suivante: " + newComputer);
-        try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(CREATE_COMPUTER,
-                Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(CREATE_COMPUTER,
+                        Statement.RETURN_GENERATED_KEYS)) {
 
             Optional<Date> introDateOpt = DateMapper.localDateToSqlDate(newComputer.getIntroduction());
             Date introDate = introDateOpt.orElse(null);
@@ -90,7 +92,8 @@ public class ComputerUpdater {
      */
     public int deleteById(final long id) throws SQLException {
         LOG.info("Suppression du pc d'id : " + id);
-        try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(DELETE_COMPUTER)) {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(DELETE_COMPUTER)) {
             stmt.setLong(1, id);
             return stmt.executeUpdate();
         }
@@ -107,7 +110,8 @@ public class ComputerUpdater {
     public int updateComputer(final Computer newComputer) throws SQLException {
         LOG.info("Mise à jour de l'instance de Computer suivante " + newComputer.toString());
 
-        try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(UPDATE_COMPUTER)) {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(UPDATE_COMPUTER)) {
 
             long id = newComputer.getId();
             Optional<Date> introDateOpt = DateMapper.localDateToSqlDate(newComputer.getIntroduction());

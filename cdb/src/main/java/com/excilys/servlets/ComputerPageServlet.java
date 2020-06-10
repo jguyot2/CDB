@@ -65,7 +65,7 @@ public class ComputerPageServlet extends HttpServlet {
         page.setTotalNumberOfElements(validator.getNumberOfElements());
 
         if (strPageNumber != null) {
-            page.setPageNumber(Integer.parseInt(strPageNumber));
+            page.setPageNumber(Integer.parseInt(strPageNumber) - 1);
         }
         if (strPageLength != null) {
             page.setPageLength(Integer.parseInt(strPageLength));

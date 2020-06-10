@@ -8,7 +8,9 @@ import com.excilys.model.Page;
 
 /**
  * Interface forçant à utiliser les mêmes noms de méthodes pour les diverses
- * classes de recherche (i.e qui recherchent des objets/informations dans la base)
+ * classes de recherche (i.e qui recherchent des objets/informations dans la
+ * base)
+ * 
  * @author jguyot2
  *
  * @param <T> Le type d'éléments concernés par la recherche (Company ou Computer)
