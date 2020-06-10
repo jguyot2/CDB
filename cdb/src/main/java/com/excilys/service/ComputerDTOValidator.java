@@ -14,6 +14,13 @@ import com.excilys.model.Computer;
 import com.excilys.model.ComputerDTO;
 import com.excilys.model.Page;
 
+/**
+ * Classe s'assurant que les requêtes/mises à jour liées à des instances de ComputerDTO 
+ * sont bien formées (i.e les instances passées en paramètre sont valides)
+ * avant de réaliser ces mises à jour
+ * @author jguyot2
+ *
+ */
 public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     private final CompanyDTOValidator companyDTOValidator = new CompanyDTOValidator();
     private final ComputerValidator computerValidator = new ComputerValidator();
@@ -23,14 +30,13 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      *
      * @param computerDTO
      *
-     * @return
      *
      * @throws InvalidComputerDTOException Si les champs du DTO ne sont pas des
      *         valeurs valides. Contient des valeurs de ComputerDTOProblems décrivant
      *         les valeurs posant problème
      * @throws InvalidComputerInstanceException si les champs sont valides, mais que
      *         l'instance de computer représentée ne l'est pas.
-     * @return l'identifiant d
+     * @return l'identifiant de l'ordinateur ajouté si la mise à jour a réussi, 0 sinon.
      */
     public long addComputerDTO(final ComputerDTO computerDTO)
             throws InvalidComputerDTOException, InvalidComputerInstanceException {
@@ -42,7 +48,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
         if (dtoInstanceProblems.size() > 0) {
             throw new InvalidComputerDTOException(dtoInstanceProblems);
         }
-        return this.computerValidator.createComputer(computer);
+        return this.computerValidator.addComputer(computer);
     }
 
     @Override
@@ -196,6 +202,6 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
         if(problems.size() > 0) {
             throw new InvalidComputerDTOException(problems);
         }
-        return computerValidator.updateComputer(computer);
+        return computerValidator.update(computer);
     }
 }

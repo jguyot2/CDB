@@ -15,15 +15,15 @@ import com.excilys.model.CompanyDTO;
  *
  */
 public final class CompanyMapper {
-    /**
-     */
+    /** */
     private static final Logger LOG = LoggerFactory.getLogger(CompanyMapper.class);
 
     /**
      * Conversion CompanyDTO > Company.
      *
-     * @param companyDTO le companyDTO à transmettre
-     * @return un optional contenant la valeur associée au DTO.
+     * @param companyDTO le companyDTO à convertir
+     * @return un optional contenant la valeur associée au DTO si la valeur du DTO est valide,
+     * un optional vide sinon
      */
     public static Optional<Company> companyDTOToCompany(final CompanyDTO companyDTO) {
         if (companyDTO == null) {
@@ -47,9 +47,11 @@ public final class CompanyMapper {
     }
 
     /**
+     * Conversion Company > CompanyDTO.
      * @param company
      * @return un optional contenant une instance de CompanyDTO correspondant au
-     *         paramètre, ou un optional vide sinon
+     *         paramètre, ou un optional vide si le paramètre est nul ou la valeur
+     *         invalide
      */
     public static Optional<CompanyDTO> companyToDTO(final Company company) {
         if (company == null) {

@@ -20,19 +20,30 @@ public final class ComputerMapper {
      */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerMapper.class);
 
+    /**
+     * Conversion ComputerDTO > Computer.
+     * 
+     * @param dtoComputer
+     * @return un Optional contenant la valeur de Computer associée au DTO si ce
+     *         dernier est cohérent (=les identifiants sont bien des nombres, et le
+     *         nom n'est pas vide).
+     */
     public static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer) {
         Company company = CompanyMapper.companyDTOToCompany(dtoComputer.getCompany()).orElse(null);
         return computerDTOToComputer(dtoComputer, company);
     }
 
     /**
-     *
+     * Conversion ComputerDTO > Computer avec le champ "manufacturer" donné.
+     * 
      * @param dtoComputer un DTO représentant un ordinateur.
-     * @param company Le fabricant de l'ordinateur
-     * @return l'ordinateur associé.
+     * @param manufacturer Le fabricant de l'ordinateur.
+     * @return un optional contenant l'ordinateur associé au DTO, avec l'attribut
+     *         "manufacturer" égal au second paramètre (pouvant être nul), ou un
+     *         Optional vide si les valeurs du DTO sont incohérentes.
      */
-    public static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer,
-            final Company company) {
+    private static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer,
+            final Company manufacturer) {
 
         if (dtoComputer == null) {
             LOG.info("DTO > computer : param nul");
@@ -57,14 +68,16 @@ public final class ComputerMapper {
         Optional<LocalDate> discontinuation = DateMapper
                 .stringToLocalDate(dtoComputer.getDiscontinuationDate());
 
-        return Optional.of(
-                new Computer(computerName, company, intro.orElse(null), discontinuation.orElse(null), id));
+        return Optional.of(new Computer(computerName, manufacturer, intro.orElse(null),
+                discontinuation.orElse(null), id));
     }
 
     /**
-     *
-     * @param c un ordinateur, non nul
-     * @return conversion d'une instance de Computer vers le DTO associé.
+     * Conversion Computer > ComputerDTO.
+     * 
+     * @param c un ordinateur à convertir
+     * @return un optional contenant une instance de ComputerDTO correspondant à la
+     * 
      */
     public static Optional<ComputerDTO> computerToDTO(final Computer c) {
         if (c == null) {

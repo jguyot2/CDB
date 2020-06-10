@@ -1,5 +1,6 @@
 package com.excilys.servlets;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class ShowComputerListServlet extends HttpServlet {
     /**
      * Envoi de la page affichant tous les ordinateurs.
      *
-     * @param request requête sans paramètre particulier.
+     * @param request requête sans paramètre.
      * @param response
      */
     @Override
@@ -56,7 +57,7 @@ public class ShowComputerListServlet extends HttpServlet {
             request.setAttribute("pageList", pagesToShow);
             rd.forward(request, response);
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error(e.getMessage());
             throw new ServletException(e);
         }

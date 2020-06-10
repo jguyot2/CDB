@@ -29,7 +29,7 @@ public class Error404Servlet extends HttpServlet {
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException {
         try {
-            response.sendRedirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+            response.sendRedirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ"); // TODO : pê ne pas mettre ça là
         } catch (IOException e) {
             throw new ServletException(e);
         }

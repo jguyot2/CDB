@@ -121,7 +121,7 @@ public class CLInterface {
         Computer createdComputer = new Computer(computerName, company, introduced, discontinued);
         long newIdComputer;
         try {
-            newIdComputer = computerValidator.createComputer(createdComputer);
+            newIdComputer = computerValidator.addComputer(createdComputer);
         } catch (InvalidComputerInstanceException e) {
             System.out.println("Instance incorrecte de Computer crée");
             for (ComputerInstanceProblems problem : e.getProblems()) {
@@ -148,7 +148,7 @@ public class CLInterface {
             return;
         }
 
-        if (computerValidator.deleteComputer(id) > 0) {
+        if (computerValidator.delete(id) > 0) {
             System.out.println("le PC a été supprimé");
         } else {
             System.out.println("L'ordinateur de n'a pas été supprimé dans la BD");
@@ -330,7 +330,7 @@ public class CLInterface {
         }
         int updated;
         try {
-            updated = computerValidator.updateComputer(foundComputer);
+            updated = computerValidator.update(foundComputer);
         } catch (InvalidComputerInstanceException e) {
             System.out.println("Instance incorrecte de Computer crée");
             for (ComputerInstanceProblems problem : e.getProblems()) {

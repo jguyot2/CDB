@@ -1,5 +1,11 @@
 package com.excilys.service;
 
+/**
+ * Énumération permettant de répertorier les problèmes pouvant être associés
+ * à une instance ComputerDTO incohérente.
+ * @author jguyot2
+ *
+ */
 public enum ComputerDTOProblems {
     INEXISTANT_COMPANY_ID("L'id correspondant au fabricant n'existe pas"),
     INEXISTENT_MANUFACTURER("L'id correspondant à l'entreprise n'existe pas"),
@@ -15,6 +21,10 @@ public enum ComputerDTOProblems {
         this.message = s;
     }
 
+    /**
+     * Explication du problème.
+     * @return une chaîne expliquant le problème courant d'une instance de ComputerDTO.
+     */
     public String getExplanation() {
         return this.message;
     }

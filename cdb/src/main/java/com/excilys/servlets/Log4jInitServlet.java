@@ -23,6 +23,7 @@ public class Log4jInitServlet extends HttpServlet {
 
     @Override
     public void init() {
+        //TODO : mettre une vraie initialisation ici
         Properties properties = new Properties();
         properties.setProperty("log4j.rootLogger", "TRACE,stdout,MyFile");
         properties.setProperty("log4j.rootCategory", "TRACE");

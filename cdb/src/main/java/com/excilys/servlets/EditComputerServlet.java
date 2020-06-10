@@ -1,5 +1,6 @@
 package com.excilys.servlets;
 
+import java.util.Arrays;
 import java.util.List;
 import java.io.IOException;
 import java.util.Optional;
@@ -56,7 +57,7 @@ public class EditComputerServlet extends HttpServlet {
             LOG.trace("doGEt");
             String strId = request.getParameter("id");
             long id = Long.parseLong(strId);
-            
+
             Optional<ComputerDTO> computer = this.validator.findById(id);
             if (!computer.isPresent()) {
                 LOG.debug("The computer was not found");
@@ -77,7 +78,8 @@ public class EditComputerServlet extends HttpServlet {
     }
 
     /**
-     * Paramètres : id computerName introduced discontinued companyId
+     * Paramètres : id computerName introduced discontinued companyId représentant la
+     * nouvelle valeur de l'ordinateur modifié
      * 
      * @throws ServletException
      */
@@ -113,7 +115,7 @@ public class EditComputerServlet extends HttpServlet {
                 return;
             } catch (IllegalArgumentException e) {
                 RequestDispatcher rd = request.getRequestDispatcher("/400");
-                request.setAttribute("errorCause",  e.getMessage());
+                request.setAttribute("errorCause", e.getMessage());
                 rd.forward(request, response);
                 return;
             }
@@ -124,15 +126,17 @@ public class EditComputerServlet extends HttpServlet {
     }
 
     /**
+     * Construction d'un ComputerDTO à partir des params de requête POST de la page
      * 
      * @param request
      * @return
-     * @throws NumberFormatException quand le 
+     * @throws NumberFormatException quand le
      * @throws IllegalArgumentException
+     * @throws InvalidComputerDTOException
      */
     private ComputerDTO getComputerDTOFromParameters(HttpServletRequest request)
-            throws NumberFormatException, IllegalArgumentException {
-        String idStr = request.getParameter("id"); // TODO : exception si l'id est invalide
+            throws NumberFormatException, IllegalArgumentException, InvalidComputerDTOException {
+        String idStr = request.getParameter("id");
         if (idStr == null || idStr.trim().isEmpty() || "0".equals(idStr.trim())) {
             throw new IllegalArgumentException("No valid identifier");
         }
@@ -142,7 +146,9 @@ public class EditComputerServlet extends HttpServlet {
         String companyId = request.getParameter("companyId");
         CompanyDTO company = null;
         if (companyId != null && !"0".equals(companyId)) {
-            company = companyValidator.findById(Long.parseLong(companyId)).orElse(null); // TODO
+            company = companyValidator.findById(Long.parseLong(companyId))
+                    .orElseThrow(() -> new InvalidComputerDTOException(
+                            Arrays.asList(ComputerDTOProblems.INEXISTANT_COMPANY_ID))); // TODO
         }
         return new ComputerDTO(name, idStr, company, intro, disco);
     }

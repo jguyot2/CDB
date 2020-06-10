@@ -41,7 +41,7 @@ public class CompanySearcher implements Searcher<Company> {
      * @param searchedId l'identifiant de l'entreprise identifiée
      *
      * @return Optional.empty() si aucune entreprise n'a été trouvée, ou une instance
-     *         de Optional contenant l'entreprise trouvée sinon
+     *         de Optional contenant l'entreprise trouvée
      */
     @Override
     public Optional<Company> fetchById(final long searchedId) throws SQLException {

@@ -53,7 +53,7 @@ public class ComputerValidatorTest {
 
         for (Computer c : fakeComputerList) {
             try {
-                Assert.assertEquals(24L, validator.createComputer(c));
+                Assert.assertEquals(24L, validator.addComputer(c));
             } catch (InvalidComputerInstanceException e) {
                 System.out.println(c);
                 Assert.fail();
@@ -63,7 +63,7 @@ public class ComputerValidatorTest {
         for (int i = 0; i < 2; ++i) {
             Computer c = invalidComputerInstanceList[i];
             try {
-                validator.createComputer(c);
+                validator.addComputer(c);
                 Assert.fail();
             } catch (InvalidComputerInstanceException exn) {
                 Assert.assertEquals(exn.getProblems().size(), 1);
@@ -73,7 +73,7 @@ public class ComputerValidatorTest {
 
         Computer c2 = invalidComputerInstanceList[2];
         try {
-            validator.createComputer(c2);
+            validator.addComputer(c2);
             Assert.fail();
         } catch (InvalidComputerInstanceException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
@@ -83,7 +83,7 @@ public class ComputerValidatorTest {
 
         Computer c3 = invalidComputerInstanceList[3];
         try {
-            validator.createComputer(c3);
+            validator.addComputer(c3);
             Assert.fail();
         } catch (InvalidComputerInstanceException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
@@ -92,7 +92,7 @@ public class ComputerValidatorTest {
         }
         Computer c4 = invalidComputerInstanceList[4];
         try {
-            validator.createComputer(c4);
+            validator.addComputer(c4);
             Assert.fail();
         } catch (InvalidComputerInstanceException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);
@@ -102,7 +102,7 @@ public class ComputerValidatorTest {
         }
         Computer c5 = invalidComputerInstanceList[5];
         try {
-            validator.createComputer(c5);
+            validator.addComputer(c5);
             Assert.fail();
         } catch (InvalidComputerInstanceException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);
@@ -117,7 +117,7 @@ public class ComputerValidatorTest {
 
         Mockito.when(computerUpdaterMock.deleteById(56)).thenReturn(1);
 
-        Assert.assertEquals(1, validator.deleteComputer(56));
+        Assert.assertEquals(1, validator.delete(56));
     }
 
     @Test
@@ -188,7 +188,7 @@ public class ComputerValidatorTest {
 
         for (Computer c : fakeComputerList) {
             try {
-                Assert.assertEquals(1, validator.updateComputer(c));
+                Assert.assertEquals(1, validator.update(c));
             } catch (InvalidComputerInstanceException e) {
                 Assert.fail();
             }
@@ -197,7 +197,7 @@ public class ComputerValidatorTest {
         for (int i = 0; i < 2; ++i) {
             Computer c = invalidComputerInstanceList[i];
             try {
-                validator.updateComputer(c);
+                validator.update(c);
                 Assert.fail();
             } catch (InvalidComputerInstanceException exn) {
                 Assert.assertEquals(exn.getProblems().size(), 1);
@@ -207,7 +207,7 @@ public class ComputerValidatorTest {
 
         Computer c2 = invalidComputerInstanceList[2];
         try {
-            validator.updateComputer(c2);
+            validator.update(c2);
             Assert.fail();
         } catch (InvalidComputerInstanceException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
@@ -217,7 +217,7 @@ public class ComputerValidatorTest {
 
         Computer c3 = invalidComputerInstanceList[3];
         try {
-            validator.updateComputer(c3);
+            validator.update(c3);
             Assert.fail();
         } catch (InvalidComputerInstanceException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
@@ -226,7 +226,7 @@ public class ComputerValidatorTest {
         }
         Computer c4 = invalidComputerInstanceList[4];
         try {
-            validator.updateComputer(c4);
+            validator.update(c4);
             Assert.fail();
         } catch (InvalidComputerInstanceException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);
@@ -236,7 +236,7 @@ public class ComputerValidatorTest {
         }
         Computer c5 = invalidComputerInstanceList[5];
         try {
-            validator.updateComputer(c5);
+            validator.update(c5);
             Assert.fail();
         } catch (InvalidComputerInstanceException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);

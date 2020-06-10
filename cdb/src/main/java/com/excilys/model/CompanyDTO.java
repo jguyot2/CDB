@@ -46,7 +46,7 @@ public final class CompanyDTO {
 
     @Override
     public boolean equals(final Object o) {
-        return o instanceof CompanyDTO ? equals((CompanyDTO) o) : false;
+        return o instanceof CompanyDTO && equals((CompanyDTO) o);
     }
 
     /**

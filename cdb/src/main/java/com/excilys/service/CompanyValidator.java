@@ -12,6 +12,13 @@ import com.excilys.model.Company;
 import com.excilys.model.Page;
 import com.excilys.persistence.CompanySearcher;
 
+/**
+ * Classe vérifiant que les requêtes sur les entreprises sont bien formée et
+ * cohérentes.
+ * 
+ * @author jguyot2
+ *
+ */
 public class CompanyValidator implements SearchValidator<Company> {
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(CompanyValidator.class);
@@ -60,9 +67,9 @@ public class CompanyValidator implements SearchValidator<Company> {
      * Recherche d'une entreprise à partir de son identifiant.
      *
      * @param id l'identifiant recherché
-     * @return une instance de Optional contenant une instance de Company si une
-     *         ligne correspondante a été trouvée dans la BD ou une instance de
-     *         Optional vide si aucune entreprise n'a été trouvée
+     * @return un Optional contenant une instance de Company si une ligne
+     *         correspondante a été trouvée dans la BD ou une instance de Optional
+     *         vide si aucune entreprise n'a été trouvée
      */
     @Override
     public Optional<Company> findById(final long id) {
@@ -90,7 +97,7 @@ public class CompanyValidator implements SearchValidator<Company> {
 
     /**
      * change l'instance de la couche persistance Uniquement utilisé pour les tests.
-     *
+     * 
      * @param newCompanySearcher la nouvelle
      */
     public void setCompanySearcher(final CompanySearcher newCompanySearcher) {

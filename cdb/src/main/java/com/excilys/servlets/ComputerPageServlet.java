@@ -19,7 +19,7 @@ import com.excilys.service.ComputerDTOValidator;
 public class ComputerPageServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    // TODO : renommer ça ?
+
     private static final ComputerDTOValidator validator = new ComputerDTOValidator();
 
     /**

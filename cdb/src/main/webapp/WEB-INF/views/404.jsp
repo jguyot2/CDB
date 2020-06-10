@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<% response.setStatus(404); %>
 <html>
 <head>
     <title>Computer Database</title>

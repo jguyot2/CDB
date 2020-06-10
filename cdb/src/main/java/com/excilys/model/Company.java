@@ -57,7 +57,7 @@ public class Company {
 
     @Override
     public boolean equals(final Object o) {
-        return o instanceof Company ? equals((Company) o) : false;
+        return (o instanceof Company && equals((Company) o));
     }
 
     /**
@@ -87,7 +87,6 @@ public class Company {
         this.id = companyId;
     }
 
-    /** */
     @Override
     public String toString() {
         return this.name;

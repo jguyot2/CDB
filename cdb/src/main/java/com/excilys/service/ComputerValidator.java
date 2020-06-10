@@ -45,7 +45,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
      *
      * @throws InvalidComputerInstanceException si l'instance en paramètre
      */
-    public long createComputer(final Computer createdComputer) throws InvalidComputerInstanceException {
+    public long addComputer(final Computer createdComputer) throws InvalidComputerInstanceException {
         checkComputerValidity(createdComputer);
         try {
             return this.computerUpdater.createComputer(createdComputer);
@@ -63,7 +63,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
      * @return 1 si l'ordi a été supprimé, 0 si l'id n'a pas été trouvé. -1 s'il y a
      *         eu une erreur dans la bd
      */
-    public int deleteComputer(final long id) {
+    public int delete(final long id) {
         try {
             return this.computerUpdater.deleteById(id);
         } catch (SQLException e) {
@@ -161,7 +161,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
      * @throws InvalidComputerInstanceException Si l'instance en paramètre n'est pas
      *         valide
      */
-    public int updateComputer(final Computer newComputervalue) throws InvalidComputerInstanceException {
+    public int update(final Computer newComputervalue) throws InvalidComputerInstanceException {
         LOG.info("Mise à jour d'un ordinateur dans la base. Test de validité");
         checkComputerValidity(newComputervalue);
         LOG.info("Instance valide : Mise à jour de la base.");
