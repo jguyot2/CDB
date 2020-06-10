@@ -65,7 +65,7 @@ public class ComputerPageServlet extends HttpServlet {
         page.setTotalNumberOfElements(validator.getNumberOfElements());
 
         if (strPageNumber != null) {
-            page.setPageNumber(Integer.parseInt(strPageNumber) - 1);
+            page.setPageNumber(Integer.parseInt(strPageNumber));
         }
         if (strPageLength != null) {
             page.setPageLength(Integer.parseInt(strPageLength));
@@ -83,7 +83,7 @@ public class ComputerPageServlet extends HttpServlet {
         List<ComputerDTO> computerList = validator.fetchWithOffset(page);
 
         List<Integer> pagesToShow = new ArrayList<>();
-        int firstPageToShow = Math.max(1, page.getPageNumber() - 2);
+        int firstPageToShow = Math.max(0, page.getPageNumber() - 2);
         int nbPages = page.getNbOfPages();
         for (int i = 0; i < 5 && firstPageToShow + i < nbPages; ++i) {
             pagesToShow.add(firstPageToShow + i);

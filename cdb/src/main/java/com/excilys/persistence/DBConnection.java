@@ -37,6 +37,7 @@ public final class DBConnection {
     private static final String USERNAME = "admincdb";
 
     static {
+        
         // TODO : tout mettre dans un fichier de config.
         config.setDriverClassName(DRIVER_NAME);
         config.setJdbcUrl(URL_DB + DB_NAME + "?useLegacyDatetimeCode=false&serverTimezone=Europe/Paris");
@@ -52,6 +53,7 @@ public final class DBConnection {
     }
 
     public static Connection getConnection() throws SQLException {
+        LOG.trace("Récupération d'une connexion");
         return ds.getConnection();
     }
 
