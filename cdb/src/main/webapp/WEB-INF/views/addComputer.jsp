@@ -5,7 +5,9 @@
 --%>
 
 <%@ page import="com.excilys.model.CompanyDTO,java.util.List"%>
-<%  List<CompanyDTO> companyList = (List<CompanyDTO>) request.getAttribute("companyList"); %>
+<%
+    List<CompanyDTO> companyList = (List<CompanyDTO>) request.getAttribute("companyList");
+%>
 
 <!DOCTYPE html>
 <html>
@@ -33,7 +35,7 @@
 		var companyId = form["companyId"].value; // Inutile
 		console.log("intro:");
 		console.log(introDateStr);
-		
+
 		if (introDateStr.trim() != "") {
 			var introDate = Date.parse(introDateStr);
 			if (discoDateStr.trim() != "") {
@@ -84,7 +86,7 @@
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
 									class="form-control" id="companyId" name="companyId">
-									   <option value="0">--</option>
+									<option value="0">--</option>
 									<%
 									    for (CompanyDTO company : companyList) {
 									%>
