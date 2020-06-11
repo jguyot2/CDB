@@ -3,7 +3,7 @@
 	Attributs (optionnels) :
 		errorCause : Description de l'erreur 
  --%>
-<%response.setStatus(400); %>
+<%response.setStatus(00); %>
 <html>
 <head>
 <title>Computer Database</title>

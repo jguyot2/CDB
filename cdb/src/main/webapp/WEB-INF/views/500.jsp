@@ -1,8 +1,8 @@
-<!--
+<%--
 	Erreur 500.
 	Attributs: 
 		"exn" : Exception ayant causé l'erreur.
--->
+--%>
 <!DOCTYPE html>
 <html>
 <head>
