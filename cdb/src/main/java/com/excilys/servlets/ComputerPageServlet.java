@@ -54,9 +54,11 @@ public class ComputerPageServlet extends HttpServlet {
 
     /**
      * A partir de la requête en paramètre, crée un objet Page correspondant
+     * 
      * @param request la requête
-     * @return 
-     * @throws NumberFormatException si les paramètres ne correspondent pas à des nombres
+     * @return
+     * @throws NumberFormatException si les paramètres ne correspondent pas à des
+     *         nombres
      */
     private Page getPageFromRequest(final HttpServletRequest request) throws NumberFormatException {
         String strPageNumber = request.getParameter("pageNumber");
@@ -76,6 +78,7 @@ public class ComputerPageServlet extends HttpServlet {
 
     /**
      * Ajout des attributs qui seront passés au .jsp à la requête courante
+     * 
      * @param request
      * @param page
      */
@@ -85,7 +88,7 @@ public class ComputerPageServlet extends HttpServlet {
         List<Integer> pagesToShow = new ArrayList<>();
         int firstPageToShow = Math.max(0, page.getPageNumber() - 2);
         int nbPages = page.getNbOfPages();
-        for (int i = 0; i < 5 && firstPageToShow + i < nbPages; ++i) {
+        for (int i = 0; (i < 5) && ((firstPageToShow + i) < nbPages); ++i) {
             pagesToShow.add(firstPageToShow + i);
         }
 

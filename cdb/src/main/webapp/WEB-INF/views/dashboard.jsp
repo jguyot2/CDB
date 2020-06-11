@@ -11,8 +11,7 @@
 <%@ page
 	import="com.excilys.model.ComputerDTO,com.excilys.model.Page,java.util.ArrayList,java.util.List,java.util.Objects"%>
 <%
-    List<ComputerDTO> computerList =
-        (List<ComputerDTO>) request.getAttribute("computerList");
+    List<ComputerDTO> computerList = (List<ComputerDTO>) request.getAttribute("computerList");
     Page currentPage = (Page) request.getAttribute("page");
     List<Integer> pageList = (List<Integer>) request.getAttribute("pageList");
     if (pageList == null) {
@@ -32,16 +31,19 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard.html"> Application -
+			<a class="navbar-brand" href="page"> Application -
 				Computer Database </a>
 		</div>
 	</header>
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle"><%= currentPage.getTotalNumberOfElements() %> Computers found</h1>
+			<h1 id="homeTitle"><%=currentPage.getTotalNumberOfElements()%>
+				Computers found
+			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
+					<!-- TODO : Recherche d'un ordinateur -->
 					<form id="searchForm" action="#" method="GET" class="form-inline">
 
 						<input type="search" id="searchbox" name="search"
@@ -57,7 +59,7 @@
 				</div>
 			</div>
 		</div>
-
+		<!-- Form de suppression  -->
 		<form id="deleteForm" action="#" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
@@ -68,7 +70,7 @@
 					<tr>
 						<!-- Variable declarations for passing labels as parameters -->
 						<!-- Table header for Computer Name -->
-
+						<!-- TODO : suppression d'ordinateur -->
 						<th class="editMode" style="width: 60px; height: 22px;"><input
 							type="checkbox" id="selectall" /> <span
 							style="vertical-align: top;"> - <a href="#"
@@ -92,13 +94,13 @@
 					%>
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
-							class="cb" value="0"></td>
-						<td><a href="editComputer?id=<%=c.getId()%>" onclick=""> <%=c.getName()%>
+							class="cb" value="<%=c.getId()%>"></td>
+						<td><a href="editComputer?id=<%=c.getId()%>" onclick="">
+								<%=c.getName()%>
 						</a></td>
 						<td><%=Objects.toString(c.getIntroductionDate(), "")%></td>
 						<td><%=Objects.toString(c.getDiscontinuationDate(), "")%></td>
-						<td><%=Objects.toString(
-                    c.getCompany() == null ? "" : c.getCompany().getName(), "")%></td>
+						<td><%=Objects.toString(c.getCompany() == null ? "" : c.getCompany().getName(), "")%></td>
 						<%
 						    }
 						%>
@@ -112,16 +114,17 @@
 		<div class="container text-center">
 			<ul class="pagination">
 				<li><a
-					href="page?pageNumber=<%=Math.max(1, currentPage.getPageNumber() - 1) %>&pageLength=<%=currentPage.getPageLength()%>"
+					href="page?pageNumber=<%=Math.max(1, currentPage.getPageNumber() - 1)%>&pageLength=<%=currentPage.getPageLength()%>"
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
 
-				<!-- TODO -->
 				<%
 				    for (Integer pageNumber : pageList) {
 				%>
-				<li><a href="page?pageNumber=<%=pageNumber%>&pageLength=
-					<%=currentPage.getPageLength()%>"> <%=pageNumber%>
+				<li><a
+					href="page?pageNumber=<%=pageNumber%>&pageLength=
+					<%=currentPage.getPageLength()%>">
+						<%=pageNumber%>
 				</a></li>
 				<%
 				    }
