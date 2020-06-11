@@ -16,45 +16,25 @@ import com.zaxxer.hikari.HikariDataSource;
  *
  */
 public final class DBConnection {
-    /////////////////////////////////////////////////////////
-    private static HikariConfig config = new HikariConfig();
 
-    /** */
-    private static final String DB_NAME = "computer-database-db";
-    /** */
-    private static final String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
     private static HikariDataSource ds;
 
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerUpdater.class);
 
     /** */
-    private static final String PASSWORD = "qwerty1234";
-
-    /** */
-    private static final String URL_DB = "jdbc:mysql://localhost:3306/";
-    /** */
-    private static final String USERNAME = "admincdb";
-
-    static {
-        
-        // TODO : tout mettre dans un fichier de config.
-        config.setDriverClassName(DRIVER_NAME);
-        config.setJdbcUrl(URL_DB + DB_NAME + "?useLegacyDatetimeCode=false&serverTimezone=Europe/Paris");
-        config.setUsername(USERNAME);
-        config.setPassword(PASSWORD);
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        config.setMaximumPoolSize(10);
-        config.addDataSourceProperty("maxReconnects", 5);
-        config.addDataSourceProperty("autoReconnect", true);
-        ds = new HikariDataSource(config);
-    }
 
     public static Connection getConnection() throws SQLException {
+        if (ds == null) {
+            init();
+        }
         LOG.trace("Récupération d'une connexion");
         return ds.getConnection();
+    }
+
+    private static void init() {
+        HikariConfig config = new HikariConfig("/hikaricp.properties");
+        ds = new HikariDataSource(config);
     }
 
 }
