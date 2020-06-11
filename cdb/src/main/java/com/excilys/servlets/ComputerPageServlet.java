@@ -3,6 +3,7 @@ package com.excilys.servlets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -52,9 +53,30 @@ public class ComputerPageServlet extends HttpServlet {
         }
     }
 
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Map<String, String[]> params = request.getParameterMap();
+
+        StringBuilder message = new StringBuilder("");
+        for (String param : params.keySet()) {
+            String[] values = params.get(param);
+
+            message.append(param).append("= ");
+            for (String val : values) {
+                message.append(val + " , ");
+            }
+            message.append(" <br/>");
+        }
+
+        request.setAttribute("errorCause", message.toString());
+        request.getRequestDispatcher("/400").forward(request, response);
+
+    }
+
     /**
      * A partir de la requête en paramètre, crée un objet Page correspondant
-     * 
+     *
      * @param request la requête
      * @return
      * @throws NumberFormatException si les paramètres ne correspondent pas à des
@@ -78,7 +100,7 @@ public class ComputerPageServlet extends HttpServlet {
 
     /**
      * Ajout des attributs qui seront passés au .jsp à la requête courante
-     * 
+     *
      * @param request
      * @param page
      */
