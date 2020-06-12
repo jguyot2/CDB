@@ -23,6 +23,37 @@ public class ComputerValidator implements SearchValidator<Computer> {
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerValidator.class);
 
+    private static void checkComputerValidity(final Computer computer)
+            throws InvalidComputerInstanceException {
+        List<ComputerInstanceProblems> problems = getComputerInstanceProblems(computer);
+        if (problems.size() > 0) {
+            LOG.debug("Détection d'une instance de Computer invalide : " + computer);
+            throw new InvalidComputerInstanceException(problems);
+        }
+    }
+
+    /**
+     * @param computer l'instance de Computer à tester.
+     *
+     * @return Une liste contenant la liste des problèmes sur l'instance de Computer
+     *         passée en paramètre
+     */
+    private static List<ComputerInstanceProblems> getComputerInstanceProblems(final Computer computer) {
+        List<ComputerInstanceProblems> problems = new ArrayList<>();
+        if ((computer.getName() == null) || computer.getName().trim().isEmpty()) {
+            problems.add(ComputerInstanceProblems.INVALID_NAME);
+        }
+        if (computer.getIntroduction() != null) {
+            if ((computer.getDiscontinuation() != null)
+                    && (computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0)) {
+                problems.add(ComputerInstanceProblems.INVALID_DISCONTINUATION_DATE);
+            }
+        } else if (computer.getDiscontinuation() != null) {
+            problems.add(ComputerInstanceProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION);
+        }
+        return problems;
+    }
+
     /** */
     private ComputerSearcher computerSearcher;
 
@@ -135,6 +166,33 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
+    public int getNumberOfFoundElements(String search) {
+        try {
+            return this.computerSearcher.getNumberOfFoundElements(search);
+        } catch (SQLException e) {
+            LOG.error("Erreur dans la bd : ", e);
+            return 0;
+        }
+    }
+
+    public List<Computer> searchComputerPageWithName(String searchedName, Page p) {
+        try {
+            return this.computerSearcher.searchByNameWithPage(searchedName, p);
+        } catch (SQLException e) {
+            LOG.error("Erreur lors de la recherche avec nom + page", e);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Computer> searchComputerWithName(String searchedName) {
+        try {
+            return this.computerSearcher.searchByName(searchedName);
+        } catch (SQLException e) {
+            LOG.error("Erreur dans la base lors d'une recherche par nom : ", e);
+            return new ArrayList<>();
+        }
+    }
+
     /**
      * Changement des attributs associés à la persistance, uniquement utilisé pour
      * des tests avec des classes mock.
@@ -171,35 +229,5 @@ public class ComputerValidator implements SearchValidator<Computer> {
             LOG.error("updateComputer :" + e.getMessage(), e);
             return -1;
         }
-    }
-
-    private void checkComputerValidity(final Computer computer) throws InvalidComputerInstanceException {
-        List<ComputerInstanceProblems> problems = getComputerInstanceProblems(computer);
-        if (problems.size() > 0) {
-            LOG.debug("Détection d'une instance de Computer invalide : " + computer);
-            throw new InvalidComputerInstanceException(problems);
-        }
-    }
-
-    /**
-     * @param computer l'instance de Computer à tester.
-     *
-     * @return Une liste contenant la liste des problèmes sur l'instance de Computer
-     *         passée en paramètre
-     */
-    private List<ComputerInstanceProblems> getComputerInstanceProblems(final Computer computer) {
-        List<ComputerInstanceProblems> problems = new ArrayList<>();
-        if (computer.getName() == null || computer.getName().trim().isEmpty()) {
-            problems.add(ComputerInstanceProblems.INVALID_NAME);
-        }
-        if (computer.getIntroduction() != null) {
-            if (computer.getDiscontinuation() != null
-                    && computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0) {
-                problems.add(ComputerInstanceProblems.INVALID_DISCONTINUATION_DATE);
-            }
-        } else if (computer.getDiscontinuation() != null) {
-            problems.add(ComputerInstanceProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION);
-        }
-        return problems;
     }
 }

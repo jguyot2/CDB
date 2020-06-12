@@ -33,8 +33,8 @@ public final class DBConnection {
     }
 
     private static void init() {
+        LOG.trace("intiialisation du dataSource");
         HikariConfig config = new HikariConfig("/hikaricp.properties");
         ds = new HikariDataSource(config);
     }
-
 }

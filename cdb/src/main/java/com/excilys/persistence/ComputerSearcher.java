@@ -26,6 +26,9 @@ import com.excilys.model.Page;
 public class ComputerSearcher implements Searcher<Computer> {
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerSearcher.class);
+    private static final String QUERY_COMPUTER_SEARCH_WITH_NAME = "SELECT computer.id, computer.name, introduced, discontinued, "
+            + "company.id, company.name " + "FROM computer LEFT JOIN company "
+            + "ON computer.company_id = company.id " + "WHERE computer.name LIKE ?";
 
     /** */
     private static final String QUERY_COMPUTER_FROM_ID = "SELECT computer.id, computer.name, introduced, discontinued, "
@@ -38,12 +41,46 @@ public class ComputerSearcher implements Searcher<Computer> {
             + "ON computer.company_id = company.id";
 
     /** */
-    private static final String QUERY_COMPUTER_WITH_OFFSET = "SELECT computer.id, computer.name, introduced, discontinued, "
-            + "company.id, company.name " + "FROM computer LEFT JOIN company "
+    private static final String QUERY_COMPUTER_WITH_OFFSET = "SELECT computer.id, computer.name,"
+            + " introduced, discontinued, " + "company.id, company.name " + "FROM computer LEFT JOIN company "
             + "ON computer.company_id = company.id " + "ORDER BY computer.id " + "LIMIT ? OFFSET ?";
 
+    private static final String QUERY_COMPUTER_SEARCH_NAME_WITH_OFFSET = "SELECT computer.id, computer.name,"
+            + " introduced, discontinued, " + "company.id, company.name " + "FROM computer LEFT JOIN company "
+            + "WHERE computer.name LIKE ?" + "ON computer.company_id = company.id " + "ORDER BY computer.id "
+            + "LIMIT ? OFFSET ?";
     /** */
     private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM computer";
+    private static final String REQUEST_NB_OF_ROWS_SEARCH = "SELECT count(id) FROM computer WHERE computer.name LIKE ?";
+
+    /**
+     * Fonction permettant de récupérer une instance de Computer à partir d'une ligne
+     * de ResultSet à partir de requêtes comportant un schéma défini.
+     *
+     * @param res l'instance de ResultSet résultant d'une requête sur les tables
+     *        computer et company, qui pointe vers une des lignes renvoyée par la
+     *        requête
+     *
+     * @return une instance de Computer correspondant à la ligne sur laquelle le
+     *         curseur de res pointe
+     *
+     * @throws SQLException
+     */
+    private static Computer getComputerFromResultSet(final ResultSet res) throws SQLException {
+        long computerId = res.getLong("computer.id");
+        String computerName = res.getString("computer.name");
+
+        Optional<LocalDate> introducedDateOpt = DateMapper.sqlDateToLocalDate(res.getDate("introduced"));
+        LocalDate introduced = introducedDateOpt.orElse(null);
+
+        Optional<LocalDate> discontinuedDateOpt = DateMapper.sqlDateToLocalDate(res.getDate("discontinued"));
+        LocalDate discontinued = discontinuedDateOpt.orElse(null);
+
+        String companyName = res.getString("company.name");
+        Company company = companyName == null ? null : new Company(companyName, res.getLong("company.id"));
+
+        return new Computer(computerName, company, introduced, discontinued, computerId);
+    }
 
     /** */
     public ComputerSearcher() {
@@ -63,7 +100,6 @@ public class ComputerSearcher implements Searcher<Computer> {
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_FROM_ID)) {
-
             stmt.setLong(1, searchedId);
             ResultSet res = stmt.executeQuery();
             if (!res.next()) {
@@ -136,32 +172,49 @@ public class ComputerSearcher implements Searcher<Computer> {
         return -1;
     }
 
-    /**
-     * Fonction permettant de récupérer une instance de Computer à partir d'une ligne
-     * de ResultSet à partir de requêtes comportant un schéma défini.
-     *
-     * @param res l'instance de ResultSet résultant d'une requête sur les tables
-     *        computer et company, qui pointe vers une des lignes renvoyée par la
-     *        requête
-     *
-     * @return une instance de Computer correspondant à la ligne sur laquelle le
-     *         curseur de res pointe
-     *
-     * @throws SQLException
-     */
-    private Computer getComputerFromResultSet(final ResultSet res) throws SQLException {
-        long computerId = res.getLong("computer.id");
-        String computerName = res.getString("computer.name");
+    public int getNumberOfFoundElements(String search) throws SQLException {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(REQUEST_NB_OF_ROWS_SEARCH)) {
+            String searchedPattern = "%" + search.replace("%", "\\%") + "%";
+            stmt.setString(1, searchedPattern);
+            ResultSet res = stmt.executeQuery();
+            if (!res.next()) {
+                LOG.error("no elements found");
+                return 0;
+            }
+            return res.getInt(1);
+        }
 
-        Optional<LocalDate> introducedDateOpt = DateMapper.sqlDateToLocalDate(res.getDate("introduced"));
-        LocalDate introduced = introducedDateOpt.orElse(null);
+    }
 
-        Optional<LocalDate> discontinuedDateOpt = DateMapper.sqlDateToLocalDate(res.getDate("discontinued"));
-        LocalDate discontinued = discontinuedDateOpt.orElse(null);
+    public List<Computer> searchByName(String researchedString) throws SQLException {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_SEARCH_WITH_NAME);) {
+            String searchedPattern = "%" + researchedString.replace("%", "\\%") + "%";
+            stmt.setString(1, searchedPattern);
+            List<Computer> result = new ArrayList<>();
+            ResultSet res = stmt.executeQuery();
+            while (res.next()) {
+                result.add(getComputerFromResultSet(res));
+            }
+            return result;
+        }
+    }
 
-        String companyName = res.getString("company.name");
-        Company company = companyName == null ? null : new Company(companyName, res.getLong("company.id"));
+    public List<Computer> searchByNameWithPage(String researchedString, Page p) throws SQLException {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_SEARCH_NAME_WITH_OFFSET);) {
+            String searchedPattern = "%" + researchedString.replace("%", "\\%") + "%";
+            stmt.setString(1, searchedPattern);
+            stmt.setInt(2, p.getLimit());
+            stmt.setInt(3, p.getOffset());
+            ResultSet res = stmt.executeQuery();
+            List<Computer> result = new ArrayList<>();
+            while (res.next()) {
+                result.add(getComputerFromResultSet(res));
+            }
 
-        return new Computer(computerName, company, introduced, discontinued, computerId);
+            return result;
+        }
     }
 }

@@ -14,6 +14,7 @@
     List<ComputerDTO> computerList = (List<ComputerDTO>) request.getAttribute("computerList");
     Page currentPage = (Page) request.getAttribute("page");
     List<Integer> pageList = (List<Integer>) request.getAttribute("pageList");
+    String message = (String) request.getAttribute("message");
     if (pageList == null) {
         pageList = new ArrayList<>();
     }
@@ -31,83 +32,94 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="page"> Application -
-				Computer Database </a>
+			<a class="navbar-brand" href="page"> Application - Computer
+				Database </a>
 		</div>
 	</header>
 
 	<section id="main">
+		<%
+		    if (message != null) {
+		%>
 		<div class="container">
-			<h1 id="homeTitle"><%=currentPage.getTotalNumberOfElements()%>
-				Computers found
-			</h1>
-			<div id="actions" class="form-horizontal">
-				<div class="pull-left">
-					<!-- TODO : Recherche d'un ordinateur -->
-					<form id="searchForm" action="#" method="GET" class="form-inline">
-
-						<input type="search" id="searchbox" name="search"
-							class="form-control" placeholder="Search name" /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
-							class="btn btn-primary" />
-					</form>
-				</div>
-				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
-				</div>
+			<div class="alert alert-danger">
+				<%=message%>
+				<br /> 
 			</div>
 		</div>
-		<!-- Form de suppression  -->
-		<form id="deleteForm" action="#" method="POST">
-			<input type="hidden" name="selection" value="">
-		</form>
-
-		<div class="container" style="margin-top: 10px;">
-			<table class="table table-striped table-bordered">
-				<thead>
-					<tr>
-						<!-- Variable declarations for passing labels as parameters -->
-						<!-- Table header for Computer Name -->
-						<!-- TODO : suppression d'ordinateur -->
-						<th class="editMode" style="width: 60px; height: 22px;"><input
-							type="checkbox" id="selectall" /> <span
-							style="vertical-align: top;"> - <a href="#"
-								id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
-									class="fa fa-trash-o fa-lg"></i>
-							</a>
-						</span></th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
-						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date</th>
-						<!-- Table header for Company -->
-						<th>Company</th>
-
-					</tr>
-				</thead>
-				<!-- Browse attribute computers -->
-				<tbody>
-					<%
-					    for (ComputerDTO c : computerList) {
-					%>
-					<tr>
-						<td class="editMode"><input type="checkbox" name="cb"
-							class="cb" value="<%=c.getId()%>"></td>
-						<td><a href="editComputer?id=<%=c.getId()%>" onclick="">
-								<%=c.getName()%>
-						</a></td>
-						<td><%=Objects.toString(c.getIntroductionDate(), "")%></td>
-						<td><%=Objects.toString(c.getDiscontinuationDate(), "")%></td>
-						<td><%=Objects.toString(c.getCompany() == null ? "" : c.getCompany().getName(), "")%></td>
-						<%
-						    }
-						%>
-					</tr>
-				</tbody>
-			</table>
+		<%
+		    }
+		%>
+	</section>
+	<div class="container">
+		<h1 id="homeTitle"><%=currentPage.getTotalNumberOfElements()%>
+			Computers found
+		</h1>
+		<div id="actions" class="form-horizontal">
+			<div class="pull-left">
+				<!-- TODO : Recherche d'un ordinateur -->
+				<form id="searchForm" action="#" method="GET" class="form-inline">
+					<input type="search" id="searchbox" name="search"
+						class="form-control" placeholder="Search name" /> <input
+						type="submit" id="searchsubmit" value="Filter by name"
+						class="btn btn-primary" />
+				</form>
+			</div>
+			<div class="pull-right">
+				<a class="btn btn-success" id="addComputer" href="addComputer">Add
+					Computer</a> <a class="btn btn-default" id="editComputer" href="#"
+					onclick="$.fn.toggleEditMode();">Edit</a>
+			</div>
 		</div>
+	</div>
+	<!-- Form de suppression  -->
+	<form id="deleteForm" action="#" method="POST">
+		<input type="hidden" name="selection" value="">
+	</form>
+
+	<div class="container" style="margin-top: 10px;">
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<!-- Variable declarations for passing labels as parameters -->
+					<!-- Table header for Computer Name -->
+					<!-- TODO : suppression d'ordinateur -->
+					<th class="editMode" style="width: 60px; height: 22px;"><input
+						type="checkbox" id="selectall" /> <span
+						style="vertical-align: top;"> - <a href="#"
+							id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
+								class="fa fa-trash-o fa-lg"></i>
+						</a>
+					</span></th>
+					<th>Computer name</th>
+					<th>Introduced date</th>
+					<!-- Table header for Discontinued Date -->
+					<th>Discontinued date</th>
+					<!-- Table header for Company -->
+					<th>Company</th>
+
+				</tr>
+			</thead>
+			<!-- Browse attribute computers -->
+			<tbody>
+				<%
+				    for (ComputerDTO c : computerList) {
+				%>
+				<tr>
+					<td class="editMode"><input type="checkbox" name="cb"
+						class="cb" value="<%=c.getId()%>"></td>
+					<td><a href="editComputer?id=<%=c.getId()%>" onclick=""> <%=c.getName()%>
+					</a></td>
+					<td><%=Objects.toString(c.getIntroductionDate(), "")%></td>
+					<td><%=Objects.toString(c.getDiscontinuationDate(), "")%></td>
+					<td><%=Objects.toString(c.getCompany() == null ? "" : c.getCompany().getName(), "")%></td>
+					<%
+					    }
+					%>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	</section>
 
 	<footer class="navbar-fixed-bottom">

@@ -22,8 +22,8 @@ public final class CompanyMapper {
      * Conversion CompanyDTO > Company.
      *
      * @param companyDTO le companyDTO à convertir
-     * @return un optional contenant la valeur associée au DTO si la valeur du DTO est valide,
-     * un optional vide sinon
+     * @return un optional contenant la valeur associée au DTO si la valeur du DTO
+     *         est valide, un optional vide sinon
      */
     public static Optional<Company> companyDTOToCompany(final CompanyDTO companyDTO) {
         if (companyDTO == null) {
@@ -31,11 +31,11 @@ public final class CompanyMapper {
             return Optional.empty();
         }
         String name = null;
-        if (companyDTO.getName() != null && !"".equals(companyDTO.getName().trim())) {
+        if ((companyDTO.getName() != null) && !"".equals(companyDTO.getName().trim())) {
             name = companyDTO.getName();
         }
         long id = 0;
-        if (companyDTO.getId() != null && !"".equals(companyDTO.getId())) {
+        if ((companyDTO.getId() != null) && !"".equals(companyDTO.getId())) {
             try {
                 id = Long.parseLong(companyDTO.getId());
             } catch (NumberFormatException e) {
@@ -48,6 +48,7 @@ public final class CompanyMapper {
 
     /**
      * Conversion Company > CompanyDTO.
+     *
      * @param company
      * @return un optional contenant une instance de CompanyDTO correspondant au
      *         paramètre, ou un optional vide si le paramètre est nul ou la valeur

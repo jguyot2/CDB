@@ -22,7 +22,7 @@ public final class ComputerMapper {
 
     /**
      * Conversion ComputerDTO > Computer.
-     * 
+     *
      * @param dtoComputer
      * @return un Optional contenant la valeur de Computer associée au DTO si ce
      *         dernier est cohérent (=les identifiants sont bien des nombres, et le
@@ -34,50 +34,11 @@ public final class ComputerMapper {
     }
 
     /**
-     * Conversion ComputerDTO > Computer avec le champ "manufacturer" donné.
-     * 
-     * @param dtoComputer un DTO représentant un ordinateur.
-     * @param manufacturer Le fabricant de l'ordinateur.
-     * @return un optional contenant l'ordinateur associé au DTO, avec l'attribut
-     *         "manufacturer" égal au second paramètre (pouvant être nul), ou un
-     *         Optional vide si les valeurs du DTO sont incohérentes.
-     */
-    private static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer,
-            final Company manufacturer) {
-
-        if (dtoComputer == null) {
-            LOG.info("DTO > computer : param nul");
-            return Optional.empty();
-        }
-
-        long id = 0;
-        try {
-            id = Long.parseLong(dtoComputer.getId());
-        } catch (NumberFormatException e) {
-            LOG.debug("DTO > computer : id du dto incohérent");
-            return Optional.empty();
-        }
-
-        String computerName = null;
-        if (dtoComputer.getName() != null && !dtoComputer.getName().isEmpty()) {
-            computerName = dtoComputer.getName();
-            LOG.info("Nom du PC: " + computerName);
-        }
-
-        Optional<LocalDate> intro = DateMapper.stringToLocalDate(dtoComputer.getIntroductionDate());
-        Optional<LocalDate> discontinuation = DateMapper
-                .stringToLocalDate(dtoComputer.getDiscontinuationDate());
-
-        return Optional.of(new Computer(computerName, manufacturer, intro.orElse(null),
-                discontinuation.orElse(null), id));
-    }
-
-    /**
      * Conversion Computer > ComputerDTO.
-     * 
+     *
      * @param c un ordinateur à convertir
      * @return un optional contenant une instance de ComputerDTO correspondant à la
-     * 
+     *
      */
     public static Optional<ComputerDTO> computerToDTO(final Computer c) {
         if (c == null) {
@@ -91,6 +52,45 @@ public final class ComputerMapper {
         Optional<CompanyDTO> company = CompanyMapper.companyToDTO(c.getManufacturer());
         return Optional.of(new ComputerDTO(name, id, company.orElse(null), dateIntro.orElse(null),
                 dateDisco.orElse(null)));
+    }
+
+    /**
+     * Conversion ComputerDTO > Computer avec le champ "manufacturer" donné.
+     *
+     * @param dtoComputer un DTO représentant un ordinateur.
+     * @param manufacturer Le fabricant de l'ordinateur.
+     * @return un optional contenant l'ordinateur associé au DTO, avec l'attribut
+     *         "manufacturer" égal au second paramètre (pouvant être nul), ou un
+     *         Optional vide si les valeurs du DTO sont incohérentes.
+     */
+    private static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer,
+            final Company manufacturer) {
+        if (dtoComputer == null) {
+            LOG.info("DTO > computer : param nul");
+            return Optional.empty();
+        }
+        long id = 0;
+        try {
+            id = Long.parseLong(dtoComputer.getId());
+        } catch (NumberFormatException e) {
+            LOG.debug("DTO > computer : id du dto incohérent");
+            return Optional.empty();
+        }
+        String computerName = getNameFromComputerDTO(dtoComputer);
+        Optional<LocalDate> intro = DateMapper.stringToLocalDate(dtoComputer.getIntroductionDate());
+        Optional<LocalDate> discontinuation = DateMapper
+                .stringToLocalDate(dtoComputer.getDiscontinuationDate());
+        return Optional.of(new Computer(computerName, manufacturer, intro.orElse(null),
+                discontinuation.orElse(null), id));
+    }
+
+    private static String getNameFromComputerDTO(ComputerDTO dtoComputer) {
+        String computerName = null;
+        if ((dtoComputer.getName() != null) && !dtoComputer.getName().trim().isEmpty()) {
+            computerName = dtoComputer.getName();
+            LOG.info("Nom du PC: " + computerName);
+        }
+        return computerName;
     }
 
     private ComputerMapper() {
