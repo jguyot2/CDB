@@ -47,25 +47,16 @@ public class ComputerSearcher implements Searcher<Computer> {
             + "ON computer.company_id = company.id";
 
     /** */
-    private static final String QUERY_COMPUTER_WITH_OFFSET = "SELECT computer.id, computer.name,"
-            + " introduced, discontinued, " + "company.id, company.name " + "FROM computer LEFT JOIN company "
-            + "ON computer.company_id = company.id " + "ORDER BY computer.id " + "LIMIT ? OFFSET ?";
-
-    private static final String QUERY_COMPUTER_SEARCH_NAME_WITH_OFFSET = "SELECT computer.id, computer.name,"
-            + " introduced, discontinued, company.id, company.name FROM computer LEFT JOIN company "
-            + "ON computer.company_id = company.id WHERE computer.name LIKE ? ORDER BY computer.id "
-            + "LIMIT ? OFFSET ?";
-    /** */
     private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM computer";
     private static final String REQUEST_NB_OF_ROWS_SEARCH = "SELECT count(id) FROM computer WHERE computer.name LIKE ?";
 
-    private static final String ORDER_BY_REQUEST_AND_NAME = "SELECT computer.id, computer.name,"
+    private static final String ORDER_BY_WITH_NAME = "SELECT computer.id, computer.name,"
             + " introduced, discontinued, company.id, company.name FROM computer LEFT JOIN company "
-            + "ON computer.company_id = company.id WHERE computer.name LIKE ? ORDER BY {} "
+            + "ON computer.company_id = company.id WHERE computer.name LIKE ? ORDER BY %s "
             + "LIMIT ? OFFSET ?";
-    private static final String ORDER_BY_REQUEST_PAGE = "SELECT computer.id, computer.name,"
+    private static final String ORDER_BY_REQUEST = "SELECT computer.id, computer.name,"
             + " introduced, discontinued, company.id, company.name FROM computer LEFT JOIN company "
-            + "ON computer.company_id = company.id ORDER BY {} LIMIT ? OFFSET ?";
+            + "ON computer.company_id = company.id ORDER BY %s LIMIT ? OFFSET ?";
 
     /**
      * Fonction permettant de récupérer une instance de Computer à partir d'une ligne
@@ -184,7 +175,7 @@ public class ComputerSearcher implements Searcher<Computer> {
             orderByClause.append(sortEntryToSqlOrderByClause(sortEntry) + ", ");
         }
         orderByClause.append("computer.id ");
-        String request = ORDER_BY_REQUEST_PAGE.replace("\\{\\}", orderByClause.toString());
+        String request = String.format(ORDER_BY_REQUEST, orderByClause.toString());
         List<Computer> computerList = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(request)) {
@@ -204,20 +195,18 @@ public class ComputerSearcher implements Searcher<Computer> {
         return fetchList(p, search, Arrays.asList());
     }
 
-    public List<Computer> fetchList(Page p, String researchedString, List<SortEntry> entries)
-            throws SQLException {
+    public List<Computer> fetchList(Page p, String search, List<SortEntry> entries) throws SQLException {
 
         StringBuilder orderByClause = new StringBuilder();
         for (SortEntry sortEntry : entries) {
             orderByClause.append(sortEntryToSqlOrderByClause(sortEntry) + ", ");
         }
         orderByClause.append("computer.id ");
-        // TODO : formater proprement
-        String request = ORDER_BY_REQUEST_AND_NAME.replace("\\{\\}", orderByClause.toString());
+        String request = String.format(ORDER_BY_WITH_NAME, orderByClause.toString());
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(request);) {
-            String searchedPattern = "%" + researchedString.replace("%", "\\%") + "%";
+            String searchedPattern = "%" + search.replace("%", "\\%") + "%";
             stmt.setString(1, searchedPattern);
             stmt.setInt(2, p.getPageLength());
             stmt.setInt(3, p.getOffset());

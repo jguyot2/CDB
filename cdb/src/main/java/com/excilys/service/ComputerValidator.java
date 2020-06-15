@@ -121,22 +121,6 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
-    public List<Computer> fetchList(List<SortEntry> sortEntries, Page p) throws DuplicatedSortEntries {
-        for (int i = 0; i < sortEntries.size(); ++i) {
-            for (int j = 0; j < sortEntries.size(); ++j) {
-                if ((i != j) && (sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria())) {
-                    throw new DuplicatedSortEntries();
-                }
-            }
-        }
-        try {
-            return this.computerSearcher.fetchList(p, sortEntries);
-        } catch (SQLException e) {
-            LOG.error("Erreur lors du fetchWithOrder", e);
-            return new ArrayList<>();
-        }
-    }
-
     /**
      * @param page la page à afficher
      *
@@ -152,20 +136,53 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
+    public List<Computer> fetchList(Page p, List<SortEntry> sortEntries) throws DuplicatedSortEntries {
+        for (int i = 0; i < sortEntries.size(); ++i) {
+            for (int j = 0; j < sortEntries.size(); ++j) {
+                if ((i != j) && (sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria())) {
+                    throw new DuplicatedSortEntries();
+                }
+            }
+        }
+        try {
+            return this.computerSearcher.fetchList(p, sortEntries);
+        } catch (SQLException e) {
+            LOG.error("Erreur lors du fetchWithOrder", e);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Computer> fetchList(Page p, String search) {
+        try {
+            return this.computerSearcher.fetchList(p, search);
+        } catch (SQLException e) {
+            LOG.error("Erreur lors de la recherche avec nom + page", e);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Computer> fetchList(Page p, String search, List<SortEntry> sortEntries)
+            throws DuplicatedSortEntries {
+        for (int i = 0; i < sortEntries.size(); ++i) {
+            for (int j = 0; j < sortEntries.size(); ++j) {
+                if ((i != j) && (sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria())) {
+                    throw new DuplicatedSortEntries();
+                }
+            }
+        }
+        try {
+            return this.computerSearcher.fetchList(p, search, sortEntries);
+        } catch (SQLException e) {
+            LOG.error("Erreur lors du fetchWithOrder", e);
+            return new ArrayList<>();
+        }
+    }
+
     public List<Computer> fetchList(String search) {
         try {
             return this.computerSearcher.searchByName(search);
         } catch (SQLException e) {
             LOG.error("Erreur dans la base lors d'une recherche par nom : ", e);
-            return new ArrayList<>();
-        }
-    }
-
-    public List<Computer> fetchList(String search, Page p) {
-        try {
-            return this.computerSearcher.fetchList(p, search);
-        } catch (SQLException e) {
-            LOG.error("Erreur lors de la recherche avec nom + page", e);
             return new ArrayList<>();
         }
     }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -17,9 +18,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.model.ComputerDTO;
+import com.excilys.model.IllegalCriteriaStringException;
 import com.excilys.model.Page;
+import com.excilys.model.SortEntry;
 import com.excilys.service.ComputerDTOValidator;
+import com.excilys.service.DuplicatedSortEntries;
 
+// TODO : Refactorisation de tout le fichier
 @WebServlet("/page")
 public class ComputerPageServlet extends HttpServlet {
     private static final String CHARSET = "UTF-8";
@@ -55,43 +60,70 @@ public class ComputerPageServlet extends HttpServlet {
         return page;
     }
 
+    private static List<SortEntry> parseOrderParameters(String parameter)
+            throws IllegalArgumentException, IllegalCriteriaStringException {
+        if (parameter == null) {
+            return Arrays.asList();
+        }
+        String[] orderParameter = parameter.split(",");
+        LOG.info("order parameter" + orderParameter);
+
+        if (orderParameter == null) {
+            return Arrays.asList();
+        }
+        List<SortEntry> entries = new ArrayList<>();
+        for (String param : orderParameter) {
+            entries.add(SortEntry.fromString(param));
+        }
+        return entries;
+    }
+
+    private static List<ComputerDTO> getComputerListFromParameters(final Page page, String search,
+            String sortParameters) throws DuplicatedSortEntries, IllegalCriteriaStringException {
+        List<SortEntry> sortEntries = parseOrderParameters(sortParameters);
+        if (search != null) {
+            return validator.fetchList(page, search, sortEntries);
+        } else {
+            return validator.fetchList(page, sortEntries);
+        }
+    }
+
     /**
      * Ajout des attributs qui seront passés au .jsp à la requête courante
      *
      * @param request
      * @param page
      * @throws UnsupportedEncodingException
+     * @throws DuplicatedSortEntries
+     * @throws IllegalCriteriaStringException
      */
     private static void setAttributesFromPage(final HttpServletRequest request, final Page page,
-            String search, String message) throws UnsupportedEncodingException {
+            String search, String message, String sortParameters)
+            throws UnsupportedEncodingException, DuplicatedSortEntries, IllegalCriteriaStringException {
         if (message != null) {
             request.setAttribute("message", message);
         }
         if (search != null) {
-            String urlSearch;
-
-            urlSearch = URLEncoder.encode(search, "utf-8");
-
+            String urlSearch = URLEncoder.encode(search, "utf-8");
             request.setAttribute("urlSearch", urlSearch);
         }
-        List<ComputerDTO> computerList;
-        if (search == null) {
-            computerList = validator.fetchList(page);
-        } else {
-            computerList = validator.searchByNameWithPage(search, page);
-            LOG.info("liste des ordis : " + computerList);
-        }
+        List<ComputerDTO> computerList = getComputerListFromParameters(page, search, sortParameters);
+        List<Integer> pagesToShow = getPagesToShow(page);
 
-        List<Integer> pagesToShow = new ArrayList<>();
-        int firstPageToShow = Math.max(0, page.getPageNumber() - 1);
-        int nbPages = page.getNbOfPages();
-        for (int i = 0; (i < 5) && ((firstPageToShow + i) < nbPages); ++i) {
-            pagesToShow.add(firstPageToShow + i);
-        }
         request.setAttribute("search", search);
         request.setAttribute("page", page);
         request.setAttribute("computerList", computerList);
         request.setAttribute("pageList", pagesToShow);
+    }
+
+    public static List<Integer> getPagesToShow(Page page) {
+        List<Integer> pagesToShow = new ArrayList<>();
+        int firstPageToShow = Math.max(0, page.getPageNumber() - 2);
+        int nbPages = page.getNbOfPages();
+        for (int i = 0; (i < 5) && ((firstPageToShow + i) < nbPages); ++i) {
+            pagesToShow.add(firstPageToShow + i);
+        }
+        return pagesToShow;
     }
 
     /**
@@ -108,8 +140,11 @@ public class ComputerPageServlet extends HttpServlet {
         try {
             String search = request.getParameter("search");
             String message = request.getParameter("message");
+            String sortParameters = request.getParameter("sort"); // TODO : vérifier que c'est le bon
+                                                                  // nom
+            // de param
             Page page = getPageFromRequest(request, search);
-            setAttributesFromPage(request, page, search, message);
+            setAttributesFromPage(request, page, search, message, sortParameters);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
             rd.forward(request, response);
         } catch (IOException e) {
@@ -125,9 +160,28 @@ public class ComputerPageServlet extends HttpServlet {
             } catch (IOException e1) {
                 throw new ServletException(e1);
             }
+        } catch (DuplicatedSortEntries e) {
+            LOG.debug("", e);
+            RequestDispatcher rd = request.getRequestDispatcher("/400");
+            request.setAttribute("errorCause", "ther is several times the same ");
+            try {
+                rd.forward(request, response);
+            } catch (IOException e1) {
+                throw new ServletException(e1);
+            }
+        } catch (IllegalCriteriaStringException e) {
+            LOG.debug("", e);
+            RequestDispatcher rd = request.getRequestDispatcher("/400");
+            request.setAttribute("errorCause", "the column sorted parameter is invalid");
+            try {
+                rd.forward(request, response);
+            } catch (IOException e1) {
+                throw new ServletException(e1);
+            }
         }
     }
 
+    // REFACTO
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

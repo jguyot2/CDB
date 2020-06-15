@@ -13,6 +13,7 @@ import com.excilys.model.CompanyDTO;
 import com.excilys.model.Computer;
 import com.excilys.model.ComputerDTO;
 import com.excilys.model.Page;
+import com.excilys.model.SortEntry;
 
 /**
  * Classe s'assurant que les requêtes/mises à jour liées à des instances de
@@ -23,6 +24,10 @@ import com.excilys.model.Page;
  *
  */
 public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
+
+    private static List<ComputerDTO> convertList(List<Computer> l) {
+        return l.stream().map(c -> ComputerMapper.computerToDTO(c).get()).collect(Collectors.toList());
+    }
 
     /**
      * Récupération d'un ordi sans l'attribut "company" à partir d'un DTO.
@@ -102,7 +107,6 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     }
 
     /**
-     *
      * @param computerDTO
      * @param problems
      * @return le nom du DTO
@@ -154,14 +158,30 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
 
     @Override
     public List<ComputerDTO> fetchList() {
-        return this.computerValidator.fetchList().stream().map(c -> ComputerMapper.computerToDTO(c).get())
-                .collect(Collectors.toList());
+        return convertList(this.computerValidator.fetchList());
     }
 
     @Override
     public List<ComputerDTO> fetchList(final Page page) {
-        return this.computerValidator.fetchList(page).stream()
-                .map(c -> ComputerMapper.computerToDTO(c).get()).collect(Collectors.toList());
+        return convertList(this.computerValidator.fetchList(page));
+    }
+
+    public List<ComputerDTO> fetchList(Page p, List<SortEntry> sortEntries) throws DuplicatedSortEntries {
+        return convertList(this.computerValidator.fetchList(p, sortEntries));
+    }
+
+    public List<ComputerDTO> fetchList(Page p, String searchedName) {
+        return convertList(this.computerValidator.fetchList(p, searchedName));
+
+    }
+
+    public List<ComputerDTO> fetchList(Page p, String search, List<SortEntry> sortEntries)
+            throws DuplicatedSortEntries {
+        return convertList(this.computerValidator.fetchList(p, search, sortEntries));
+    }
+
+    public List<ComputerDTO> fetchList(String search) {
+        return convertList(this.computerValidator.fetchList(search));
     }
 
     @Override
@@ -181,18 +201,6 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
 
     public int getNumberOfFoundElements(String search) {
         return this.computerValidator.getNumberOfFoundElements(search);
-    }
-
-    public List<ComputerDTO> searchByName(String searchedName) {
-        List<Computer> foundComputers = this.computerValidator.fetchList(searchedName);
-        return foundComputers.stream().map(c -> ComputerMapper.computerToDTO(c).get())
-                .collect(Collectors.toList());
-    }
-
-    public List<ComputerDTO> searchByNameWithPage(String searchedName, Page p) {
-        List<Computer> foundComputers = this.computerValidator.fetchList(searchedName, p);
-        return foundComputers.stream().map(c -> ComputerMapper.computerToDTO(c).get())
-                .collect(Collectors.toList());
     }
 
     public int updateComputer(ComputerDTO computerValue)

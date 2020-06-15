@@ -168,7 +168,7 @@ public class EditComputerServlet extends HttpServlet {
                 rd.forward(request, response);
                 return;
             }
-            response.sendRedirect("/page");
+            response.sendRedirect(getServletContext().getContextPath() + "/page");
         } catch (IOException e) {
             throw new ServletException(e);
         }
