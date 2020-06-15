@@ -1,6 +1,7 @@
 package com.excilys.servlets;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,22 +35,16 @@ public class ComputerPageServlet extends HttpServlet {
      * @throws NumberFormatException si les paramètres ne correspondent pas à des
      *         nombres
      */
-    private static Page getPageFromRequest(final HttpServletRequest request) throws NumberFormatException {
+    private static Page getPageFromRequest(final HttpServletRequest request, String search)
+            throws NumberFormatException {
         String strPageNumber = request.getParameter("pageNumber");
         String strPageLength = request.getParameter("pageLength");
-        String message = request.getParameter("message");
-        String search = request.getParameter("search");
-        // TODO avant le weekend :
-        // Ajout du param de recherche dans cette fonction + gestion de ce dernier
-        // Ajout dans le jsp du param de requête
-        // Faire attention à la taille des tables & pages
-
-        if (message != null) {
-            request.setAttribute("message", message);
-        }
-
         Page page = new Page();
-        page.setTotalNumberOfElements(validator.getNumberOfElements());
+        if (search == null) {
+            page.setTotalNumberOfElements(validator.getNumberOfElements());
+        } else {
+            page.setTotalNumberOfElements(validator.getNumberOfFoundElements(search));
+        }
 
         if (strPageNumber != null) {
             page.setPageNumber(Integer.parseInt(strPageNumber));
@@ -57,7 +52,6 @@ public class ComputerPageServlet extends HttpServlet {
         if (strPageLength != null) {
             page.setPageLength(Integer.parseInt(strPageLength));
         }
-
         return page;
     }
 
@@ -66,17 +60,35 @@ public class ComputerPageServlet extends HttpServlet {
      *
      * @param request
      * @param page
+     * @throws UnsupportedEncodingException
      */
-    private static void setAttributesFromPage(final HttpServletRequest request, final Page page) {
-        List<ComputerDTO> computerList = validator.fetchWithOffset(page);
+    private static void setAttributesFromPage(final HttpServletRequest request, final Page page,
+            String search, String message) throws UnsupportedEncodingException {
+        if (message != null) {
+            request.setAttribute("message", message);
+        }
+        if (search != null) {
+            String urlSearch;
+
+            urlSearch = URLEncoder.encode(search, "utf-8");
+
+            request.setAttribute("urlSearch", urlSearch);
+        }
+        List<ComputerDTO> computerList;
+        if (search == null) {
+            computerList = validator.fetchList(page);
+        } else {
+            computerList = validator.searchByNameWithPage(search, page);
+            LOG.info("liste des ordis : " + computerList);
+        }
 
         List<Integer> pagesToShow = new ArrayList<>();
-        int firstPageToShow = Math.max(0, page.getPageNumber() - 2);
+        int firstPageToShow = Math.max(0, page.getPageNumber() - 1);
         int nbPages = page.getNbOfPages();
         for (int i = 0; (i < 5) && ((firstPageToShow + i) < nbPages); ++i) {
             pagesToShow.add(firstPageToShow + i);
         }
-
+        request.setAttribute("search", search);
         request.setAttribute("page", page);
         request.setAttribute("computerList", computerList);
         request.setAttribute("pageList", pagesToShow);
@@ -90,18 +102,22 @@ public class ComputerPageServlet extends HttpServlet {
      *        défaut) "pageLength" Représentant le nombre d'éléments par page.
      * @throws ServletException
      */
-    @Override
+    @Override // refacto
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException {
         try {
-            Page page = getPageFromRequest(request);
-            setAttributesFromPage(request, page);
+            String search = request.getParameter("search");
+            String message = request.getParameter("message");
+            Page page = getPageFromRequest(request, search);
+            setAttributesFromPage(request, page, search, message);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
             rd.forward(request, response);
         } catch (IOException e) {
             e.printStackTrace();
+            LOG.error("", e);
             throw new ServletException(e);
         } catch (NumberFormatException e) {
+            LOG.debug("", e);
             RequestDispatcher rd = request.getRequestDispatcher("/400");
             request.setAttribute("errorCause", "the page number or page length parameter is invalid");
             try {

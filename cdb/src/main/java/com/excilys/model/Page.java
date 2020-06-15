@@ -9,7 +9,7 @@ public final class Page {
     /**
      * Nombre d'éléments par page par défaut.
      */
-    private static final int BASE_NUMBER_OF_ELEMENTS_PER_PAGE = 30;
+    private static final int BASE_NUMBER_OF_ELEMENTS_PER_PAGE = 10;
 
     /** */
     private int pageLength = BASE_NUMBER_OF_ELEMENTS_PER_PAGE;
@@ -48,8 +48,8 @@ public final class Page {
     }
 
     public int getNbOfPages() {
-        return totalNumberOfElements / this.pageLength
-                + (totalNumberOfElements % this.pageLength == 0 ? 0 : 1);
+        return (this.totalNumberOfElements / this.pageLength)
+                + ((this.totalNumberOfElements % this.pageLength) == 0 ? 0 : 1);
     }
 
     /**
@@ -75,7 +75,7 @@ public final class Page {
 
     /** */
     public void goToNextPage() {
-        if (this.pageNumber < this.getNbOfPages()) {
+        if (this.pageNumber < getNbOfPages()) {
             this.pageNumber++;
         }
     }
@@ -99,7 +99,7 @@ public final class Page {
      */
     public void setPageLength(final int newElementsPerPage) {
         this.pageLength = newElementsPerPage;
-        this.pageNumber = this.getNbOfPages() < this.pageNumber ? this.getNbOfPages() - 1 : this.pageNumber;
+        this.pageNumber = getNbOfPages() < this.pageNumber ? getNbOfPages() - 1 : this.pageNumber;
     }
 
     public void setPageNumber(final int pageNumber) {

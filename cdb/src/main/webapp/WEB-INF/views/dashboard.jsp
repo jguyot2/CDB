@@ -15,6 +15,8 @@
     Page currentPage = (Page) request.getAttribute("page");
     List<Integer> pageList = (List<Integer>) request.getAttribute("pageList");
     String message = (String) request.getAttribute("message");
+    String search = (String) request.getAttribute("search");
+    String searchUrlParameter = (String) request.getAttribute("urlSearch");
     if (pageList == null) {
         pageList = new ArrayList<>();
     }
@@ -44,7 +46,7 @@
 		<div class="container">
 			<div class="alert alert-danger">
 				<%=message%>
-				<br /> 
+				<br />
 			</div>
 		</div>
 		<%
@@ -83,7 +85,6 @@
 				<tr>
 					<!-- Variable declarations for passing labels as parameters -->
 					<!-- Table header for Computer Name -->
-					<!-- TODO : suppression d'ordinateur -->
 					<th class="editMode" style="width: 60px; height: 22px;"><input
 						type="checkbox" id="selectall" /> <span
 						style="vertical-align: top;"> - <a href="#"
@@ -120,7 +121,6 @@
 			</tbody>
 		</table>
 	</div>
-	</section>
 
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
@@ -134,9 +134,10 @@
 				    for (Integer pageNumber : pageList) {
 				%>
 				<li><a
-					href="page?pageNumber=<%=pageNumber%>&pageLength=
-					<%=currentPage.getPageLength()%>">
-						<%=pageNumber%>
+					href="page?pageNumber=<%=pageNumber%>&pageLength=<%=currentPage.getPageLength()%><%
+					if (search != null) {
+                    out.print("&search=" + searchUrlParameter);
+                }%>"><%=pageNumber%>
 				</a></li>
 				<%
 				    }

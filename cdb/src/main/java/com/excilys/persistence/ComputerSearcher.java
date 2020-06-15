@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,11 @@ import com.excilys.mapper.DateMapper;
 import com.excilys.model.Company;
 import com.excilys.model.Computer;
 import com.excilys.model.Page;
+import com.excilys.model.SortCriteria;
+import com.excilys.model.SortEntry;
+
+// refacto : "fusionner" certaines fonctions/requêtes qui font plus ou moins la
+// même chose (e.g recherche avec/sans page, avec/sans ordre, etc.)
 
 /**
  * Classe permettant d'effectuer des requêtes sur des Computers.
@@ -46,12 +52,20 @@ public class ComputerSearcher implements Searcher<Computer> {
             + "ON computer.company_id = company.id " + "ORDER BY computer.id " + "LIMIT ? OFFSET ?";
 
     private static final String QUERY_COMPUTER_SEARCH_NAME_WITH_OFFSET = "SELECT computer.id, computer.name,"
-            + " introduced, discontinued, " + "company.id, company.name " + "FROM computer LEFT JOIN company "
-            + "WHERE computer.name LIKE ?" + "ON computer.company_id = company.id " + "ORDER BY computer.id "
+            + " introduced, discontinued, company.id, company.name FROM computer LEFT JOIN company "
+            + "ON computer.company_id = company.id WHERE computer.name LIKE ? ORDER BY computer.id "
             + "LIMIT ? OFFSET ?";
     /** */
     private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM computer";
     private static final String REQUEST_NB_OF_ROWS_SEARCH = "SELECT count(id) FROM computer WHERE computer.name LIKE ?";
+
+    private static final String ORDER_BY_REQUEST_AND_NAME = "SELECT computer.id, computer.name,"
+            + " introduced, discontinued, company.id, company.name FROM computer LEFT JOIN company "
+            + "ON computer.company_id = company.id WHERE computer.name LIKE ? ORDER BY {} "
+            + "LIMIT ? OFFSET ?";
+    private static final String ORDER_BY_REQUEST_PAGE = "SELECT computer.id, computer.name,"
+            + " introduced, discontinued, company.id, company.name FROM computer LEFT JOIN company "
+            + "ON computer.company_id = company.id ORDER BY {} LIMIT ? OFFSET ?";
 
     /**
      * Fonction permettant de récupérer une instance de Computer à partir d'une ligne
@@ -82,6 +96,27 @@ public class ComputerSearcher implements Searcher<Computer> {
         return new Computer(computerName, company, introduced, discontinued, computerId);
     }
 
+    private static String sortCriteriaToSqlColumn(SortCriteria sq) {
+        switch (sq) {
+            case COMPANY_ID:
+                return "company.id";
+            case COMPANY_NAME:
+                return "company.name";
+            case COMPUTER_NAME:
+                return "computer.name";
+            case DISCONTINUED:
+                return "computer.discontinued";
+            case INTRODUCED:
+                return "computer.introduced";
+            default: // Inutile mais Eclipse casse les couilles si je le mets pas
+                return null;
+        }
+    }
+
+    private static String sortEntryToSqlOrderByClause(SortEntry se) {
+        return sortCriteriaToSqlColumn(se.getCriteria()) + " " + (se.isAscending() ? "ASC" : "DESC");
+    }
+
     /** */
     public ComputerSearcher() {
     }
@@ -97,7 +132,6 @@ public class ComputerSearcher implements Searcher<Computer> {
      */
     @Override
     public Optional<Computer> fetchById(final long searchedId) throws SQLException {
-
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_FROM_ID)) {
             stmt.setLong(1, searchedId);
@@ -140,11 +174,20 @@ public class ComputerSearcher implements Searcher<Computer> {
      * @return La liste correspondant aux ordinateurs compris dans la page.
      */
     @Override
-    public List<Computer> fetchWithOffset(final Page page) throws SQLException {
+    public List<Computer> fetchList(final Page page) throws SQLException {
+        return fetchList(page, Arrays.asList());
+    }
+
+    public List<Computer> fetchList(Page page, List<SortEntry> entries) throws SQLException {
+        StringBuilder orderByClause = new StringBuilder();
+        for (SortEntry sortEntry : entries) {
+            orderByClause.append(sortEntryToSqlOrderByClause(sortEntry) + ", ");
+        }
+        orderByClause.append("computer.id ");
+        String request = ORDER_BY_REQUEST_PAGE.replace("\\{\\}", orderByClause.toString());
         List<Computer> computerList = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_WITH_OFFSET)) {
-
+                PreparedStatement stmt = conn.prepareStatement(request)) {
             stmt.setInt(1, page.getPageLength());
             stmt.setInt(2, page.getOffset());
             ResultSet res = stmt.executeQuery();
@@ -154,6 +197,37 @@ public class ComputerSearcher implements Searcher<Computer> {
             }
         }
         return computerList;
+
+    }
+
+    public List<Computer> fetchList(Page p, String search) throws SQLException {
+        return fetchList(p, search, Arrays.asList());
+    }
+
+    public List<Computer> fetchList(Page p, String researchedString, List<SortEntry> entries)
+            throws SQLException {
+
+        StringBuilder orderByClause = new StringBuilder();
+        for (SortEntry sortEntry : entries) {
+            orderByClause.append(sortEntryToSqlOrderByClause(sortEntry) + ", ");
+        }
+        orderByClause.append("computer.id ");
+        // TODO : formater proprement
+        String request = ORDER_BY_REQUEST_AND_NAME.replace("\\{\\}", orderByClause.toString());
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(request);) {
+            String searchedPattern = "%" + researchedString.replace("%", "\\%") + "%";
+            stmt.setString(1, searchedPattern);
+            stmt.setInt(2, p.getPageLength());
+            stmt.setInt(3, p.getOffset());
+            ResultSet res = stmt.executeQuery();
+            List<Computer> result = new ArrayList<>();
+            while (res.next()) {
+                result.add(getComputerFromResultSet(res));
+            }
+            return result;
+        }
     }
 
     /**
@@ -187,33 +261,16 @@ public class ComputerSearcher implements Searcher<Computer> {
 
     }
 
-    public List<Computer> searchByName(String researchedString) throws SQLException {
+    public List<Computer> searchByName(String search) throws SQLException {
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_SEARCH_WITH_NAME);) {
-            String searchedPattern = "%" + researchedString.replace("%", "\\%") + "%";
+            String searchedPattern = "%" + search.replace("%", "\\%") + "%";
             stmt.setString(1, searchedPattern);
             List<Computer> result = new ArrayList<>();
             ResultSet res = stmt.executeQuery();
             while (res.next()) {
                 result.add(getComputerFromResultSet(res));
             }
-            return result;
-        }
-    }
-
-    public List<Computer> searchByNameWithPage(String researchedString, Page p) throws SQLException {
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_SEARCH_NAME_WITH_OFFSET);) {
-            String searchedPattern = "%" + researchedString.replace("%", "\\%") + "%";
-            stmt.setString(1, searchedPattern);
-            stmt.setInt(2, p.getLimit());
-            stmt.setInt(3, p.getOffset());
-            ResultSet res = stmt.executeQuery();
-            List<Computer> result = new ArrayList<>();
-            while (res.next()) {
-                result.add(getComputerFromResultSet(res));
-            }
-
             return result;
         }
     }
