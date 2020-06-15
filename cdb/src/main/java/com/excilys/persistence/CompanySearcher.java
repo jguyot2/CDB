@@ -91,7 +91,7 @@ public class CompanySearcher implements Searcher<Company> {
      * @return la liste des Company de la BD comprises dans la page en paramètre
      */
     @Override
-    public List<Company> fetchWithOffset(final Page page) throws SQLException {
+    public List<Company> fetchList(final Page page) throws SQLException {
         List<Company> ret = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(REQUEST_COMPANIES_OFFSET)) {

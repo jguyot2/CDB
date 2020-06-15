@@ -62,7 +62,7 @@ public class ComputerPagination {
     }
 
     private void printCurrentPage() {
-        List<Computer> computers = computerValidator.fetchWithOffset(this.page);
+        List<Computer> computers = computerValidator.fetchList(this.page);
         for (Computer c : computers) {
             System.out.println(c);
         }
@@ -79,7 +79,7 @@ public class ComputerPagination {
 
     private void printNextPage() {
         this.page.goToNextPage();
-        List<Computer> computers = computerValidator.fetchWithOffset(this.page);
+        List<Computer> computers = computerValidator.fetchList(this.page);
         for (Computer c : computers) {
             System.out.println(c.getShortDescription());
         }
@@ -87,7 +87,7 @@ public class ComputerPagination {
 
     private void printPreviousPage() {
         this.page.goToPreviousPage();
-        List<Computer> computers = computerValidator.fetchWithOffset(this.page);
+        List<Computer> computers = computerValidator.fetchList(this.page);
         for (Computer c : computers) {
             System.out.println(c);
         }

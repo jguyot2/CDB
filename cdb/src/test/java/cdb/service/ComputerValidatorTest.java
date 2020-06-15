@@ -145,9 +145,9 @@ public class ComputerValidatorTest {
             computerList.add(0, c);
         }
 
-        Mockito.when(computerSearcherMock.fetchWithOffset(p)).thenReturn(computerList);
+        Mockito.when(computerSearcherMock.fetchList(p)).thenReturn(computerList);
 
-        Assert.assertEquals(validator.fetchWithOffset(p), computerList);
+        Assert.assertEquals(validator.fetchList(p), computerList);
     }
 
     @Test

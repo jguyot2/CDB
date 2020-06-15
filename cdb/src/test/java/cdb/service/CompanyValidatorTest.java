@@ -47,8 +47,8 @@ public class CompanyValidatorTest {
         for (Company c : fakeCompanyList) {
             companyList.add(0, c);
         }
-        Mockito.when(companySearcherMock.fetchWithOffset(p)).thenReturn(companyList);
-        Assert.assertEquals(companyValidator.fetchWithOffset(p), companyList);
+        Mockito.when(companySearcherMock.fetchList(p)).thenReturn(companyList);
+        Assert.assertEquals(companyValidator.fetchList(p), companyList);
     }
 
     @Test

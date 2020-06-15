@@ -38,7 +38,7 @@ interface Searcher<T> {
      * @return la liste des objets correspondant à la page en paramètre
      * @throws SQLException
      */
-    List<T> fetchWithOffset(Page p) throws SQLException;
+    List<T> fetchList(Page p) throws SQLException;
 
     /**
      * @return le nombre d'éléments contenu dans la table

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.model.Computer;
 import com.excilys.model.Page;
+import com.excilys.model.SortEntry;
 import com.excilys.persistence.ComputerSearcher;
 import com.excilys.persistence.ComputerUpdater;
 
@@ -120,17 +121,51 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
+    public List<Computer> fetchList(List<SortEntry> sortEntries, Page p) throws DuplicatedSortEntries {
+        for (int i = 0; i < sortEntries.size(); ++i) {
+            for (int j = 0; j < sortEntries.size(); ++j) {
+                if ((i != j) && (sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria())) {
+                    throw new DuplicatedSortEntries();
+                }
+            }
+        }
+        try {
+            return this.computerSearcher.fetchList(p, sortEntries);
+        } catch (SQLException e) {
+            LOG.error("Erreur lors du fetchWithOrder", e);
+            return new ArrayList<>();
+        }
+    }
+
     /**
      * @param page la page à afficher
      *
      * @return la liste des ordinateurs présents sur la page.
      */
     @Override
-    public List<Computer> fetchWithOffset(final Page page) {
+    public List<Computer> fetchList(final Page page) {
         try {
-            return this.computerSearcher.fetchWithOffset(page);
+            return this.computerSearcher.fetchList(page);
         } catch (SQLException e) {
             LOG.error("fetchListWithOffset: " + e.getMessage(), e);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Computer> fetchList(String search) {
+        try {
+            return this.computerSearcher.searchByName(search);
+        } catch (SQLException e) {
+            LOG.error("Erreur dans la base lors d'une recherche par nom : ", e);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Computer> fetchList(String search, Page p) {
+        try {
+            return this.computerSearcher.fetchList(p, search);
+        } catch (SQLException e) {
+            LOG.error("Erreur lors de la recherche avec nom + page", e);
             return new ArrayList<>();
         }
     }
@@ -175,24 +210,6 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
-    public List<Computer> searchComputerPageWithName(String searchedName, Page p) {
-        try {
-            return this.computerSearcher.searchByNameWithPage(searchedName, p);
-        } catch (SQLException e) {
-            LOG.error("Erreur lors de la recherche avec nom + page", e);
-            return new ArrayList<>();
-        }
-    }
-
-    public List<Computer> searchComputerWithName(String searchedName) {
-        try {
-            return this.computerSearcher.searchByName(searchedName);
-        } catch (SQLException e) {
-            LOG.error("Erreur dans la base lors d'une recherche par nom : ", e);
-            return new ArrayList<>();
-        }
-    }
-
     /**
      * Changement des attributs associés à la persistance, uniquement utilisé pour
      * des tests avec des classes mock.
@@ -202,7 +219,6 @@ public class ComputerValidator implements SearchValidator<Computer> {
      */
     public void setComputerSearcher(final ComputerSearcher newComputerSearcher,
             final ComputerUpdater newComputerUpdater) {
-
         this.computerSearcher = newComputerSearcher;
         this.computerUpdater = newComputerUpdater;
     }

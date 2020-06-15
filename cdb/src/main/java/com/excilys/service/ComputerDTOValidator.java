@@ -159,8 +159,8 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     }
 
     @Override
-    public List<ComputerDTO> fetchWithOffset(final Page page) {
-        return this.computerValidator.fetchWithOffset(page).stream()
+    public List<ComputerDTO> fetchList(final Page page) {
+        return this.computerValidator.fetchList(page).stream()
                 .map(c -> ComputerMapper.computerToDTO(c).get()).collect(Collectors.toList());
     }
 
@@ -184,13 +184,13 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     }
 
     public List<ComputerDTO> searchByName(String searchedName) {
-        List<Computer> foundComputers = this.computerValidator.searchComputerWithName(searchedName);
+        List<Computer> foundComputers = this.computerValidator.fetchList(searchedName);
         return foundComputers.stream().map(c -> ComputerMapper.computerToDTO(c).get())
                 .collect(Collectors.toList());
     }
 
     public List<ComputerDTO> searchByNameWithPage(String searchedName, Page p) {
-        List<Computer> foundComputers = this.computerValidator.searchComputerPageWithName(searchedName, p);
+        List<Computer> foundComputers = this.computerValidator.fetchList(searchedName, p);
         return foundComputers.stream().map(c -> ComputerMapper.computerToDTO(c).get())
                 .collect(Collectors.toList());
     }

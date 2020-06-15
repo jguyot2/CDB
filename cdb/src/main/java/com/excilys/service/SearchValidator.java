@@ -19,7 +19,7 @@ public interface SearchValidator<T> {
      * @param page
      * @return la liste des éléments contenu dans la page en paramètre
      */
-    List<T> fetchWithOffset(Page page);
+    List<T> fetchList(Page page);
 
     /**
      * Recherche d'un élément par identifiant.

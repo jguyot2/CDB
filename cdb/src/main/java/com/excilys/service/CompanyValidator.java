@@ -15,7 +15,7 @@ import com.excilys.persistence.CompanySearcher;
 /**
  * Classe vérifiant que les requêtes sur les entreprises sont bien formée et
  * cohérentes.
- * 
+ *
  * @author jguyot2
  *
  */
@@ -54,9 +54,9 @@ public class CompanyValidator implements SearchValidator<Company> {
      * @return La liste des entreprises présentes dans la page.
      */
     @Override
-    public List<Company> fetchWithOffset(final Page page) {
+    public List<Company> fetchList(final Page page) {
         try {
-            return this.companySearcher.fetchWithOffset(page);
+            return this.companySearcher.fetchList(page);
         } catch (SQLException e) {
             LOG.error("Recherche de la liste : Exception reçue. Renvoi d'une liste vide");
             return new ArrayList<>();
@@ -97,10 +97,11 @@ public class CompanyValidator implements SearchValidator<Company> {
 
     /**
      * change l'instance de la couche persistance Uniquement utilisé pour les tests.
-     * 
+     *
      * @param newCompanySearcher la nouvelle
      */
     public void setCompanySearcher(final CompanySearcher newCompanySearcher) {
         this.companySearcher = newCompanySearcher;
     }
+
 }

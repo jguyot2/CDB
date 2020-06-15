@@ -60,7 +60,7 @@ public class CompanyPagination {
     }
 
     private void printCurrentPage() {
-        List<Company> companys = companyPagination.fetchWithOffset(this.page);
+        List<Company> companys = companyPagination.fetchList(this.page);
         for (Company c : companys) {
             System.out.println(c);
         }
@@ -77,7 +77,7 @@ public class CompanyPagination {
 
     private void printNextPage() {
         this.page.goToNextPage();
-        List<Company> companys = companyPagination.fetchWithOffset(this.page);
+        List<Company> companys = companyPagination.fetchList(this.page);
         for (Company c : companys) {
             System.out.println(c);
         }
@@ -85,7 +85,7 @@ public class CompanyPagination {
 
     private void printPreviousPage() {
         this.page.goToPreviousPage();
-        List<Company> companys = companyPagination.fetchWithOffset(this.page);
+        List<Company> companys = companyPagination.fetchList(this.page);
         for (Company c : companys) {
             System.out.println(c);
         }

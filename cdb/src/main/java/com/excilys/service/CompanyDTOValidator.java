@@ -35,8 +35,8 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     }
 
     @Override
-    public List<CompanyDTO> fetchWithOffset(final Page page) {
-        List<Company> companyList = this.companyValidator.fetchWithOffset(page);
+    public List<CompanyDTO> fetchList(final Page page) {
+        List<Company> companyList = this.companyValidator.fetchList(page);
         return companyList.stream().map(c -> CompanyMapper.companyToDTO(c).orElse(null))
                 .filter(dto -> dto != null).collect(Collectors.toList());
     }
