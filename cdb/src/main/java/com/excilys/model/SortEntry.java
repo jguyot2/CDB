@@ -33,9 +33,9 @@ public class SortEntry {
         } else if (values.length == 2) {
             SortCriteria criteria = SortCriteria.getCriteriaFromString(values[0]);
             boolean ascending;
-            if ("asc".toLowerCase().equals(values[1])) {
+            if ("asc".equals(values[1].toLowerCase())) {
                 ascending = true;
-            } else if ("desc".contentEquals(values[1])) {
+            } else if ("desc".equals(values[1].toLowerCase())) {
                 ascending = false;
             } else {
                 throw new IllegalCriteriaStringException();
