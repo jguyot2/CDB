@@ -4,23 +4,20 @@
 		-> computerList : List<ComputerDTO> Une liste d'instances de Computer à afficher.
  		-> page : page courante.
  		-> pageList : Liste des pages affichables
-
+ // TODO : maj
 --%>
-<!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page isELIgnored="false"%>
 <%@ page
 	import="com.excilys.model.ComputerDTO,com.excilys.model.Page,java.util.ArrayList,java.util.List,java.util.Objects"%>
-<%
-    List<ComputerDTO> computerList = (List<ComputerDTO>) request.getAttribute("computerList");
-    Page currentPage = (Page) request.getAttribute("page");
-    List<Integer> pageList = (List<Integer>) request.getAttribute("pageList");
-    String message = (String) request.getAttribute("message");
-    String search = (String) request.getAttribute("search");
-    String searchUrlParameter = (String) request.getAttribute("urlSearch");
-    if (pageList == null) {
-        pageList = new ArrayList<>();
-    }
-%>
+
+<c:set value="${requestScope.computerList}" var="computerList" />
+<c:set value="${requestScope.page}" var="currentPage" />
+<c:set value="${requestScope.pageList}" var="pageList" />
+<c:set value="${requestScope.search}" var="search" />
+<c:set value="${requestScope.urlSearch}" var="searchUrl" />
+<c:set value="${requestScope.sortParameterValue}" var="sortUrl" />
+<!DOCTYPE html>
 <html>
 <head>
 <title>Computer Database</title>
@@ -38,28 +35,20 @@
 				Database </a>
 		</div>
 	</header>
-
 	<section id="main">
-		<%
-		    if (message != null) {
-		%>
-		<div class="container">
-			<div class="alert alert-danger">
-				<%=message%>
-				<br />
+		<c:if test="${not empty message}">
+			<div class="container">
+				<div class="alert alert-danger">
+					${message} <br />
+				</div>
 			</div>
-		</div>
-		<%
-		    }
-		%>
+		</c:if>
 	</section>
 	<div class="container">
-		<h1 id="homeTitle"><%=currentPage.getTotalNumberOfElements()%>
-			Computers found
-		</h1>
+		<h1 id="homeTitle">${currentPage.totalNumberOfElements} computers
+			found</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
-				<!-- TODO : Recherche d'un ordinateur -->
 				<form id="searchForm" action="#" method="GET" class="form-inline">
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
@@ -92,58 +81,166 @@
 								class="fa fa-trash-o fa-lg"></i>
 						</a>
 					</span></th>
-					<th>Computer name</th>
-					<th>Introduced date</th>
+					<th>Computer name <a
+						href=<c:url value="page">
+						<c:param name ="pageNumber" value="0" />
+						<c:param name="pageLength" value="${currentPage.pageLength}" />
+						<c:if test="${not empty search}"> 
+						 		<c:param name="search" value="${search}" />	
+				 		</c:if>
+					<c:if test="${ not empty sortUrl}">
+						<c:param name="sort" value="${sortUrl}" />
+					</c:if>		<c:param name="newSortParam" value="name-asc"/>
+					</c:url>>&#8593;
+					</a> <a
+						href=<c:url value="page">
+						<c:param name ="pageNumber" value="0" />
+					<c:param name="pageLength" value="${currentPage.pageLength}" />
+					<c:if test="${not empty search}"> 
+						<c:param name="search" value="${search}" />	
+					</c:if>
+					
+					<c:if test="${ not empty sortUrl}">
+						<c:param name="sort" value="${sortUrl}" />
+					</c:if>		<c:param name="newSortParam" value="name-desc"/>
+					</c:url>>&#8595;
+					</a>
+					</th>
+					<th>Introduced date <a
+						href=<c:url value="page">
+						<c:param name ="pageNumber" value="0" />
+					<c:param name="pageLength" value="${currentPage.pageLength}" />
+					<c:if test="${not empty search}"> 
+						<c:param name="search" value="${search}" />	
+					</c:if>
+					<c:if test="${ not empty sortUrl}">
+						<c:param name="sort" value="${sortUrl}" />
+					</c:if>		<c:param name="newSortParam" value="introduced-asc"/>
+					</c:url>>&#8593;
+					</a><a
+						href=<c:url value="page">
+						<c:param name ="pageNumber" value="0" />
+					<c:param name="pageLength" value="${currentPage.pageLength}" />
+					<c:if test="${not empty search}"> 
+						<c:param name="search" value="${search}" />	
+					</c:if>
+					<c:if test="${ not empty sortUrl}">
+						<c:param name="sort" value="${sortUrl}" />
+					</c:if>		<c:param name="newSortParam" value="introduced-desc"/>
+					</c:url>>&#8595;
+					</a></th>
 					<!-- Table header for Discontinued Date -->
-					<th>Discontinued date</th>
+					<th>Discontinued date <a
+						href=<c:url value="page">
+						<c:param name ="pageNumber" value="0" />
+					<c:param name="pageLength" value="${currentPage.pageLength}" />
+					<c:if test="${not empty search}"> 
+						<c:param name="search" value="${search}" />	
+					</c:if>
+					<c:if test="${ not empty sortUrl}">
+						<c:param name="sort" value="${sortUrl}" />
+					</c:if>		<c:param name="newSortParam" value="discontinued-asc"/>
+					</c:url>>&#8593;
+					</a><a
+						href=<c:url value="page">
+						<c:param name ="pageNumber" value="0" />
+					<c:param name="pageLength" value="${currentPage.pageLength}" />
+					<c:if test="${not empty search}"> 
+						<c:param name="search" value="${search}" />	
+					</c:if>
+						<c:if test="${ not empty sortUrl}">
+						<c:param name="sort" value="${sortUrl}" />
+					</c:if>	<c:param name="newSortParam" value="discontinued-desc"/>
+					</c:url>>&#8595;
+					</a></th>
 					<!-- Table header for Company -->
-					<th>Company</th>
-
+					<th>Company <a
+						href=<c:url value="page">
+						<c:param name ="pageNumber" value="0" />
+					<c:param name="pageLength" value="${currentPage.pageLength}" />
+					<c:if test="${not empty search}"> 
+						<c:param name="search" value="${search}" />	
+					</c:if>
+					<c:if test="${ not empty sortUrl}">
+						<c:param name="sort" value="${sortUrl}" />
+					</c:if>		<c:param name="newSortParam" value="companyName-asc"/>
+					</c:url>>&#8593;
+					</a><a
+						href=<c:url value="page">
+						<c:param name ="pageNumber" value="0" />
+					<c:param name="pageLength" value="${currentPage.pageLength}" />
+					<c:if test="${not empty search}"> 
+						<c:param name="search" value="${search}" />	
+					</c:if>
+						<c:if test="${ not empty sortUrl}">
+						<c:param name="sort" value="${sortUrl}" />
+					</c:if>	<c:param name="newSortParam" value="companyName-desc"/>
+					</c:url>>&#8595;
+					</a></th>
 				</tr>
 			</thead>
 			<!-- Browse attribute computers -->
 			<tbody>
-				<%
-				    for (ComputerDTO c : computerList) {
-				%>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="<%=c.getId()%>"></td>
-					<td><a href="editComputer?id=<%=c.getId()%>" onclick=""> <%=c.getName()%>
-					</a></td>
-					<td><%=Objects.toString(c.getIntroductionDate(), "")%></td>
-					<td><%=Objects.toString(c.getDiscontinuationDate(), "")%></td>
-					<td><%=Objects.toString(c.getCompany() == null ? "" : c.getCompany().getName(), "")%></td>
-					<%
-					    }
-					%>
-				</tr>
+
+				<c:forEach items="${computerList}" var="c">
+					<tr>
+						<td class="editMode"><input type="checkbox" name="cb"
+							class="cb" value="<c:out value="${c.id}" />"></td>
+						<td><a href="editComputer?id=<c:out value="${c.id}" />"
+							onclick=""> ${c.name} </a></td>
+						<td>${c.introductionDate}</td>
+						<td>${c.discontinuationDate}</td>
+						<td>${c.company.name}</td>
+					</tr>
+				</c:forEach>
+
 			</tbody>
 		</table>
 	</div>
+
+
 
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
 				<li><a
-					href="page?pageNumber=<%=Math.max(1, currentPage.getPageNumber() - 1)%>&pageLength=<%=currentPage.getPageLength()%>"
+					href=<c:url value="page">
+					<c:param name ="pageNumber" value="${currentPage.pageNumber - 1}" />
+					<c:param name="pageLength" value="${currentPage.pageLength}" /> 
+					<c:if test="${not empty search}"> 
+						<c:param name="search" value="${search}" />
+					</c:if>
+					
+				</c:url>
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+
 				</a></li>
 
-				<%
-				    for (Integer pageNumber : pageList) {
-				%>
+				<c:forEach items="${pageList}" var="pageNumber">
+					<li><a
+						href=<c:url value="page">
+					<c:param name="pageNumber" value="${pageNumber}" />
+					<c:param name="pageLength" value="${currentPage.pageLength}" />
+					<c:if test="${not empty search}">
+						<c:param name="search" value="${search}" />
+					</c:if>		<c:if test="${ not empty sortUrl}">
+						<c:param name="sort" value="${sortUrl}" />
+					</c:if>
+				</c:url>>
+							${pageNumber} </a></li>
+				</c:forEach>
 				<li><a
-					href="page?pageNumber=<%=pageNumber%>&pageLength=<%=currentPage.getPageLength()%><%
-					if (search != null) {
-                    out.print("&search=" + searchUrlParameter);
-                }%>"><%=pageNumber%>
-				</a></li>
-				<%
-				    }
-				%>
-				<li><a
-					href="page?pageNumber=<%=Math.min(currentPage.getNbOfPages(), currentPage.getPageNumber() + 1)%>&pageLength=<%=currentPage.getPageLength()%>"
+					href=<c:url value="page">  
+						<c:param name="pageNumber"
+						value="${ Math.min(currentPage.nbOfPages + 0, currentPage.pageNumber + 1)}" />
+					<c:param name="pageNumber" value="${currentPage.pageLength}" />
+					<c:if test="${not empty search}">
+						<c:param name="search" value="${search}" />
+					</c:if>
+					<c:if test="${ not empty sortUrl}">
+						<c:param name="sort" value="${sortUrl}" />
+					</c:if>
+				</c:url>
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>

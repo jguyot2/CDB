@@ -3,11 +3,11 @@
 	Attributs nécessaires
 		-> companyList : List<CompanyDTO> la liste des entreprises présentes dans la base
 --%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="com.excilys.model.CompanyDTO,java.util.List"%>
-<%
-    List<CompanyDTO> companyList = (List<CompanyDTO>) request.getAttribute("companyList");
-%>
+<%@ page isELIgnored="false" %>
+
+<c:set value="requestScope.companyList" var="companyList" />
 
 <!DOCTYPE html>
 <html>
@@ -87,13 +87,9 @@
 								<label for="companyId">Company</label> <select
 									class="form-control" id="companyId" name="companyId">
 									<option value="0">--</option>
-									<%
-									    for (CompanyDTO company : companyList) {
-									%>
-									<option value="<%=company.getId()%>"><%=company.getName()%></option>
-									<%
-									    }
-									%>
+									<c:forEach items="${companyList}" var="company">
+									<option value="${company.id}">${company.name}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</fieldset>

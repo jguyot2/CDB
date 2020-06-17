@@ -4,6 +4,8 @@
 		"exn" : Exception ayant causé l'erreur.
 --%>
 <!DOCTYPE html>
+
+<%@ page isELIgnored="false" %>
 <html>
 <head>
 	<title>Computer Database</title>
