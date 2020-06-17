@@ -40,11 +40,13 @@ public final class DateMapper {
     }
 
     /**
-     * Conversion d'une date en chaîne de caractères au format donné dans DATE_PATTERN
+     * Conversion d'une date en chaîne de caractères au format donné dans
+     * DATE_PATTERN
      *
      * @param ld la date à convertir
-     * @return un optional contenant chaîne correspondant à la date en paramètre au format
-     *         correspondant à DATE_PATTERN, ou Optional.empty() si le paramètre est nul
+     * @return un optional contenant chaîne correspondant à la date en paramètre au
+     *         format correspondant à DATE_PATTERN, ou Optional.empty() si le
+     *         paramètre est nul
      */
     public static Optional<String> localDateToString(final LocalDate ld) {
         LOG.info("Conversion de localDate vers Str. localDate = " + ld);
@@ -61,7 +63,8 @@ public final class DateMapper {
      *
      * @param sqlDate
      *
-     * @return un Optional<LocalDate> contenant la date passée en param, ou vide si le param est nul.
+     * @return un Optional<LocalDate> contenant la date passée en param, ou vide si
+     *         le param est nul.
      */
     @SuppressWarnings("deprecation")
     public static Optional<LocalDate> sqlDateToLocalDate(final Date sqlDate) {
@@ -73,13 +76,15 @@ public final class DateMapper {
     }
 
     /**
-     * Convertit une date au format donné dans DATE_PATTERN en une instance de LocalDate.
+     * Convertit une date au format donné dans DATE_PATTERN en une instance de
+     * LocalDate.
      *
      * @param dateRepr une chaine de caractères correspondant à une date au format
      *        correspondant à <DATE_PATTERN>
      *
      * @return un optional contenant la date correspondante à la chaîne en param, ou
-     *  vide dans le cas où le paramètre est nul ou ne correspondant pasau format attendu
+     *         vide dans le cas où le paramètre est nul ou ne correspondant pasau
+     *         format attendu
      *
      * @throws DateTimeParseException si la date n'est pas au bon format
      */

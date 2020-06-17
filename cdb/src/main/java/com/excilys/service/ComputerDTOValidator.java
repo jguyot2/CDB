@@ -25,7 +25,7 @@ import com.excilys.model.SortEntry;
  */
 public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
 
-    private static List<ComputerDTO> convertList(List<Computer> l) {
+    private static List<ComputerDTO> convertList(final List<Computer> l) {
         return l.stream().map(c -> ComputerMapper.computerToDTO(c).get()).collect(Collectors.toList());
     }
 
@@ -56,8 +56,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     private static Optional<LocalDate> getDiscontinuationDateFromDTO(final ComputerDTO computerDTO,
             final List<ComputerDTOProblems> problems) {
 
-        if ((computerDTO.getDiscontinuationDate() == null)
-                || computerDTO.getDiscontinuationDate().isEmpty()) {
+        if (computerDTO.getDiscontinuationDate() == null || computerDTO.getDiscontinuationDate().isEmpty()) {
             return Optional.empty();
         }
         Optional<LocalDate> discoOpt = DateMapper.stringToLocalDate(computerDTO.getDiscontinuationDate());
@@ -68,6 +67,8 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     }
 
     /**
+     * Récupération de l'id du dto, ajout d'un élément dans la liste problems s'il y
+     * a une anomalie
      *
      * @param computerDTO
      * @param problems
@@ -76,7 +77,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     private static long getIdFromDTO(final ComputerDTO computerDTO,
             final List<ComputerDTOProblems> problems) {
         String idRepr = computerDTO.getId();
-        if ((idRepr == null) || idRepr.isEmpty() || "0".equals(idRepr)) {
+        if (idRepr == null || idRepr.isEmpty() || "0".equals(idRepr)) {
             return 0;
         }
         try {
@@ -96,7 +97,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     private static Optional<LocalDate> getIntroductionDateFromDTO(final ComputerDTO computerDTO,
             final List<ComputerDTOProblems> problems) {
 
-        if ((computerDTO.getIntroductionDate() == null) || computerDTO.getIntroductionDate().isEmpty()) {
+        if (computerDTO.getIntroductionDate() == null || computerDTO.getIntroductionDate().isEmpty()) {
             return Optional.empty();
         }
         Optional<LocalDate> introOpt = DateMapper.stringToLocalDate(computerDTO.getIntroductionDate());
@@ -114,7 +115,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     private static String getNameFromDTO(final ComputerDTO computerDTO,
             final List<ComputerDTOProblems> problems) {
 
-        if ((computerDTO.getName() == null) || computerDTO.getName().isEmpty()) {
+        if (computerDTO.getName() == null || computerDTO.getName().isEmpty()) {
             problems.add(ComputerDTOProblems.INVALID_NAME);
             return "";
         }
@@ -152,7 +153,14 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
         return this.computerValidator.addComputer(computer);
     }
 
-    public int delete(long id) {
+    /**
+     * Suppression d'un ordinateur de la base, dont l'id est en paramètre
+     *
+     * @param id
+     * @return 1 si le pc a été supprimé, 0 si pas de pc avec cet id -1 s'il y a eu
+     *         un problème dans la base
+     */
+    public int delete(final long id) {
         return this.computerValidator.delete(id);
     }
 
@@ -166,21 +174,22 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
         return convertList(this.computerValidator.fetchList(page));
     }
 
-    public List<ComputerDTO> fetchList(Page p, List<SortEntry> sortEntries) throws DuplicatedSortEntries {
+    public List<ComputerDTO> fetchList(final Page p, final List<SortEntry> sortEntries)
+            throws DuplicatedSortEntries {
         return convertList(this.computerValidator.fetchList(p, sortEntries));
     }
 
-    public List<ComputerDTO> fetchList(Page p, String searchedName) {
+    public List<ComputerDTO> fetchList(final Page p, final String searchedName) {
         return convertList(this.computerValidator.fetchList(p, searchedName));
 
     }
 
-    public List<ComputerDTO> fetchList(Page p, String search, List<SortEntry> sortEntries)
+    public List<ComputerDTO> fetchList(final Page p, final String search, final List<SortEntry> sortEntries)
             throws DuplicatedSortEntries {
         return convertList(this.computerValidator.fetchList(p, search, sortEntries));
     }
 
-    public List<ComputerDTO> fetchList(String search) {
+    public List<ComputerDTO> fetchList(final String search) {
         return convertList(this.computerValidator.fetchList(search));
     }
 
@@ -199,11 +208,18 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
         return this.computerValidator.getNumberOfElements();
     }
 
-    public int getNumberOfFoundElements(String search) {
+    /**
+     * Recherche du nombre d'élements de la base correspondant à la recherche en
+     * param
+     *
+     * @param search
+     * @return
+     */
+    public int getNumberOfFoundElements(final String search) {
         return this.computerValidator.getNumberOfFoundElements(search);
     }
 
-    public int updateComputer(ComputerDTO computerValue)
+    public int updateComputer(final ComputerDTO computerValue)
             throws InvalidComputerDTOException, InvalidComputerInstanceException {
         List<ComputerDTOProblems> problems = new ArrayList<>();
         Computer computer = getComputerFromDTOWithoutCompany(computerValue, problems);
@@ -227,7 +243,7 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     private Optional<Company> getCompanyFromDTOById(final ComputerDTO computerDTO,
             final List<ComputerDTOProblems> problems) {
         CompanyDTO companyDTO = computerDTO.getCompany();
-        if ((companyDTO == null) || (companyDTO.getId() == null) || "0".equals(companyDTO.getId())
+        if (companyDTO == null || companyDTO.getId() == null || "0".equals(companyDTO.getId())
                 || companyDTO.getId().isEmpty()) {
             return Optional.empty();
         }

@@ -1,38 +1,9 @@
 package com.excilys.model;
 
 public class SortEntry {
-    private SortCriterion criteria;
-    private boolean ascending;
-
-    public SortEntry(SortCriterion c, boolean isAscendingSort) {
-        this.ascending = isAscendingSort;
-        this.criteria = c;
-    }
-
-    public SortCriterion getCriteria() {
-        return this.criteria;
-    }
-
-    public boolean isAscending() {
-        return this.ascending;
-    }
-
-    public void setAscending(boolean ascending) {
-        this.ascending = ascending;
-    }
-
-    public void setCriteria(SortCriterion criteria) {
-        this.criteria = criteria;
-    }
-
-    @Override
-    public String toString() {
-        return this.criteria.toString() + "-" + (this.ascending ? "asc" : "desc");
-    }
-
-    public static SortEntry fromString(String s) throws IllegalCriteriaStringException {
+    public static SortEntry fromString(final String s) throws IllegalCriterionStringException {
         if (s == null) {
-            throw new IllegalCriteriaStringException();
+            throw new IllegalCriterionStringException();
         }
         String[] values = s.split("-");
 
@@ -46,25 +17,41 @@ public class SortEntry {
             } else if ("desc".equals(values[1].toLowerCase())) {
                 ascending = false;
             } else {
-                throw new IllegalCriteriaStringException();
+                throw new IllegalCriterionStringException();
             }
             return new SortEntry(criteria, ascending);
         } else {
-            throw new IllegalCriteriaStringException();
+            throw new IllegalCriterionStringException();
         }
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = (prime * result) + (this.ascending ? 1231 : 1237);
-        result = (prime * result) + ((this.criteria == null) ? 0 : this.criteria.hashCode());
-        return result;
+    public static boolean haveSameCriterion(final SortEntry first, final SortEntry snd) {
+        if (first == null) {
+            if (snd == null) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (snd == null) {
+                return false;
+            } else {
+                return first.criteria == snd.criteria;
+            }
+        }
+    }
+
+    private SortCriterion criteria;
+
+    private boolean ascending;
+
+    public SortEntry(final SortCriterion c, final boolean isAscendingSort) {
+        this.ascending = isAscendingSort;
+        this.criteria = c;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -84,19 +71,33 @@ public class SortEntry {
         return true;
     }
 
-    public static boolean haveSameCriterion(SortEntry first, SortEntry snd) {
-        if (first == null) {
-            if (snd == null) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            if (snd == null) {
-                return false;
-            } else {
-                return first.criteria == snd.criteria;
-            }
-        }
+    public SortCriterion getCriteria() {
+        return this.criteria;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.ascending ? 1231 : 1237);
+        result = prime * result + (this.criteria == null ? 0 : this.criteria.hashCode());
+        return result;
+    }
+
+    public boolean isAscending() {
+        return this.ascending;
+    }
+
+    public void setAscending(final boolean ascending) {
+        this.ascending = ascending;
+    }
+
+    public void setCriteria(final SortCriterion criteria) {
+        this.criteria = criteria;
+    }
+
+    @Override
+    public String toString() {
+        return this.criteria.toString() + "-" + (this.ascending ? "asc" : "desc");
     }
 }

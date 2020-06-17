@@ -41,12 +41,12 @@ public class ComputerValidator implements SearchValidator<Computer> {
      */
     private static List<ComputerInstanceProblems> getComputerInstanceProblems(final Computer computer) {
         List<ComputerInstanceProblems> problems = new ArrayList<>();
-        if ((computer.getName() == null) || computer.getName().trim().isEmpty()) {
+        if (computer.getName() == null || computer.getName().trim().isEmpty()) {
             problems.add(ComputerInstanceProblems.INVALID_NAME);
         }
         if (computer.getIntroduction() != null) {
-            if ((computer.getDiscontinuation() != null)
-                    && (computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0)) {
+            if (computer.getDiscontinuation() != null
+                    && computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0) {
                 problems.add(ComputerInstanceProblems.INVALID_DISCONTINUATION_DATE);
             }
         } else if (computer.getDiscontinuation() != null) {
@@ -136,10 +136,11 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
-    public List<Computer> fetchList(Page p, List<SortEntry> sortEntries) throws DuplicatedSortEntries {
+    public List<Computer> fetchList(final Page p, final List<SortEntry> sortEntries)
+            throws DuplicatedSortEntries {
         for (int i = 0; i < sortEntries.size(); ++i) {
             for (int j = 0; j < sortEntries.size(); ++j) {
-                if ((i != j) && (sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria())) {
+                if (i != j && sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria()) {
                     throw new DuplicatedSortEntries();
                 }
             }
@@ -152,7 +153,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
-    public List<Computer> fetchList(Page p, String search) {
+    public List<Computer> fetchList(final Page p, final String search) {
         try {
             return this.computerSearcher.fetchList(p, search);
         } catch (SQLException e) {
@@ -161,11 +162,11 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
-    public List<Computer> fetchList(Page p, String search, List<SortEntry> sortEntries)
+    public List<Computer> fetchList(final Page p, final String search, final List<SortEntry> sortEntries)
             throws DuplicatedSortEntries {
         for (int i = 0; i < sortEntries.size(); ++i) {
             for (int j = 0; j < sortEntries.size(); ++j) {
-                if ((i != j) && (sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria())) {
+                if (i != j && sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria()) {
                     throw new DuplicatedSortEntries();
                 }
             }
@@ -178,7 +179,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
-    public List<Computer> fetchList(String search) {
+    public List<Computer> fetchList(final String search) {
         try {
             return this.computerSearcher.searchByName(search);
         } catch (SQLException e) {
@@ -218,7 +219,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
-    public int getNumberOfFoundElements(String search) {
+    public int getNumberOfFoundElements(final String search) {
         try {
             return this.computerSearcher.getNumberOfFoundElements(search);
         } catch (SQLException e) {

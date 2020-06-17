@@ -32,6 +32,8 @@ import com.excilys.model.SortEntry;
 public class ComputerSearcher implements Searcher<Computer> {
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerSearcher.class);
+
+    /** */
     private static final String QUERY_COMPUTER_SEARCH_WITH_NAME = "SELECT computer.id, computer.name, introduced, discontinued, "
             + "company.id, company.name " + "FROM computer LEFT JOIN company "
             + "ON computer.company_id = company.id " + "WHERE computer.name LIKE ?";
@@ -48,12 +50,17 @@ public class ComputerSearcher implements Searcher<Computer> {
 
     /** */
     private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM computer";
+
+    /** */
     private static final String REQUEST_NB_OF_ROWS_SEARCH = "SELECT count(id) FROM computer WHERE computer.name LIKE ?";
 
+    /** Requête avec ordre + nom */
     private static final String ORDER_BY_WITH_NAME = "SELECT computer.id, computer.name,"
             + " introduced, discontinued, company.id, company.name FROM computer LEFT JOIN company "
             + "ON computer.company_id = company.id WHERE computer.name LIKE ? ORDER BY %s "
             + "LIMIT ? OFFSET ?";
+
+    /** */
     private static final String ORDER_BY_REQUEST = "SELECT computer.id, computer.name,"
             + " introduced, discontinued, company.id, company.name FROM computer LEFT JOIN company "
             + "ON computer.company_id = company.id ORDER BY %s LIMIT ? OFFSET ?";
@@ -87,7 +94,13 @@ public class ComputerSearcher implements Searcher<Computer> {
         return new Computer(computerName, company, introduced, discontinued, computerId);
     }
 
-    private static String sortCriterionToSqlColumn(SortCriterion sq) {
+    /**
+     * Fonction de conversion d'un critère vers les noms de colonne des requêtes
+     *
+     * @param sq
+     * @return
+     */
+    private static String sortCriterionToSqlColumn(final SortCriterion sq) {
         switch (sq) {
             case COMPANY_ID:
                 return "company.id";
@@ -104,7 +117,14 @@ public class ComputerSearcher implements Searcher<Computer> {
         }
     }
 
-    private static String sortEntryToSqlOrderByClause(SortEntry se) {
+    /**
+     * Fonction de conversion d'un sortEntry vers une «clause» order by.
+     *
+     * @param se la sortEntry à ajouter à la requête
+     * @return la chaîne à insérer dans la requête pour que le sortEntry soit pris en
+     *         compte
+     */
+    private static String sortEntryToSqlOrderByClause(final SortEntry se) {
         return sortCriterionToSqlColumn(se.getCriteria()) + " " + (se.isAscending() ? "ASC" : "DESC");
     }
 
@@ -169,7 +189,7 @@ public class ComputerSearcher implements Searcher<Computer> {
         return fetchList(page, Arrays.asList());
     }
 
-    public List<Computer> fetchList(Page page, List<SortEntry> entries) throws SQLException {
+    public List<Computer> fetchList(final Page page, final List<SortEntry> entries) throws SQLException {
         StringBuilder orderByClause = new StringBuilder();
         for (SortEntry sortEntry : entries) {
             orderByClause.append(sortEntryToSqlOrderByClause(sortEntry) + ", ");
@@ -181,21 +201,23 @@ public class ComputerSearcher implements Searcher<Computer> {
                 PreparedStatement stmt = conn.prepareStatement(request)) {
             stmt.setInt(1, page.getPageLength());
             stmt.setInt(2, page.getOffset());
-            ResultSet res = stmt.executeQuery();
-            while (res.next()) {
-                Computer computer = getComputerFromResultSet(res);
-                computerList.add(computer);
+            try (ResultSet res = stmt.executeQuery();) {
+                while (res.next()) {
+                    Computer computer = getComputerFromResultSet(res);
+                    computerList.add(computer);
+                }
             }
         }
         return computerList;
 
     }
 
-    public List<Computer> fetchList(Page p, String search) throws SQLException {
+    public List<Computer> fetchList(final Page p, final String search) throws SQLException {
         return fetchList(p, search, Arrays.asList());
     }
 
-    public List<Computer> fetchList(Page p, String search, List<SortEntry> entries) throws SQLException {
+    public List<Computer> fetchList(final Page p, final String search, final List<SortEntry> entries)
+            throws SQLException {
 
         StringBuilder orderByClause = new StringBuilder(" ");
         for (SortEntry sortEntry : entries) {
@@ -210,10 +232,11 @@ public class ComputerSearcher implements Searcher<Computer> {
             stmt.setString(1, searchedPattern);
             stmt.setInt(2, p.getPageLength());
             stmt.setInt(3, p.getOffset());
-            ResultSet res = stmt.executeQuery();
             List<Computer> result = new ArrayList<>();
-            while (res.next()) {
-                result.add(getComputerFromResultSet(res));
+            try (ResultSet res = stmt.executeQuery();) {
+                while (res.next()) {
+                    result.add(getComputerFromResultSet(res));
+                }
             }
             return result;
         }
@@ -224,9 +247,9 @@ public class ComputerSearcher implements Searcher<Computer> {
      */
     @Override
     public int getNumberOfElements() throws SQLException {
-        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement()) {
-
-            ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
+        try (Connection conn = DBConnection.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);) {
             if (res.next()) {
                 return res.getInt(1);
             }
@@ -235,32 +258,33 @@ public class ComputerSearcher implements Searcher<Computer> {
         return -1;
     }
 
-    public int getNumberOfFoundElements(String search) throws SQLException {
+    public int getNumberOfFoundElements(final String search) throws SQLException {
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(REQUEST_NB_OF_ROWS_SEARCH)) {
             String searchedPattern = "%" + search.replace("%", "\\%") + "%";
             stmt.setString(1, searchedPattern);
-            ResultSet res = stmt.executeQuery();
-            if (!res.next()) {
-                LOG.error("no elements found");
-                return 0;
+            try (ResultSet res = stmt.executeQuery();) {
+                if (!res.next()) {
+                    LOG.error("no elements found");
+                    return 0;
+                }
+                return res.getInt(1);
             }
-            return res.getInt(1);
         }
-
     }
 
-    public List<Computer> searchByName(String search) throws SQLException {
+    public List<Computer> searchByName(final String search) throws SQLException {
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_SEARCH_WITH_NAME);) {
             String searchedPattern = "%" + search.replace("%", "\\%") + "%";
             stmt.setString(1, searchedPattern);
             List<Computer> result = new ArrayList<>();
-            ResultSet res = stmt.executeQuery();
-            while (res.next()) {
-                result.add(getComputerFromResultSet(res));
+            try (ResultSet res = stmt.executeQuery();) {
+                while (res.next()) {
+                    result.add(getComputerFromResultSet(res));
+                }
+                return result;
             }
-            return result;
         }
     }
 }

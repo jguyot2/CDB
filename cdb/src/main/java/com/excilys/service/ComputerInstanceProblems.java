@@ -2,6 +2,7 @@ package com.excilys.service;
 
 /**
  * Représente les problèmes possibles sur les instances de Computer
+ * 
  * @author jguyot2
  *
  */

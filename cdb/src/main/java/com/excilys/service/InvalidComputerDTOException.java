@@ -3,7 +3,9 @@ package com.excilys.service;
 import java.util.List;
 
 /**
- * Exception lancée pour indiquer qu'une instance de ComputerDTO passée en paramètre est invalide.
+ * Exception lancée pour indiquer qu'une instance de ComputerDTO passée en
+ * paramètre est invalide.
+ * 
  * @author jguyot2
  *
  */
@@ -16,7 +18,7 @@ public class InvalidComputerDTOException extends Exception {
     List<ComputerDTOProblems> problems;
 
     /**
-     * 
+     *
      * @param problemList la liste des problèmes associés au DTO.
      */
     public InvalidComputerDTOException(final List<ComputerDTOProblems> problemList) {

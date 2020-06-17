@@ -79,7 +79,7 @@ public class EditComputerServlet extends HttpServlet {
      *        représentant l'identifiant de l'ordinateur.
      * @param response
      * @throws IOException
-     */
+     */ // REFACTO
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException {
@@ -129,7 +129,7 @@ public class EditComputerServlet extends HttpServlet {
      * nouvelle valeur de l'ordinateur modifié
      *
      * @throws ServletException
-     */
+     */ // REFACTO
     @Override
     public void doPost(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException {
@@ -186,10 +186,10 @@ public class EditComputerServlet extends HttpServlet {
      * @throws IllegalArgumentException
      * @throws InvalidComputerDTOException
      */
-    private ComputerDTO getComputerDTOFromParameters(HttpServletRequest request)
+    private ComputerDTO getComputerDTOFromParameters(final HttpServletRequest request)
             throws NumberFormatException, IllegalArgumentException, InvalidComputerDTOException {
         String idStr = request.getParameter("id");
-        if ((idStr == null) || idStr.trim().isEmpty() || "0".equals(idStr.trim())) {
+        if (idStr == null || idStr.trim().isEmpty() || "0".equals(idStr.trim())) {
             throw new IllegalArgumentException("No valid identifier");
         }
         String name = request.getParameter("computerName");
@@ -197,7 +197,7 @@ public class EditComputerServlet extends HttpServlet {
         String disco = request.getParameter("discontinued");
         String companyId = request.getParameter("companyId");
         CompanyDTO company = null;
-        if ((companyId != null) && !"0".equals(companyId)) {
+        if (companyId != null && !"0".equals(companyId)) {
             company = companyValidator.findById(Long.parseLong(companyId))
                     .orElseThrow(() -> new InvalidComputerDTOException(
                             Arrays.asList(ComputerDTOProblems.INEXISTANT_COMPANY_ID))); // TODO

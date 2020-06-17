@@ -10,7 +10,7 @@ import com.excilys.model.Page;
  * Interface forçant à utiliser les mêmes noms de méthodes pour les diverses
  * classes de recherche (i.e qui recherchent des objets/informations dans la
  * base)
- * 
+ *
  * @author jguyot2
  *
  * @param <T> Le type d'éléments concernés par la recherche (Company ou Computer)
@@ -33,6 +33,7 @@ interface Searcher<T> {
     List<T> fetchList() throws SQLException;
 
     /**
+     * Récupération d'une liste d'éléments «dans» une page en param
      *
      * @param p
      * @return la liste des objets correspondant à la page en paramètre

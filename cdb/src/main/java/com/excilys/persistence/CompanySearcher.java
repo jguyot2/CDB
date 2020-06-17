@@ -37,7 +37,7 @@ public class CompanySearcher implements Searcher<Company> {
     }
 
     /**
-     * Recherche une compagnie par son identifiant dans la base de données.
+     * Recherche un fabricant à partir de son identifiant dans la base de données.
      *
      * @param searchedId l'identifiant de l'entreprise identifiée
      *
@@ -64,7 +64,7 @@ public class CompanySearcher implements Searcher<Company> {
 
     /**
      * Rend la liste des entreprises présentes dans la base de données, sous la forme
-     * d'instance de Company.
+     * d'instances de Company.
      *
      * @return La liste des entreprises présentes dans la base de données
      */

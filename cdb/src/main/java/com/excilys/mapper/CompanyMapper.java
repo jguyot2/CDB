@@ -31,11 +31,11 @@ public final class CompanyMapper {
             return Optional.empty();
         }
         String name = null;
-        if ((companyDTO.getName() != null) && !"".equals(companyDTO.getName().trim())) {
+        if (companyDTO.getName() != null && !"".equals(companyDTO.getName().trim())) {
             name = companyDTO.getName();
         }
         long id = 0;
-        if ((companyDTO.getId() != null) && !"".equals(companyDTO.getId())) {
+        if (companyDTO.getId() != null && !"".equals(companyDTO.getId())) {
             try {
                 id = Long.parseLong(companyDTO.getId());
             } catch (NumberFormatException e) {

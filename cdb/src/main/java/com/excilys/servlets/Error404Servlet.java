@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 
+ *
  * @author jguyot2
  *
  */
@@ -29,7 +29,7 @@ public class Error404Servlet extends HttpServlet {
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException {
         try {
-          //  response.sendRedirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+            // response.sendRedirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
             request.getRequestDispatcher("/WEB-INF/views/404.jsp").forward(request, response);
         } catch (IOException e) {
             throw new ServletException(e);

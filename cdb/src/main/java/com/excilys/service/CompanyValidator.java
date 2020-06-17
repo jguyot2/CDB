@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.openqa.selenium.InvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +33,22 @@ public class CompanyValidator implements SearchValidator<Company> {
     }
 
     /**
+     * Suppression d'une entreprise à partir de son identifiant
+     *
+     * @param companyId l'identifiant de l'entreprise à supprimer
+     * @return 1 si l'entreprise a été supprimée, 0 si l'identifiant n'existe pas, -1
+     *         s'il y a eu une erreur dans la base
+     */
+    public int deleteCompanyById(final long companyId) {
+        try {
+            return this.companyUpdater.deleteCompany(companyId);
+        } catch (SQLException e) {
+            LOG.error(e.getMessage(), e);
+            return -1;
+        }
+    }
+
+    /**
      * Fonction renvoyant la liste des entreprises présentes dans la BD.
      *
      * @return La liste des entreprises présentes dans la BD
@@ -45,18 +60,6 @@ public class CompanyValidator implements SearchValidator<Company> {
         } catch (SQLException e) {
             LOG.error("fetchList: " + e.getMessage(), e);
             return new ArrayList<>();
-        }
-    }
-
-    public int deleteCompanyById(long companyId) {
-        if (companyId == 0) {
-            throw new InvalidArgumentException("null companyId");
-        }
-        try {
-            return this.companyUpdater.deleteCompany(companyId);
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-            return -1;
         }
     }
 

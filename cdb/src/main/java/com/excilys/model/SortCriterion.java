@@ -4,20 +4,9 @@ public enum SortCriterion {
     COMPUTER_NAME("name"), INTRODUCED("introduced"), DISCONTINUED("discontinued"), COMPANY_ID("companyId"),
     COMPANY_NAME("companyName");
 
-    private String repr;
-
-    private SortCriterion(String s) {
-        this.repr = s;
-    }
-
-    @Override
-    public String toString() {
-        return this.repr;
-    }
-
-    public static SortCriterion getCriteriaFromString(String s) throws IllegalCriteriaStringException {
+    public static SortCriterion getCriteriaFromString(final String s) throws IllegalCriterionStringException {
         if (s == null) {
-            throw new IllegalCriteriaStringException();
+            throw new IllegalCriterionStringException();
         }
         switch (s) {
             case "name":
@@ -31,7 +20,18 @@ public enum SortCriterion {
             case "companyName":
                 return COMPANY_NAME;
             default:
-                throw new IllegalCriteriaStringException();
+                throw new IllegalCriterionStringException();
         }
+    }
+
+    private String repr;
+
+    private SortCriterion(final String s) {
+        this.repr = s;
+    }
+
+    @Override
+    public String toString() {
+        return this.repr;
     }
 }

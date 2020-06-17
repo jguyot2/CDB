@@ -48,8 +48,8 @@ public final class Page {
     }
 
     public int getNbOfPages() {
-        return (this.totalNumberOfElements / this.pageLength)
-                + ((this.totalNumberOfElements % this.pageLength) == 0 ? 0 : 1);
+        return this.totalNumberOfElements / this.pageLength
+                + (this.totalNumberOfElements % this.pageLength == 0 ? 0 : 1);
     }
 
     /**

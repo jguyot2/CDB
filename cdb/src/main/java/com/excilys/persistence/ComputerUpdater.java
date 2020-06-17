@@ -35,18 +35,10 @@ public class ComputerUpdater {
     private static final String UPDATE_COMPUTER = "UPDATE computer SET "
             + "name = ?, introduced = ?, discontinued = ?, company_id = ?" + " WHERE id = ?";
 
-    /** */
-    public ComputerUpdater() {
-    }
-
     private static final String REQUEST_DELETE_COMPUTER_FROM_COMPANY_ID = "DELETE FROM computer WHERE company_id = ?";
 
-    public int deleteComputersFromManufacturerIdWithConnection(long manufacturerId, Connection conn)
-            throws SQLException {
-        try (PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE_COMPUTER_FROM_COMPANY_ID)) {
-            stmt.setLong(1, manufacturerId);
-            return stmt.executeUpdate();
-        }
+    /** */
+    public ComputerUpdater() {
     }
 
     /**
@@ -58,7 +50,7 @@ public class ComputerUpdater {
      *
      * @return le nouvel identifiant correspondant à la ligne ajoutée si l'ajout a
      *         réussi, 0 si l'ajout a raté
-     */
+     */ // REFACTO
     public long createComputer(final Computer newComputer) throws SQLException {
         LOG.info("Création de l'instance de Computer suivante: " + newComputer);
         try (Connection conn = DBConnection.getConnection();
@@ -82,12 +74,13 @@ public class ComputerUpdater {
             }
             stmt.executeUpdate();
 
-            ResultSet keySet = stmt.getGeneratedKeys();
-            if (!keySet.next()) {
-                LOG.error("Pas de PC créé");
-                return 0;
+            try (ResultSet keySet = stmt.getGeneratedKeys();) {
+                if (!keySet.next()) {
+                    LOG.error("Pas de PC créé");
+                    return 0;
+                }
+                return keySet.getLong(1);
             }
-            return keySet.getLong(1);
         }
     }
 
@@ -105,6 +98,23 @@ public class ComputerUpdater {
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(DELETE_COMPUTER)) {
             stmt.setLong(1, id);
+            return stmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Suppression des ordinateurs d'un fabricant dont l'identifiant est en paramètre
+     *
+     * @param manufacturerId l'identifiant du fabricant dont il faut supprimer les
+     *        ordinateurs.
+     * @param conn la connexion à utiliser
+     * @return le nombre de PC supprimés
+     * @throws SQLException
+     */
+    public int deleteComputersFromManufacturerIdWithConnection(final long manufacturerId,
+            final Connection conn) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE_COMPUTER_FROM_COMPANY_ID)) {
+            stmt.setLong(1, manufacturerId);
             return stmt.executeUpdate();
         }
     }

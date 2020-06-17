@@ -25,7 +25,7 @@ import com.excilys.service.InvalidComputerInstanceException;
 
 /**
  * Servlet de création d'ordinateur
- * 
+ *
  * @author jguyot2
  *
  */
@@ -34,79 +34,24 @@ public class AddComputerServlet extends HttpServlet {
     private static CompanyDTOValidator companyValidator = new CompanyDTOValidator();
     private static ComputerDTOValidator computerValidator = new ComputerDTOValidator();
 
-    public static void setCompanyValidator(CompanyDTOValidator dtv) {
-        companyValidator = dtv;
-    }
-
-    public static void setComputerValidator(ComputerDTOValidator dtv) {
-        computerValidator = dtv;
-    }
-
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(AddComputerServlet.class);
 
     /** */
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Affichage de la page de création d'un ordinateur.
-     *
-     * @param request
-     * @param response
-     * @throws ServletException Si une exception quelconque s'est produite pendant
-     *         l'appel,
-     */
-    @Override
-    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException {
-        try {
-            LOG.info("Création d'un pc (get)");
-            List<CompanyDTO> companyList = companyValidator.fetchList();
-            request.setAttribute("companyList", companyList);
-            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
-            rd.forward(request, response);
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-            throw new ServletException(e);
-        }
+    public static void setCompanyValidator(final CompanyDTOValidator dtv) {
+        companyValidator = dtv;
     }
 
-    /**
-     * Ajoute un ordinateur dans la base.
-     *
-     * @param request requête avec les paramètres suivants: - computerName : le nom
-     *        de l'ordinateur - introduced : Date d'introduction - discontinued :
-     *        Date d'arrêt de production - companyId : id de l'entreprise
-     * @param response
-     */
-    @Override
-    public void doPost(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException {
-        try {
-
-            try {
-                LOG.info("ajout d'un pc dans la base");
-                ComputerDTO cpt = getComputerDTOFromParameters(request);
-                LOG.info("PC ajouté : " + cpt);
-                computerValidator.addComputerDTO(cpt);
-            } catch (InvalidComputerDTOException e) {
-                LOG.debug("Instance invalide de DTO passée en param");
-                invalidComputerDTOCase(request, response, e);
-                return;
-            } catch (InvalidComputerInstanceException e) {
-                invalidComputerCase(request, response, e);
-                return;
-            }
-            response.sendRedirect("page");
-        } catch (IOException e) {
-            throw new ServletException(e);
-        }
+    public static void setComputerValidator(final ComputerDTOValidator dtv) {
+        computerValidator = dtv;
     }
 
     /**
      * Crée une instance de CompanyDTO a partir de la requête POST pour créer un
      * ordinateur.
-     * 
+     *
      * @param request la requête ayant provoqué
      * @return une instance de CompanyDTO qui peut être nulle
      * @throws NumberFormatException si l'identifiant du DTO est incorrect (= n'est
@@ -127,28 +72,10 @@ public class AddComputerServlet extends HttpServlet {
     }
 
     /**
-     * Récupération d'une instance de ComputerDTO à partir des paramètres de requête
-     * pour ajouter un ordinateur à la base
-     * 
-     * @param request la requête (POST)
-     * @return
-     * @throws NumberFormatException
-     * @throws InvalidComputerDTOException
-     */
-    private ComputerDTO getComputerDTOFromParameters(final HttpServletRequest request)
-            throws NumberFormatException, InvalidComputerDTOException {
-        String computerName = request.getParameter("computerName");
-        LOG.debug("computer name =" + computerName);
-        String introStr = request.getParameter("introduced");
-        String discoStr = request.getParameter("discontinued");
-        CompanyDTO company = getCompanyDTOFromCompanyIdParameter(request);
-        return new ComputerDTO(computerName, null, company, introStr, discoStr);
-    }
-
-    /**
      * Gestion du cas où l'instance de Computer correspondant aux paramètres entrés
-     * n'est pas correcte => redirection vers une page d'erreur comportant un message.
-     * 
+     * n'est pas correcte => redirection vers une page d'erreur comportant un
+     * message.
+     *
      * @param request
      * @param response
      * @param exnInvalidComputer l'exception récupérée lors de la tentative d'ajout
@@ -169,14 +96,12 @@ public class AddComputerServlet extends HttpServlet {
         request.setAttribute("errorCause", problemsDescription.toString());
 
         rd.forward(request, response);
-
     }
 
-   
     /**
      * Gestion du cas où l'instance de DTOComputer ajoutée à la base est incohérente
      * => Redirection vers une page d'erreur avec le message approprié
-     * 
+     *
      * @param request
      * @param response
      * @param catchedException
@@ -197,5 +122,75 @@ public class AddComputerServlet extends HttpServlet {
         request.setAttribute("errorCause", problemsDescription.toString());
 
         rd.forward(request, response);
+    }
+
+    /**
+     * Affichage de la page de création d'un ordinateur.
+     *
+     * @param request
+     * @param response
+     * @throws ServletException Si une exception quelconque s'est produite pendant
+     *         l'appel
+     * @throws IOException
+     */
+    @Override
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException {
+
+        LOG.info("Création d'un pc (get)");
+        List<CompanyDTO> companyList = companyValidator.fetchList();
+        request.setAttribute("companyList", companyList);
+        RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
+        rd.forward(request, response);
+
+    }
+
+    /**
+     * Ajoute un ordinateur dans la base.
+     *
+     * @param request requête avec les paramètres suivants: - computerName : le nom
+     *        de l'ordinateur - introduced : Date d'introduction - discontinued :
+     *        Date d'arrêt de production - companyId : id de l'entreprise
+     * @param response
+     * @throws IOException
+     */
+    @Override
+    public void doPost(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            LOG.info("ajout d'un pc dans la base");
+            ComputerDTO cpt = getComputerDTOFromParameters(request);
+            LOG.info("PC ajouté : " + cpt);
+            computerValidator.addComputerDTO(cpt);
+        } catch (InvalidComputerDTOException e) {
+            LOG.debug("Instance invalide de DTO passée en param");
+            invalidComputerDTOCase(request, response, e);
+            return;
+        } catch (InvalidComputerInstanceException e) {
+            invalidComputerCase(request, response, e);
+            return;
+        }
+        response.sendRedirect("page");
+
+    }
+
+    /**
+     * Récupération d'une instance de ComputerDTO à partir des paramètres de requête
+     * pour ajouter un ordinateur à la base
+     *
+     * @param request la requête (POST)
+     * @return
+     * @throws NumberFormatException
+     * @throws InvalidComputerDTOException
+     */
+    private ComputerDTO getComputerDTOFromParameters(final HttpServletRequest request)
+            throws NumberFormatException, InvalidComputerDTOException {
+        String computerName = request.getParameter("computerName");
+        LOG.debug("computer name =" + computerName);
+        String introStr = request.getParameter("introduced");
+        String discoStr = request.getParameter("discontinued");
+        CompanyDTO company = getCompanyDTOFromCompanyIdParameter(request);
+        return new ComputerDTO(computerName, null, company, introStr, discoStr);
     }
 }

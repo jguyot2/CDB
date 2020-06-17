@@ -23,7 +23,6 @@ public final class DBConnection {
     private static final Logger LOG = LoggerFactory.getLogger(ComputerUpdater.class);
 
     /** */
-
     public static Connection getConnection() throws SQLException {
         if (ds == null) {
             init();
