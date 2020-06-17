@@ -9,7 +9,7 @@ package com.excilys.ui;
  */
 public enum CLICommand {
     COMPANY_PAGINATION, COMPUTER_PAGINATION, CREATE_COMPUTER, DELETE_COMPUTER, EXIT, LIST_COMPANIES,
-    LIST_COMPUTERS, SHOW_DETAILS, UPDATE_COMPUTER;
+    LIST_COMPUTERS, SHOW_DETAILS, UPDATE_COMPUTER, COMPANY_DELETE;
 
     /**
      * Fonction associant un entier en paramètre à la commande à exécuter
@@ -37,6 +37,8 @@ public enum CLICommand {
                 return COMPUTER_PAGINATION;
             case 8:
                 return COMPANY_PAGINATION;
+            case 9:
+                return COMPANY_DELETE;
             default:
                 throw new IllegalArgumentException("Entier ne correspondant pas à une commande !");
         }

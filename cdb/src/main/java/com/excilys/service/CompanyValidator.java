@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.openqa.selenium.InvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.model.Company;
 import com.excilys.model.Page;
 import com.excilys.persistence.CompanySearcher;
+import com.excilys.persistence.CompanyUpdater;
 
 /**
  * Classe vérifiant que les requêtes sur les entreprises sont bien formée et
@@ -24,11 +26,11 @@ public class CompanyValidator implements SearchValidator<Company> {
     private static final Logger LOG = LoggerFactory.getLogger(CompanyValidator.class);
 
     /** */
-    private CompanySearcher companySearcher;
+    private CompanySearcher companySearcher = new CompanySearcher();
+    private CompanyUpdater companyUpdater = new CompanyUpdater();
 
     /** */
     public CompanyValidator() {
-        this.companySearcher = new CompanySearcher();
     }
 
     /**
@@ -43,6 +45,18 @@ public class CompanyValidator implements SearchValidator<Company> {
         } catch (SQLException e) {
             LOG.error("fetchList: " + e.getMessage(), e);
             return new ArrayList<>();
+        }
+    }
+
+    public int deleteCompanyById(long companyId) {
+        if (companyId == 0) {
+            throw new InvalidArgumentException("null companyId");
+        }
+        try {
+            return this.companyUpdater.deleteCompany(companyId);
+        } catch (SQLException e) {
+            LOG.error(e.getMessage(), e);
+            return -1;
         }
     }
 

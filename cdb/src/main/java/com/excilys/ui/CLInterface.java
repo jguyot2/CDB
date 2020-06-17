@@ -190,6 +190,9 @@ public class CLInterface {
             case COMPANY_PAGINATION:
                 CompanyPagination.paginate();
                 break;
+            case COMPANY_DELETE:
+                deleteCompanyCommand();
+                break;
             default:
                 throw new RuntimeException("arrivée dans le default alors que c'est pas censé arriver");
         }
@@ -198,6 +201,35 @@ public class CLInterface {
     private static void exitCommand() {
         System.out.println("Sortie du programme");
         System.exit(0);
+    }
+
+    private static void deleteCompanyCommand() {
+        System.out.println("écrivez l'id de l'entreprise à détruire");
+        String line = sc.nextLine().trim();
+        System.out.println("id de l'entreprise : " + line);
+        try {
+            long id = Long.parseLong(line);
+            Optional<Company> comp = companyValidator.findById(id);
+            if (comp.isPresent()) {
+                System.out.println("Entreprise à détruire : " + comp.get());
+                System.out.println("écrivez 1 pour confirmer, autre chose pour annuler");
+                if ("1".equals(sc.nextLine().trim())) {
+                    int nbdeletedCompany = companyValidator.deleteCompanyById(id);
+                    if (nbdeletedCompany == 1) {
+                        System.out.println("l'entreprise a été supprimée");
+                    } else {
+                        System.out.println("la suppression a foiré (nb = " + nbdeletedCompany + ")");
+                    }
+                }
+                return;
+            } else {
+                System.out.println("Pas trouvé d'entreprise avec cet id");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Lecture utile : " + "https://tinyurl.com/y837kss2");
+            return;
+        }
     }
 
     private static void getComputerDetailsCommand() {
@@ -246,6 +278,7 @@ public class CLInterface {
         System.out.println("6:\t Sortie du programme");
         System.out.println("7:\t Pagination des ordinateurs");
         System.out.println("8:\t Pagination des entreprises");
+        System.out.println("9:\t Suppression d'une entreprise");
         System.out.println("--------------------------------");
     }
 
