@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -27,19 +28,12 @@ import com.excilys.service.DuplicatedSortEntries;
 // TODO : Refactorisation de tout le fichier
 @WebServlet("/page")
 public class ComputerPageServlet extends HttpServlet {
+
     private static final String CHARSET = "UTF-8";
     private static final long serialVersionUID = 1L;
     private static Logger LOG = LoggerFactory.getLogger(ComputerPageServlet.class);
     private static final ComputerDTOValidator validator = new ComputerDTOValidator();
 
-    /**
-     * A partir de la requête en paramètre, crée un objet Page correspondant
-     *
-     * @param request la requête
-     * @return
-     * @throws NumberFormatException si les paramètres ne correspondent pas à des
-     *         nombres
-     */
     private static Page getPageFromRequest(final HttpServletRequest request, String search)
             throws NumberFormatException {
         String strPageNumber = request.getParameter("pageNumber");
@@ -50,7 +44,6 @@ public class ComputerPageServlet extends HttpServlet {
         } else {
             page.setTotalNumberOfElements(validator.getNumberOfFoundElements(search));
         }
-
         if (strPageNumber != null) {
             page.setPageNumber(Integer.parseInt(strPageNumber));
         }
@@ -60,27 +53,8 @@ public class ComputerPageServlet extends HttpServlet {
         return page;
     }
 
-    private static List<SortEntry> parseOrderParameters(String parameter)
-            throws IllegalArgumentException, IllegalCriteriaStringException {
-        if (parameter == null) {
-            return Arrays.asList();
-        }
-        String[] orderParameter = parameter.split(",");
-        LOG.info("order parameter" + orderParameter);
-
-        if (orderParameter == null) {
-            return Arrays.asList();
-        }
-        List<SortEntry> entries = new ArrayList<>();
-        for (String param : orderParameter) {
-            entries.add(SortEntry.fromString(param));
-        }
-        return entries;
-    }
-
     private static List<ComputerDTO> getComputerListFromParameters(final Page page, String search,
-            String sortParameters) throws DuplicatedSortEntries, IllegalCriteriaStringException {
-        List<SortEntry> sortEntries = parseOrderParameters(sortParameters);
+            List<SortEntry> sortEntries) throws DuplicatedSortEntries, IllegalCriteriaStringException {
         if (search != null) {
             return validator.fetchList(page, search, sortEntries);
         } else {
@@ -88,17 +62,8 @@ public class ComputerPageServlet extends HttpServlet {
         }
     }
 
-    /**
-     * Ajout des attributs qui seront passés au .jsp à la requête courante
-     *
-     * @param request
-     * @param page
-     * @throws UnsupportedEncodingException
-     * @throws DuplicatedSortEntries
-     * @throws IllegalCriteriaStringException
-     */
     private static void setAttributesFromPage(final HttpServletRequest request, final Page page,
-            String search, String message, String sortParameters)
+            String search, String message, List<SortEntry> sortEntries)
             throws UnsupportedEncodingException, DuplicatedSortEntries, IllegalCriteriaStringException {
         if (message != null) {
             request.setAttribute("message", message);
@@ -107,13 +72,34 @@ public class ComputerPageServlet extends HttpServlet {
             String urlSearch = URLEncoder.encode(search, "utf-8");
             request.setAttribute("urlSearch", urlSearch);
         }
-        List<ComputerDTO> computerList = getComputerListFromParameters(page, search, sortParameters);
+        if (!sortEntries.isEmpty()) {
+            StringBuilder searchUrlBuilder = new StringBuilder();
+            for (int i = 0; i < sortEntries.size(); ++i) {
+                searchUrlBuilder.append(sortEntries.get(i).toString()); // TODO : pê mettre une fonction
+                                                                        // statique ici plutôt
+                // qu'utiliser le toString
+                if (i < (sortEntries.size() - 1)) {
+                    searchUrlBuilder.append(",");
+                }
+            }
+            LOG.info("sort param: " + searchUrlBuilder.toString());
+            request.setAttribute("sortParameterValue", searchUrlBuilder.toString());
+        }
+        List<ComputerDTO> computerList = getComputerListFromParameters(page, search, sortEntries);
         List<Integer> pagesToShow = getPagesToShow(page);
 
         request.setAttribute("search", search);
         request.setAttribute("page", page);
         request.setAttribute("computerList", computerList);
         request.setAttribute("pageList", pagesToShow);
+
+        LOG.info("parameters put to the requête: ");
+
+        Enumeration<String> e = request.getAttributeNames();
+        while (e.hasMoreElements()) {
+            String k = e.nextElement();
+            LOG.info(k + " : " + request.getAttribute(k));
+        }
     }
 
     public static List<Integer> getPagesToShow(Page page) {
@@ -126,25 +112,63 @@ public class ComputerPageServlet extends HttpServlet {
         return pagesToShow;
     }
 
+    // Refacto sur les noms choisis avec le cul
+    public static List<SortEntry> getSortEntryFromSortParam(String sortParam)
+            throws IllegalCriteriaStringException {
+        LOG.info("Récup des sortEntry");
+        if ((sortParam == null) || sortParam.trim().isEmpty()) {
+            LOG.info("pas de param search");
+            return new ArrayList<>();
+        }
+        List<SortEntry> ret = new ArrayList<>();
+        String[] sortReprs = sortParam.split(",");
+        for (String sortParameter : sortReprs) {
+            SortEntry se = SortEntry.fromString(sortParameter);
+            ret.add(se);
+        }
+        LOG.info("reour : " + ret.toString());
+        return ret;
+    }
+
+    public List<SortEntry> getSortEntryFromSortAndNewParam(String sortParam, String newSortParameter)
+            throws IllegalCriteriaStringException {
+        LOG.info("Récup des params de tri");
+        List<SortEntry> ret = getSortEntryFromSortParam(sortParam);
+        if ((newSortParameter == null) || newSortParameter.trim().isEmpty()) {
+            return ret;
+        } else {
+            LOG.info("Récup des params de tri : nouveau param");
+            SortEntry se = SortEntry.fromString(newSortParameter);
+            ret = ret.stream().filter(secondSortentry -> !SortEntry.haveSameCriterion(secondSortentry, se))
+                    .collect(Collectors.toList());
+            ret.add(se);
+            LOG.info("found params: " + ret.toString());
+            return ret;
+        }
+    }
+
     /**
      * Envoi d'une page représentant un certain nombre d'instances de Computer
      *
      * @param request la requête, qui peut contenir les params suivants :
      *        "pageNumber" représentant le numéro de page courante (Première page par
-     *        défaut) "pageLength" Représentant le nombre d'éléments par page.
+     *        défaut) "pageLength" Représentant le nombre d'éléments par page. -
+     *        newSortParam, sort
      * @throws ServletException
-     */
+     */ // TODO màj de la javadoc
     @Override // refacto
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException {
         try {
             String search = request.getParameter("search");
             String message = request.getParameter("message");
-            String sortParameters = request.getParameter("sort"); // TODO : vérifier que c'est le bon
-                                                                  // nom
-            // de param
+            String sort = request.getParameter("sort");
+            String newSortParameter = request.getParameter("newSortParam");
+
+            List<SortEntry> sortEntries = getSortEntryFromSortAndNewParam(sort, newSortParameter);
+            LOG.debug("foundSortEntries : " + sortEntries);
             Page page = getPageFromRequest(request, search);
-            setAttributesFromPage(request, page, search, message, sortParameters);
+            setAttributesFromPage(request, page, search, message, sortEntries);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
             rd.forward(request, response);
         } catch (IOException e) {
@@ -163,7 +187,7 @@ public class ComputerPageServlet extends HttpServlet {
         } catch (DuplicatedSortEntries e) {
             LOG.debug("", e);
             RequestDispatcher rd = request.getRequestDispatcher("/400");
-            request.setAttribute("errorCause", "ther is several times the same ");
+            request.setAttribute("errorCause", "there is several times the same search criterion");
             try {
                 rd.forward(request, response);
             } catch (IOException e1) {
@@ -172,7 +196,7 @@ public class ComputerPageServlet extends HttpServlet {
         } catch (IllegalCriteriaStringException e) {
             LOG.debug("", e);
             RequestDispatcher rd = request.getRequestDispatcher("/400");
-            request.setAttribute("errorCause", "the column sorted parameter is invalid");
+            request.setAttribute("errorCause", "The search parameter is invalid");
             try {
                 rd.forward(request, response);
             } catch (IOException e1) {
