@@ -146,13 +146,14 @@ public class ComputerSearcher implements Searcher<Computer> {
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_FROM_ID)) {
             stmt.setLong(1, searchedId);
-            ResultSet res = stmt.executeQuery();
-            if (!res.next()) {
-                LOG.debug("La recherche avec l'id " + searchedId + " n'a renvoyé aucun résultat");
-                return Optional.empty();
+            try (ResultSet res = stmt.executeQuery();) {
+                if (!res.next()) {
+                    LOG.debug("La recherche avec l'id " + searchedId + " n'a renvoyé aucun résultat");
+                    return Optional.empty();
+                }
+                Computer foundComputer = getComputerFromResultSet(res);
+                return Optional.of(foundComputer);
             }
-            Computer foundComputer = getComputerFromResultSet(res);
-            return Optional.of(foundComputer);
         }
     }
 
@@ -168,10 +169,11 @@ public class ComputerSearcher implements Searcher<Computer> {
     public List<Computer> fetchList() throws SQLException {
         List<Computer> computerList = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement()) {
-            ResultSet res = stmt.executeQuery(QUERY_COMPUTER_LIST);
-            while (res.next()) {
-                Computer computer = getComputerFromResultSet(res);
-                computerList.add(computer);
+            try (ResultSet res = stmt.executeQuery(QUERY_COMPUTER_LIST);) {
+                while (res.next()) {
+                    Computer computer = getComputerFromResultSet(res);
+                    computerList.add(computer);
+                }
             }
         }
         return computerList;

@@ -38,17 +38,26 @@ public class ComputerValidator implements SearchValidator<Computer> {
      *
      * @return Une liste contenant la liste des problèmes sur l'instance de Computer
      *         passée en paramètre
-     */
+     */ // refacto
     private static List<ComputerInstanceProblems> getComputerInstanceProblems(final Computer computer) {
         List<ComputerInstanceProblems> problems = new ArrayList<>();
-        if (computer.getName() == null || computer.getName().trim().isEmpty()) {
+        if ((computer.getName() == null) || computer.getName().trim().isEmpty()) {
             problems.add(ComputerInstanceProblems.INVALID_NAME);
         }
         if (computer.getIntroduction() != null) {
-            if (computer.getDiscontinuation() != null
-                    && computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0) {
+            if ((computer.getIntroduction().getYear() < 1970)
+                    || (computer.getIntroduction().getYear() > 2037)) {
+                problems.add(ComputerInstanceProblems.OUT_OF_RANGE_INTRO_DATE);
+            }
+            if ((computer.getDiscontinuation() != null)
+                    && (computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0)) {
+                if ((computer.getDiscontinuation().getYear() < 1970)
+                        || (computer.getDiscontinuation().getYear() > 2037)) {
+                    problems.add(ComputerInstanceProblems.OUT_OF_RANGE_DISCO_DATE);
+                }
                 problems.add(ComputerInstanceProblems.INVALID_DISCONTINUATION_DATE);
             }
+
         } else if (computer.getDiscontinuation() != null) {
             problems.add(ComputerInstanceProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION);
         }
@@ -81,6 +90,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
         checkComputerValidity(createdComputer);
         try {
             return this.computerUpdater.createComputer(createdComputer);
+
         } catch (SQLException e) {
             LOG.error("createComputer :" + e.getMessage(), e);
             return 0;
@@ -140,7 +150,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
             throws DuplicatedSortEntries {
         for (int i = 0; i < sortEntries.size(); ++i) {
             for (int j = 0; j < sortEntries.size(); ++j) {
-                if (i != j && sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria()) {
+                if ((i != j) && (sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria())) {
                     throw new DuplicatedSortEntries();
                 }
             }
@@ -166,7 +176,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
             throws DuplicatedSortEntries {
         for (int i = 0; i < sortEntries.size(); ++i) {
             for (int j = 0; j < sortEntries.size(); ++j) {
-                if (i != j && sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria()) {
+                if ((i != j) && (sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria())) {
                     throw new DuplicatedSortEntries();
                 }
             }

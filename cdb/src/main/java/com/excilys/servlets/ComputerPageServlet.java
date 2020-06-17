@@ -64,7 +64,7 @@ public class ComputerPageServlet extends HttpServlet {
      * @param errorCause
      * @throws ServletException
      * @throws IOException
-     */ // todo : pê la déplacer vers une classe statique des servlets
+     */ // todo : pê la déplacer vers une classe statique
     private static void forwardToError400Page(final HttpServletRequest request,
             final HttpServletResponse response, final String errorCause)
             throws ServletException, IOException {
@@ -122,6 +122,13 @@ public class ComputerPageServlet extends HttpServlet {
         return page;
     }
 
+    /**
+     * Récupération de la liste des numéros de pages à afficher dans le bas de la
+     * page
+     *
+     * @param page la page courante
+     * @return
+     */
     private static List<Integer> getPagesToShow(final Page page) {
         List<Integer> pagesToShow = new ArrayList<>();
         int firstPageToShow = Math.max(0, page.getPageNumber() - 2);
@@ -294,11 +301,12 @@ public class ComputerPageServlet extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      * @see SortEntry
-     */ // TODO màj de la javadoc
+     */
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            // TODO : redirection si les paramètres de page sont incohérents
             setRequestAttributes(request);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
             rd.forward(request, response);
