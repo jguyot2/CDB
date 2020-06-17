@@ -39,6 +39,16 @@ public class ComputerUpdater {
     public ComputerUpdater() {
     }
 
+    private static final String REQUEST_DELETE_COMPUTER_FROM_COMPANY_ID = "DELETE FROM computer WHERE company_id = ?";
+
+    public int deleteComputersFromManufacturerIdWithConnection(long manufacturerId, Connection conn)
+            throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE_COMPUTER_FROM_COMPANY_ID)) {
+            stmt.setLong(1, manufacturerId);
+            return stmt.executeUpdate();
+        }
+    }
+
     /**
      * Ajoute une ligne à la base de données, correspondant à l'instance de Computer
      * donnée en paramètre.

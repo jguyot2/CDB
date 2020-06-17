@@ -91,7 +91,7 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="name-asc"/>
-					</c:url>>&#8593;
+					</c:url> style="font-size:xx-large" >&#8593;
 					</a> <a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
@@ -103,7 +103,7 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="name-desc"/>
-					</c:url>>&#8595;
+					</c:url> style="font-size:xx-large" >&#8595;
 					</a>
 					</th>
 					<th>Introduced date <a
@@ -116,7 +116,7 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="introduced-asc"/>
-					</c:url>>&#8593;
+					</c:url> style="font-size:xx-large" >&#8593;
 					</a><a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
@@ -127,7 +127,7 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="introduced-desc"/>
-					</c:url>>&#8595;
+					</c:url> style="font-size:xx-large" >&#8595;
 					</a></th>
 					<!-- Table header for Discontinued Date -->
 					<th>Discontinued date <a
@@ -140,7 +140,7 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="discontinued-asc"/>
-					</c:url>>&#8593;
+					</c:url> style="font-size:xx-large" >&#8593;
 					</a><a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
@@ -151,7 +151,7 @@
 						<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>	<c:param name="newSortParam" value="discontinued-desc"/>
-					</c:url>>&#8595;
+					</c:url> style="font-size:xx-large" >&#8595;
 					</a></th>
 					<!-- Table header for Company -->
 					<th>Company <a
@@ -164,7 +164,7 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="companyName-asc"/>
-					</c:url>>&#8593;
+					</c:url> style="font-size:xx-large" >&#8593;
 					</a><a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
@@ -175,7 +175,7 @@
 						<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>	<c:param name="newSortParam" value="companyName-desc"/>
-					</c:url>>&#8595;
+					</c:url> style="font-size:xx-large" >&#8595;
 					</a></th>
 				</tr>
 			</thead>

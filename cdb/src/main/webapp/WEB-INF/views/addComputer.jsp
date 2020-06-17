@@ -7,7 +7,7 @@
 <%@ page import="com.excilys.model.CompanyDTO,java.util.List"%>
 <%@ page isELIgnored="false" %>
 
-<c:set value="requestScope.companyList" var="companyList" />
+<c:set value="${requestScope.companyList}" var="companyList" />
 
 <!DOCTYPE html>
 <html>
