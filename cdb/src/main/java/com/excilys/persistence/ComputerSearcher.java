@@ -18,7 +18,7 @@ import com.excilys.mapper.DateMapper;
 import com.excilys.model.Company;
 import com.excilys.model.Computer;
 import com.excilys.model.Page;
-import com.excilys.model.SortCriteria;
+import com.excilys.model.SortCriterion;
 import com.excilys.model.SortEntry;
 
 // refacto : "fusionner" certaines fonctions/requêtes qui font plus ou moins la
@@ -87,7 +87,7 @@ public class ComputerSearcher implements Searcher<Computer> {
         return new Computer(computerName, company, introduced, discontinued, computerId);
     }
 
-    private static String sortCriteriaToSqlColumn(SortCriteria sq) {
+    private static String sortCriterionToSqlColumn(SortCriterion sq) {
         switch (sq) {
             case COMPANY_ID:
                 return "company.id";
@@ -105,7 +105,7 @@ public class ComputerSearcher implements Searcher<Computer> {
     }
 
     private static String sortEntryToSqlOrderByClause(SortEntry se) {
-        return sortCriteriaToSqlColumn(se.getCriteria()) + " " + (se.isAscending() ? "ASC" : "DESC");
+        return sortCriterionToSqlColumn(se.getCriteria()) + " " + (se.isAscending() ? "ASC" : "DESC");
     }
 
     /** */
@@ -197,7 +197,7 @@ public class ComputerSearcher implements Searcher<Computer> {
 
     public List<Computer> fetchList(Page p, String search, List<SortEntry> entries) throws SQLException {
 
-        StringBuilder orderByClause = new StringBuilder();
+        StringBuilder orderByClause = new StringBuilder(" ");
         for (SortEntry sortEntry : entries) {
             orderByClause.append(sortEntryToSqlOrderByClause(sortEntry) + ", ");
         }

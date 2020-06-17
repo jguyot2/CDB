@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Servlet correspondant à l'erreur 400 (= l'utilisateur fait de la merde)
+ *
  * @author jguyot2
  *
  */
@@ -37,11 +38,9 @@ public class Error400Servlet extends HttpServlet {
             String htmlErrorCause = errorCause.replace("\n", "<br/>");
             request.setAttribute("errorCause", htmlErrorCause);
         }
-
         RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/400.jsp");
         try {
             rd.forward(request, response);
-
         } catch (IOException e) {
             LOG.error(e.getMessage());
             throw new ServletException(e);

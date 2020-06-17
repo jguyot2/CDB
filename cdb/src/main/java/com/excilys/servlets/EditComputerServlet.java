@@ -88,7 +88,6 @@ public class EditComputerServlet extends HttpServlet {
         try {
             try {
                 LOG.trace("doGet");
-                LOG.error("pouet");
                 String strId = request.getParameter("id");
                 long id = Long.parseLong(strId);
                 LOG.debug("parsed number : " + strId);
@@ -103,6 +102,10 @@ public class EditComputerServlet extends HttpServlet {
                 }
                 List<CompanyDTO> companyList = companyValidator.fetchList();
                 request.setAttribute("computer", computer.get());
+                if (computer.get().getCompany() != null) {
+                    companyList.remove(computer.get().getCompany());
+                }
+
                 request.setAttribute("companyList", companyList);
                 rd = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
                 rd.forward(request, response);

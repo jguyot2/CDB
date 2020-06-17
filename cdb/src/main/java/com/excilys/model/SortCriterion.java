@@ -1,9 +1,24 @@
 package com.excilys.model;
 
-public enum SortCriteria {
-    COMPUTER_NAME, INTRODUCED, DISCONTINUED, COMPANY_ID, COMPANY_NAME;
+public enum SortCriterion {
+    COMPUTER_NAME("name"), INTRODUCED("introduced"), DISCONTINUED("discontinued"), COMPANY_ID("companyId"),
+    COMPANY_NAME("companyName");
 
-    public static SortCriteria getCriteriaFromString(String s) throws IllegalCriteriaStringException {
+    private String repr;
+
+    private SortCriterion(String s) {
+        this.repr = s;
+    }
+
+    @Override
+    public String toString() {
+        return this.repr;
+    }
+
+    public static SortCriterion getCriteriaFromString(String s) throws IllegalCriteriaStringException {
+        if (s == null) {
+            throw new IllegalCriteriaStringException();
+        }
         switch (s) {
             case "name":
                 return COMPUTER_NAME;
