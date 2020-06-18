@@ -114,10 +114,21 @@ public class ComputerPageServlet extends HttpServlet {
             page.setTotalNumberOfElements(validator.getNumberOfFoundElements(search));
         }
         if (strPageNumber != null) {
-            page.setPageNumber(Integer.parseInt(strPageNumber));
+            int pageNumber = Integer.parseInt(strPageNumber);
+            if (pageNumber >= 0) {
+                page.setPageNumber(pageNumber);
+            } else {
+                throw new NumberFormatException();
+            }
         }
         if (strPageLength != null) {
-            page.setPageLength(Integer.parseInt(strPageLength));
+            int pageLength = Integer.parseInt(strPageLength);
+            if (pageLength > 0) {
+                page.setPageLength(pageLength);
+
+            } else {
+                throw new NumberFormatException();
+            }
         }
         return page;
     }
@@ -170,21 +181,30 @@ public class ComputerPageServlet extends HttpServlet {
      * @return Une list représentant les instructions de tri s'il y en avait, une
      *         liste vide sinon
      * @throws IllegalCriterionStringException
-     */
+     */ // refacto
     private static List<SortEntry> getSortEntriesFromRequest(final HttpServletRequest request)
             throws IllegalCriterionStringException {
         String sortParam = request.getParameter("sort");
         String newSortParameter = request.getParameter("newSortParam");
+
         LOG.info("Récup des params de tri");
         List<SortEntry> ret = getSortEntryFromParameter(sortParam);
         if ((newSortParameter == null) || newSortParameter.trim().isEmpty()) {
             return ret;
         } else {
+            boolean[] addNewParameter = { true };
             LOG.info("Récup des params de tri : nouveau param");
             SortEntry se = SortEntry.fromString(newSortParameter);
-            ret = ret.stream().filter(secondSortentry -> !SortEntry.haveSameCriterion(secondSortentry, se))
-                    .collect(Collectors.toList());
-            ret.add(se);
+            ret = ret.stream().filter(secondSortentry -> {
+                if (secondSortentry.equals(se)) {
+                    addNewParameter[0] = false;
+                    return false;
+                }
+                return !SortEntry.haveSameCriterion(secondSortentry, se);
+            }).collect(Collectors.toList());
+            if (addNewParameter[0]) {
+                ret.add(se);
+            }
             LOG.info("found params: " + ret.toString());
             return ret;
         }
@@ -261,7 +281,6 @@ public class ComputerPageServlet extends HttpServlet {
             request.setAttribute("urlSearch", urlSearch);
         }
         request.setAttribute("message", message);
-
         request.setAttribute("search", search);
         request.setAttribute("page", page);
         request.setAttribute("computerList", computerList);
@@ -273,7 +292,8 @@ public class ComputerPageServlet extends HttpServlet {
 
     // TODO javadoc et pê changer le nom de fonction
     private static void setRequestAttributes(final HttpServletRequest request)
-            throws UnsupportedEncodingException, DuplicatedSortEntries, IllegalCriterionStringException {
+            throws UnsupportedEncodingException, DuplicatedSortEntries, IllegalCriterionStringException,
+            NumberFormatException {
 
         String search = request.getParameter("search");
         String message = request.getParameter("message");
@@ -306,7 +326,7 @@ public class ComputerPageServlet extends HttpServlet {
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            // TODO : redirection si les paramètres de page sont incohérents
+            // TODO : redirection si les paramètres de page sont trop grands
             setRequestAttributes(request);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
             rd.forward(request, response);

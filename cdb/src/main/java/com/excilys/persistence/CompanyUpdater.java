@@ -36,6 +36,7 @@ public class CompanyUpdater {
                     .deleteComputersFromManufacturerIdWithConnection(companyId, conn);
             LOG.info(nbComputersDeleted + " computers deleted");
             int numberofDeletedCompanies = this.deleteCompany(companyId, conn);
+            // Test si une entreprise a été supprimée ?
             conn.commit();
             return numberofDeletedCompanies;
         } catch (SQLException e) {

@@ -45,7 +45,7 @@
 		</c:if>
 	</section>
 	<div class="container">
-		<h1 id="homeTitle">${currentPage.totalNumberOfElements} computers
+		<h1 id="homeTitle">${currentPage.totalNumberOfElements}computers
 			found</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
@@ -91,8 +91,8 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="name-asc"/>
-					</c:url> style="font-size:xx-large" >&#8593;
-					</a> <a
+					</c:url>
+						style="font-size: xx-large">&#8593; </a> <a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -103,8 +103,8 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="name-desc"/>
-					</c:url> style="font-size:xx-large" >&#8595;
-					</a>
+					</c:url>
+						style="font-size: xx-large">&#8595; </a>
 					</th>
 					<th>Introduced date <a
 						href=<c:url value="page">
@@ -116,8 +116,8 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="introduced-asc"/>
-					</c:url> style="font-size:xx-large" >&#8593;
-					</a><a
+					</c:url>
+						style="font-size: xx-large">&#8593; </a><a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -127,8 +127,8 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="introduced-desc"/>
-					</c:url> style="font-size:xx-large" >&#8595;
-					</a></th>
+					</c:url>
+						style="font-size: xx-large">&#8595; </a></th>
 					<!-- Table header for Discontinued Date -->
 					<th>Discontinued date <a
 						href=<c:url value="page">
@@ -140,8 +140,8 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="discontinued-asc"/>
-					</c:url> style="font-size:xx-large" >&#8593;
-					</a><a
+					</c:url>
+						style="font-size: xx-large">&#8593; </a><a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -151,8 +151,8 @@
 						<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>	<c:param name="newSortParam" value="discontinued-desc"/>
-					</c:url> style="font-size:xx-large" >&#8595;
-					</a></th>
+					</c:url>
+						style="font-size: xx-large">&#8595; </a></th>
 					<!-- Table header for Company -->
 					<th>Company <a
 						href=<c:url value="page">
@@ -164,8 +164,8 @@
 					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="companyName-asc"/>
-					</c:url> style="font-size:xx-large" >&#8593;
-					</a><a
+					</c:url>
+						style="font-size: xx-large">&#8593; </a><a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -175,8 +175,8 @@
 						<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>	<c:param name="newSortParam" value="companyName-desc"/>
-					</c:url> style="font-size:xx-large" >&#8595;
-					</a></th>
+					</c:url>
+						style="font-size: xx-large">&#8595; </a></th>
 				</tr>
 			</thead>
 			<!-- Browse attribute computers -->
@@ -198,13 +198,13 @@
 		</table>
 	</div>
 
-
-
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a
-					href=<c:url value="page">
+
+				<c:if test="${currentPage.pageNumber > 0}">
+					<li><a
+						href=<c:url value="page">
 					<c:param name ="pageNumber" value="${currentPage.pageNumber - 1}" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" /> 
 					<c:if test="${not empty search}"> 
@@ -212,10 +212,10 @@
 					</c:if>
 					
 				</c:url>
-					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+						aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 
-				</a></li>
-
+					</a></li>
+				</c:if>
 				<c:forEach items="${pageList}" var="pageNumber">
 					<li><a
 						href=<c:url value="page">
@@ -233,7 +233,7 @@
 					href=<c:url value="page">  
 						<c:param name="pageNumber"
 						value="${ Math.min(currentPage.nbOfPages + 0, currentPage.pageNumber + 1)}" />
-					<c:param name="pageNumber" value="${currentPage.pageLength}" />
+					<c:param name="pageLength" value="${currentPage.pageLength}" />
 					<c:if test="${not empty search}">
 						<c:param name="search" value="${search}" />
 					</c:if>
