@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Exception lancée pour indiquer qu'une instance de ComputerDTO passée en
  * paramètre est invalide.
- * 
+ *
  * @author jguyot2
  *
  */

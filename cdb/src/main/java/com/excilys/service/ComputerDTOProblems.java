@@ -3,7 +3,7 @@ package com.excilys.service;
 /**
  * Énumération permettant de répertorier les problèmes pouvant être associés à
  * une instance ComputerDTO incohérente.
- * 
+ *
  * @author jguyot2
  *
  */
@@ -24,7 +24,7 @@ public enum ComputerDTOProblems {
 
     /**
      * Explication du problème.
-     * 
+     *
      * @return une chaîne expliquant le problème courant d'une instance de
      *         ComputerDTO.
      */

@@ -4,6 +4,6 @@
 </head>
 
 <body>
-	<a href="page"> page</a>
+	<a href="page">page</a>
 </body>
 </html>

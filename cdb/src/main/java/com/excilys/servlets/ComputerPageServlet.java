@@ -144,7 +144,7 @@ public class ComputerPageServlet extends HttpServlet {
         List<Integer> pagesToShow = new ArrayList<>();
         int firstPageToShow = Math.max(0, page.getPageNumber() - 2);
         int nbPages = page.getNbOfPages();
-        for (int i = 0; (i < 5) && ((firstPageToShow + i) < nbPages); ++i) {
+        for (int i = 0; i < 5 && firstPageToShow + i < nbPages; ++i) {
             pagesToShow.add(firstPageToShow + i);
         }
         return pagesToShow;
@@ -189,7 +189,7 @@ public class ComputerPageServlet extends HttpServlet {
         LOG.info("Récup des params de tri");
         List<SortEntry> entries = getSortEntryFromParameter(sortParam);
 
-        if ((newSortParameter == null) || newSortParameter.trim().isEmpty()) {
+        if (newSortParameter == null || newSortParameter.trim().isEmpty()) {
             return entries;
         } else {
             boolean[] addNewParameter = { true };
@@ -221,7 +221,7 @@ public class ComputerPageServlet extends HttpServlet {
     private static List<SortEntry> getSortEntryFromParameter(final String sortParam)
             throws IllegalCriterionStringException {
         LOG.info("Récup des sortEntry");
-        if ((sortParam == null) || sortParam.trim().isEmpty()) {
+        if (sortParam == null || sortParam.trim().isEmpty()) {
             LOG.info("pas de param de recherche");
             return new ArrayList<>();
         }
@@ -251,7 +251,7 @@ public class ComputerPageServlet extends HttpServlet {
             StringBuilder searchUrlBuilder = new StringBuilder();
             for (int i = 0; i < sortEntries.size(); ++i) {
                 searchUrlBuilder.append(sortEntries.get(i).toString());
-                if (i < (sortEntries.size() - 1)) {
+                if (i < sortEntries.size() - 1) {
                     searchUrlBuilder.append(",");
                 }
             }
