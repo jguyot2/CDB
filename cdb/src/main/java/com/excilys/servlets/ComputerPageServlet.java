@@ -186,16 +186,16 @@ public class ComputerPageServlet extends HttpServlet {
             throws IllegalCriterionStringException {
         String sortParam = request.getParameter("sort");
         String newSortParameter = request.getParameter("newSortParam");
-
         LOG.info("Récup des params de tri");
-        List<SortEntry> ret = getSortEntryFromParameter(sortParam);
+        List<SortEntry> entries = getSortEntryFromParameter(sortParam);
+
         if ((newSortParameter == null) || newSortParameter.trim().isEmpty()) {
-            return ret;
+            return entries;
         } else {
             boolean[] addNewParameter = { true };
             LOG.info("Récup des params de tri : nouveau param");
             SortEntry se = SortEntry.fromString(newSortParameter);
-            ret = ret.stream().filter(secondSortentry -> {
+            entries = entries.stream().filter(secondSortentry -> {
                 if (secondSortentry.equals(se)) {
                     addNewParameter[0] = false;
                     return false;
@@ -203,10 +203,10 @@ public class ComputerPageServlet extends HttpServlet {
                 return !SortEntry.haveSameCriterion(secondSortentry, se);
             }).collect(Collectors.toList());
             if (addNewParameter[0]) {
-                ret.add(se);
+                entries.add(se);
             }
-            LOG.info("found params: " + ret.toString());
-            return ret;
+            LOG.info("found params: " + entries.toString());
+            return entries;
         }
     }
 
@@ -326,7 +326,6 @@ public class ComputerPageServlet extends HttpServlet {
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            // TODO : redirection si les paramètres de page sont trop grands
             setRequestAttributes(request);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
             rd.forward(request, response);

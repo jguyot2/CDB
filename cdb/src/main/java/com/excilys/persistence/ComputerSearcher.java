@@ -21,9 +21,6 @@ import com.excilys.model.Page;
 import com.excilys.model.SortCriterion;
 import com.excilys.model.SortEntry;
 
-// refacto : "fusionner" certaines fonctions/requêtes qui font plus ou moins la
-// même chose (e.g recherche avec/sans page, avec/sans ordre, etc.)
-
 /**
  * Classe permettant d'effectuer des requêtes sur des Computers.
  *

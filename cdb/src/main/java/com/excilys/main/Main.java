@@ -4,11 +4,7 @@ import com.excilys.ui.CLInterface;
 
 public final class Main {
 
-    // TODO les servlets
-    // -> Servlet edit d'ordi
-    // -> Servlet suppression d'ordi
     // TODO Selenium
-    // TODO
     /**
      * Classe principale.
      *

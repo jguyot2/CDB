@@ -52,7 +52,7 @@ public class ComputerUpdater {
      *         réussi, 0 si l'ajout a raté
      */ // REFACTO
     public long createComputer(final Computer newComputer) throws SQLException {
-        LOG.info("Création de l'instance de Computer suivante: " + newComputer);
+        LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(CREATE_COMPUTER,
                         Statement.RETURN_GENERATED_KEYS)) {
@@ -76,7 +76,7 @@ public class ComputerUpdater {
 
             try (ResultSet keySet = stmt.getGeneratedKeys();) {
                 if (!keySet.next()) {
-                    LOG.error("Pas de PC créé");
+                    LOG.debug("Pas de PC créé");
                     return 0;
                 }
                 return keySet.getLong(1);
@@ -94,7 +94,7 @@ public class ComputerUpdater {
      * @throws SQLException
      */
     public int deleteById(final long id) throws SQLException {
-        LOG.info("Suppression du pc d'id : " + id);
+        LOG.trace("Suppression du pc d'id : " + id);
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(DELETE_COMPUTER)) {
             stmt.setLong(1, id);
@@ -128,7 +128,7 @@ public class ComputerUpdater {
      * @return 1 si la mise à jour a eu lieu, 0 sinon
      */
     public int updateComputer(final Computer newComputer) throws SQLException {
-        LOG.info("Mise à jour de l'instance de Computer suivante " + newComputer.toString());
+        LOG.trace("Mise à jour de l'instance de Computer suivante " + newComputer.toString());
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(UPDATE_COMPUTER)) {

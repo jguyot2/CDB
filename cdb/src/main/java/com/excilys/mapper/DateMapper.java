@@ -31,7 +31,7 @@ public final class DateMapper {
      * @return une instance de java.sql.date correspondante
      */
     public static Optional<Date> localDateToSqlDate(final LocalDate localDate) {
-        LOG.info("Conversion de date locale vers sqlDate. Date = " + localDate);
+        LOG.trace("Conversion de date locale vers sqlDate. Date = " + localDate);
         if (localDate == null) {
             return Optional.empty();
         } else {
@@ -49,7 +49,7 @@ public final class DateMapper {
      *         paramètre est nul
      */
     public static Optional<String> localDateToString(final LocalDate ld) {
-        LOG.info("Conversion de localDate vers Str. localDate = " + ld);
+        LOG.trace("Conversion de localDate vers Str. localDate = " + ld);
         if (ld == null) {
             return Optional.empty();
         }
@@ -68,7 +68,7 @@ public final class DateMapper {
      */
     @SuppressWarnings("deprecation")
     public static Optional<LocalDate> sqlDateToLocalDate(final Date sqlDate) {
-        LOG.info("Conversion de java.sql.Date vers localDate. Param=" + sqlDate);
+        LOG.trace("Conversion de java.sql.Date vers localDate. Param=" + sqlDate);
         if (sqlDate == null) {
             return Optional.empty();
         }
@@ -89,7 +89,7 @@ public final class DateMapper {
      * @throws DateTimeParseException si la date n'est pas au bon format
      */
     public static Optional<LocalDate> stringToLocalDate(final String dateRepr) {
-        LOG.info("Conversion de str vers localDate. str =" + dateRepr);
+        LOG.trace("Conversion de str vers localDate. str =" + dateRepr);
         if (dateRepr == null) {
             return Optional.empty();
         }

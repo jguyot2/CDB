@@ -86,9 +86,9 @@ public final class ComputerMapper {
 
     private static String getNameFromComputerDTO(final ComputerDTO dtoComputer) {
         String computerName = null;
-        if (dtoComputer.getName() != null && !dtoComputer.getName().trim().isEmpty()) {
+        if ((dtoComputer.getName() != null) && !dtoComputer.getName().trim().isEmpty()) {
             computerName = dtoComputer.getName();
-            LOG.info("Nom du PC: " + computerName);
+            LOG.trace("Nom du PC: " + computerName);
         }
         return computerName;
     }
