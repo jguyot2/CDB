@@ -36,7 +36,7 @@
 		</div>
 	</header>
 	<img class="centered" src="<%= request.getContextPath() %>/imgs/400.jpeg" alt="error 400"/>
-
+ 
 	<section id="main">
 		<div class="container">
 			<div class="alert alert-danger">
