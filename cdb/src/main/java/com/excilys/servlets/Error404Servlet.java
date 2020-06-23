@@ -26,8 +26,7 @@ public class Error404Servlet extends HttpServlet {
      * @throws ServletException
      */
     @Override
-    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException {
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         try {
             // response.sendRedirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
             request.getRequestDispatcher("/WEB-INF/views/404.jsp").forward(request, response);

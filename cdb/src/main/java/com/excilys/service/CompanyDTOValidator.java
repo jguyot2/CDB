@@ -6,19 +6,23 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.excilys.mapper.CompanyMapper;
 import com.excilys.model.Company;
 import com.excilys.model.CompanyDTO;
 import com.excilys.model.Page;
 
+@Service
 public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     /**
      */
     private static final Logger LOG = LoggerFactory.getLogger(CompanyDTOValidator.class);
     /**
      */
-    private CompanyValidator companyValidator = new CompanyValidator();
+    @Autowired
+    private CompanyValidator companyValidator;
 
     /**
      * Récupération de la liste des valeurs.
@@ -37,8 +41,8 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     @Override
     public List<CompanyDTO> fetchList(final Page page) {
         List<Company> companyList = this.companyValidator.fetchList(page);
-        return companyList.stream().map(c -> CompanyMapper.companyToDTO(c).orElse(null))
-                .filter(dto -> dto != null).collect(Collectors.toList());
+        return companyList.stream().map(c -> CompanyMapper.companyToDTO(c).orElse(null)).filter(dto -> dto != null)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -54,16 +58,16 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     }
 
     /**
-     * Recherche d'une entreprise dans la BD à partir d'une instance de DTO contenant
-     * un champ identifiant rempli.
+     * Recherche d'une entreprise dans la BD à partir d'une instance de DTO
+     * contenant un champ identifiant rempli.
      *
      * Si l'instance est invalide (le champ n'est pas un chiffre ou l'id n'existe
      * pas), ajoute une valeur décrivant le problème dans la liste en paramètre.
      *
-     * @param companyDTO instance non-nulle décrivant une entreprise, qui contient un
-     *        champ id rempli.
-     * @param problems Liste non nulleoù ajouter les valeurs décrivant les problèmes
-     *        s'il y en a
+     * @param companyDTO instance non-nulle décrivant une entreprise, qui contient
+     *                   un champ id rempli.
+     * @param problems   Liste non nulleoù ajouter les valeurs décrivant les
+     *                   problèmes s'il y en a
      * @return un Optional vide si la valeur de l'identifiant est invalide ou nulle,
      *         Un optional contenant la valeur de l'entreprise dans la base sinon.
      */

@@ -7,8 +7,10 @@ import com.excilys.model.Computer;
 import com.excilys.model.Page;
 import com.excilys.service.ComputerValidator;
 
+import springConfig.AppConfig;
+
 public class ComputerPagination {
-    private final static ComputerValidator computerValidator = new ComputerValidator();
+    private static ComputerValidator computerValidator = AppConfig.getContext().getBean(ComputerValidator.class);
     private final static Scanner sc = new Scanner(System.in);
 
     public static void paginate() {
@@ -30,17 +32,17 @@ public class ComputerPagination {
     public boolean executeCommand(final PaginationCommand command) {
         switch (command) {
 
-            case EXIT:
-                return true;
-            case NEXT:
-                printNextPage();
-                return false;
-            case PREVIOUS:
-                printPreviousPage();
-                return false;
-            case CURRENT:
-                printCurrentPage();
-                return false;
+        case EXIT:
+            return true;
+        case NEXT:
+            printNextPage();
+            return false;
+        case PREVIOUS:
+            printPreviousPage();
+            return false;
+        case CURRENT:
+            printCurrentPage();
+            return false;
         }
         return false;
     }

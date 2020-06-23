@@ -210,7 +210,9 @@
 					<c:if test="${not empty search}"> 
 						<c:param name="search" value="${search}" />
 					</c:if>
-					
+					<c:if test="${ not empty sortUrl}">
+						<c:param name="sort" value="${sortUrl}" />
+					</c:if>
 				</c:url>
 						aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 
@@ -223,7 +225,8 @@
 					<c:param name="pageLength" value="${currentPage.pageLength}" />
 					<c:if test="${not empty search}">
 						<c:param name="search" value="${search}" />
-					</c:if>		<c:if test="${ not empty sortUrl}">
+					</c:if>
+					<c:if test="${ not empty sortUrl}">
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>
 				</c:url>>

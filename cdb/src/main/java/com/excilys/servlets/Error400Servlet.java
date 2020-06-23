@@ -27,12 +27,11 @@ public class Error400Servlet extends HttpServlet {
 
     /**
      * @param request comprendant un attribut optionnel "errorCause", qui décrit la
-     *        cause de l'erreur.
+     *                cause de l'erreur.
      * @throws ServletException
      */
     @Override
-    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException {
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         String errorCause = (String) request.getAttribute("errorCause");
         if (errorCause != null) {
             String htmlErrorCause = errorCause.replace("\n", "<br/>");
@@ -48,8 +47,7 @@ public class Error400Servlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException {
+    public void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         doGet(request, response);
     }
 }

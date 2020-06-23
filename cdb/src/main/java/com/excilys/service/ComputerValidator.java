@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.excilys.model.Computer;
 import com.excilys.model.Page;
@@ -20,12 +22,12 @@ import com.excilys.persistence.ComputerUpdater;
  *
  * @author jguyot2
  */
+@Service
 public class ComputerValidator implements SearchValidator<Computer> {
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerValidator.class);
 
-    private static void checkComputerValidity(final Computer computer)
-            throws InvalidComputerInstanceException {
+    private static void checkComputerValidity(final Computer computer) throws InvalidComputerInstanceException {
         List<ComputerInstanceProblems> problems = getComputerInstanceProblems(computer);
         if (problems.size() > 0) {
             LOG.debug("Détection d'une instance de Computer invalide : " + computer);
@@ -50,8 +52,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
             }
             if (computer.getDiscontinuation() != null
                     && computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0) {
-                if (computer.getDiscontinuation().getYear() < 1970
-                        || computer.getDiscontinuation().getYear() > 2037) {
+                if (computer.getDiscontinuation().getYear() < 1970 || computer.getDiscontinuation().getYear() > 2037) {
                     problems.add(ComputerInstanceProblems.OUT_OF_RANGE_DISCO_DATE);
                 }
                 problems.add(ComputerInstanceProblems.INVALID_DISCONTINUATION_DATE);
@@ -64,16 +65,11 @@ public class ComputerValidator implements SearchValidator<Computer> {
     }
 
     /** */
+    @Autowired
     private ComputerSearcher computerSearcher;
 
-    /** */
+    @Autowired
     private ComputerUpdater computerUpdater;
-
-    /** */
-    public ComputerValidator() {
-        this.computerSearcher = new ComputerSearcher();
-        this.computerUpdater = new ComputerUpdater();
-    }
 
     /**
      * Ajout d'un ordinateur dans la base.
@@ -145,8 +141,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
-    public List<Computer> fetchList(final Page p, final List<SortEntry> sortEntries)
-            throws DuplicatedSortEntries {
+    public List<Computer> fetchList(final Page p, final List<SortEntry> sortEntries) throws DuplicatedSortEntries {
         for (int i = 0; i < sortEntries.size(); ++i) {
             for (int j = 0; j < sortEntries.size(); ++j) {
                 if (i != j && sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria()) {
@@ -198,12 +193,13 @@ public class ComputerValidator implements SearchValidator<Computer> {
     }
 
     /**
-     * Recherche d'une instance de Computer dans la base à partir de son identifiant.
+     * Recherche d'une instance de Computer dans la base à partir de son
+     * identifiant.
      *
      * @param id l'identifiant du computer recherché dans la base de donné
      *
-     * @return Optional.empty() si la recherche a échoué, ou un Optional contenant la
-     *         valeur de l'identifiant recherché sinon
+     * @return Optional.empty() si la recherche a échoué, ou un Optional contenant
+     *         la valeur de l'identifiant recherché sinon
      */
     @Override
     public Optional<Computer> findById(final long id) {
@@ -254,13 +250,13 @@ public class ComputerValidator implements SearchValidator<Computer> {
      * Mise à jour de l'instance de Computer passée en paramètre.
      *
      * @param newComputervalue la nouvelle valeur de l'instance, avec un identifiant
-     *        défini.
+     *                         défini.
      *
      * @return -1 si exception lors de la requête, 0 si pas de mise à jour, ou 1 si
      *         la mise à jour a eu lieu
      *
      * @throws InvalidComputerInstanceException Si l'instance en paramètre n'est pas
-     *         valide
+     *                                          valide
      */
     public int update(final Computer newComputervalue) throws InvalidComputerInstanceException {
         LOG.info("Mise à jour d'un ordinateur dans la base. Test de validité");

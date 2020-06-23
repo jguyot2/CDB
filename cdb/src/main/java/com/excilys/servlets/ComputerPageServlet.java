@@ -26,19 +26,22 @@ import com.excilys.model.SortEntry;
 import com.excilys.service.ComputerDTOValidator;
 import com.excilys.service.DuplicatedSortEntries;
 
+import springConfig.AppConfig;
+
 @WebServlet("/page")
 public class ComputerPageServlet extends HttpServlet {
 
     private static final String CHARSET = "UTF-8";
     private static final long serialVersionUID = 1L;
     private static Logger LOG = LoggerFactory.getLogger(ComputerPageServlet.class);
-    private static final ComputerDTOValidator validator = new ComputerDTOValidator();
+
+    private static ComputerDTOValidator validator = AppConfig.getContext().getBean(ComputerDTOValidator.class);
 
     /**
      * Suppression des ordinateurs dont les identifiants sont dans la base
      *
      * @param computersIdToDelete la liste des identidiants des ordinateurs à
-     *        supprimer
+     *                            supprimer
      * @return la liste des identifiants qui n'ont pas été supprimées
      */
     private static List<Long> deleteComputers(final List<Long> computersIdToDelete) {
@@ -65,9 +68,8 @@ public class ComputerPageServlet extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      */ // todo : pê la déplacer vers une classe statique
-    private static void forwardToError400Page(final HttpServletRequest request,
-            final HttpServletResponse response, final String errorCause)
-            throws ServletException, IOException {
+    private static void forwardToError400Page(final HttpServletRequest request, final HttpServletResponse response,
+            final String errorCause) throws ServletException, IOException {
         RequestDispatcher rd = request.getRequestDispatcher("/400");
         request.setAttribute("errorCause", errorCause);
         rd.forward(request, response);
@@ -76,13 +78,14 @@ public class ComputerPageServlet extends HttpServlet {
     /**
      * Récupération de la liste des ordinateurs correspondant aux paramètres/
      *
-     * @param page la page de recherche, non nul
-     * @param search la recherche effectuée (peut être nul)
+     * @param page        la page de recherche, non nul
+     * @param search      la recherche effectuée (peut être nul)
      * @param sortEntries les critère d'ordonnancement
      * @return la liste des ordinateurs à afficher dans la page
      * @throws DuplicatedSortEntries s'il y a plusieurs requêtes pour
-     *         l'ordonnancement des résultats qui sont associés à un même paramètre
-     *         (e.g deux ordres sur le nom).
+     *                               l'ordonnancement des résultats qui sont
+     *                               associés à un même paramètre (e.g deux ordres
+     *                               sur le nom).
      */
     private static List<ComputerDTO> getComputerList(final Page page, final String search,
             final List<SortEntry> sortEntries) throws DuplicatedSortEntries {
@@ -98,10 +101,10 @@ public class ComputerPageServlet extends HttpServlet {
      * afficher les ordinateurs
      *
      * @param request la requête, comprenant les paramètres optionnels search
-     *        (=chaîne recherchée) pageNumber et pageLength
+     *                (=chaîne recherchée) pageNumber et pageLength
      * @return la page associée aux paramètres
-     * @throws NumberFormatException si pageNumber ou pageLength ne correspondant pas
-     *         à des nombres
+     * @throws NumberFormatException si pageNumber ou pageLength ne correspondant
+     *                               pas à des nombres
      */
     private static Page getPageFromRequest(final HttpServletRequest request) throws NumberFormatException {
         String search = request.getParameter("search");
@@ -151,8 +154,8 @@ public class ComputerPageServlet extends HttpServlet {
     }
 
     /**
-     * Récupération de la liste des ordinateurs que l'on cherche à supprimer dans une
-     * requête POST
+     * Récupération de la liste des ordinateurs que l'on cherche à supprimer dans
+     * une requête POST
      *
      * @param request la requête POST pour la suppression d'ordinateurs
      * @return la liste des identifiants sélectionnés
@@ -291,9 +294,8 @@ public class ComputerPageServlet extends HttpServlet {
     }
 
     // TODO javadoc et pê changer le nom de fonction
-    private static void setRequestAttributes(final HttpServletRequest request)
-            throws UnsupportedEncodingException, DuplicatedSortEntries, IllegalCriterionStringException,
-            NumberFormatException {
+    private static void setRequestAttributes(final HttpServletRequest request) throws UnsupportedEncodingException,
+            DuplicatedSortEntries, IllegalCriterionStringException, NumberFormatException {
 
         String search = request.getParameter("search");
         String message = request.getParameter("message");
@@ -309,14 +311,18 @@ public class ComputerPageServlet extends HttpServlet {
     /**
      * Envoi d'une page représentant un certain nombre d'instances de Computer
      *
-     * @param request la requête, contenant les paramètres suivants <br/>
-     *        - pageLength : la taille de la page à afficher. 10 par défaut <br/>
-     *        - pageNumber : le numéro de la page à afficher. 0 par défaut <br/>
-     *        - search : la recherche effectuée (optionnel) <br/>
-     *        - sort : Les instructions de tri. Une instruction de tri correspond à
-     *        une chaîne de la forme "[critère de tri]-[sens]". cf SortEntry ou
-     *        SortCriterion pour les formes<br/>
-     *        - newSortParam : La dernière instruction de tri effectuée. <br/>
+     * @param request  la requête, contenant les paramètres suivants <br/>
+     *                 - pageLength : la taille de la page à afficher. 10 par défaut
+     *                 <br/>
+     *                 - pageNumber : le numéro de la page à afficher. 0 par défaut
+     *                 <br/>
+     *                 - search : la recherche effectuée (optionnel) <br/>
+     *                 - sort : Les instructions de tri. Une instruction de tri
+     *                 correspond à une chaîne de la forme "[critère de
+     *                 tri]-[sens]". cf SortEntry ou SortCriterion pour les
+     *                 formes<br/>
+     *                 - newSortParam : La dernière instruction de tri effectuée.
+     *                 <br/>
      * @param response
      * @throws ServletException
      * @throws IOException
@@ -347,8 +353,8 @@ public class ComputerPageServlet extends HttpServlet {
     /**
      * Suppression d'un certain nombre d'ordinateurs sélectionnés.
      *
-     * @param request la requête avec un paramètre "selection" indiquant les
-     *        identifiants des ordinateurs à supprimer
+     * @param request  la requête avec un paramètre "selection" indiquant les
+     *                 identifiants des ordinateurs à supprimer
      * @param response
      *
      */ // REFACTO Séparation en deux sous-fonctions (pê)

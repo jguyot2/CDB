@@ -23,6 +23,8 @@ import com.excilys.service.ComputerInstanceProblems;
 import com.excilys.service.InvalidComputerDTOException;
 import com.excilys.service.InvalidComputerInstanceException;
 
+import springConfig.AppConfig;
+
 /**
  * Servlet de création d'ordinateur
  *
@@ -31,8 +33,10 @@ import com.excilys.service.InvalidComputerInstanceException;
  */
 @WebServlet("/addComputer")
 public class AddComputerServlet extends HttpServlet {
-    private static CompanyDTOValidator companyValidator = new CompanyDTOValidator();
-    private static ComputerDTOValidator computerValidator = new ComputerDTOValidator();
+
+    private static CompanyDTOValidator companyValidator = AppConfig.getContext().getBean(CompanyDTOValidator.class);
+
+    private static ComputerDTOValidator computerValidator = AppConfig.getContext().getBean(ComputerDTOValidator.class);
 
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(AddComputerServlet.class);
@@ -54,10 +58,10 @@ public class AddComputerServlet extends HttpServlet {
      *
      * @param request la requête ayant provoqué
      * @return une instance de CompanyDTO qui peut être nulle
-     * @throws NumberFormatException si l'identifiant du DTO est incorrect (= n'est
-     *         pas un nombre)
+     * @throws NumberFormatException       si l'identifiant du DTO est incorrect (=
+     *                                     n'est pas un nombre)
      * @throws InvalidComputerDTOException si l'identifiant de l'entreprise ne
-     *         représente aucune entreprise.
+     *                                     représente aucune entreprise.
      */
     private static CompanyDTO getCompanyDTOFromCompanyIdParameter(final HttpServletRequest request)
             throws NumberFormatException, InvalidComputerDTOException {
@@ -65,8 +69,8 @@ public class AddComputerServlet extends HttpServlet {
         CompanyDTO company = null;
         if (companyId != null && !"".equals(companyId) && !"0".equals(companyId)) {
             long id = Long.parseLong(companyId);
-            company = companyValidator.findById(id).orElseThrow(() -> new InvalidComputerDTOException(
-                    Arrays.asList(ComputerDTOProblems.INEXISTENT_MANUFACTURER)));
+            company = companyValidator.findById(id).orElseThrow(
+                    () -> new InvalidComputerDTOException(Arrays.asList(ComputerDTOProblems.INEXISTENT_MANUFACTURER)));
         }
         return company;
     }
@@ -79,13 +83,12 @@ public class AddComputerServlet extends HttpServlet {
      * @param request
      * @param response
      * @param exnInvalidComputer l'exception récupérée lors de la tentative d'ajout
-     *        de l'ordinateur à la base
+     *                           de l'ordinateur à la base
      * @throws IOException
      * @throws ServletException
      */
-    private static void invalidComputerCase(final HttpServletRequest request,
-            final HttpServletResponse response, final InvalidComputerInstanceException exnInvalidComputer)
-            throws IOException, ServletException {
+    private static void invalidComputerCase(final HttpServletRequest request, final HttpServletResponse response,
+            final InvalidComputerInstanceException exnInvalidComputer) throws IOException, ServletException {
         List<ComputerInstanceProblems> problems = exnInvalidComputer.getProblems();
         StringBuilder problemsDescription = new StringBuilder();
         for (ComputerInstanceProblems problem : problems) {
@@ -108,9 +111,8 @@ public class AddComputerServlet extends HttpServlet {
      * @throws IOException
      * @throws ServletException
      */
-    private static void invalidComputerDTOCase(final HttpServletRequest request,
-            final HttpServletResponse response, final InvalidComputerDTOException catchedException)
-            throws IOException, ServletException {
+    private static void invalidComputerDTOCase(final HttpServletRequest request, final HttpServletResponse response,
+            final InvalidComputerDTOException catchedException) throws IOException, ServletException {
         LOG.debug("DTO invalide");
         List<ComputerDTOProblems> problems = catchedException.getProblems();
         StringBuilder problemsDescription = new StringBuilder();
@@ -130,7 +132,7 @@ public class AddComputerServlet extends HttpServlet {
      * @param request
      * @param response
      * @throws ServletException Si une exception quelconque s'est produite pendant
-     *         l'appel
+     *                          l'appel
      * @throws IOException
      */
     @Override
@@ -138,7 +140,7 @@ public class AddComputerServlet extends HttpServlet {
             throws ServletException, IOException {
 
         LOG.info("Création d'un pc (get)");
-        List<CompanyDTO> companyList = companyValidator.fetchList();
+        List<CompanyDTO> companyList = AddComputerServlet.companyValidator.fetchList();
         request.setAttribute("companyList", companyList);
         RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
         rd.forward(request, response);
@@ -148,9 +150,10 @@ public class AddComputerServlet extends HttpServlet {
     /**
      * Ajoute un ordinateur dans la base.
      *
-     * @param request requête avec les paramètres suivants: - computerName : le nom
-     *        de l'ordinateur - introduced : Date d'introduction - discontinued :
-     *        Date d'arrêt de production - companyId : id de l'entreprise
+     * @param request  requête avec les paramètres suivants: - computerName : le nom
+     *                 de l'ordinateur - introduced : Date d'introduction -
+     *                 discontinued : Date d'arrêt de production - companyId : id de
+     *                 l'entreprise
      * @param response
      * @throws IOException
      */
@@ -162,7 +165,7 @@ public class AddComputerServlet extends HttpServlet {
             LOG.info("ajout d'un pc dans la base");
             ComputerDTO cpt = getComputerDTOFromParameters(request);
             LOG.info("PC ajouté : " + cpt);
-            computerValidator.addComputerDTO(cpt);
+            AddComputerServlet.computerValidator.addComputerDTO(cpt);
         } catch (InvalidComputerDTOException e) {
             LOG.debug("Instance invalide de DTO passée en param");
             invalidComputerDTOCase(request, response, e);

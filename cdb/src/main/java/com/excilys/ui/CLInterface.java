@@ -14,20 +14,25 @@ import com.excilys.service.ComputerInstanceProblems;
 import com.excilys.service.ComputerValidator;
 import com.excilys.service.InvalidComputerInstanceException;
 
+import springConfig.AppConfig;
+
 /**
  * Interface utilisateur permettant l'interaction avec la BD par ligne de
  * commande
  *
  * @author jguyot2
  */
+
 public class CLInterface {
 
-    private static CompanyValidator companyValidator = new CompanyValidator();
-    private static ComputerValidator computerValidator = new ComputerValidator();
+    private static CompanyValidator companyValidator = AppConfig.getContext().getBean(CompanyValidator.class);
+
+    private static ComputerValidator computerValidator = AppConfig.getContext().getBean(ComputerValidator.class);
     private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
 
     /**
-     * Fonction affichant un menu et exécutant une commande rentrée par l'utilisateur
+     * Fonction affichant un menu et exécutant une commande rentrée par
+     * l'utilisateur
      */
     public static void getCommande() {
         printMenu();
@@ -59,8 +64,7 @@ public class CLInterface {
         String computerName = sc.nextLine().trim();
         System.out.println("Nom entré:'" + computerName + "'");
 
-        System.out.println(
-                "Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
+        System.out.println("Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
         String strCompanyId = sc.nextLine().trim();
         System.out.println("ID entré:" + strCompanyId);
 
@@ -192,38 +196,38 @@ public class CLInterface {
      */
     private static void executeCommand(final CLICommand commandToExecute) {
         switch (commandToExecute) {
-            case LIST_COMPUTERS:
-                listComputersCommand();
-                break;
-            case LIST_COMPANIES:
-                listCompaniesCommand();
-                break;
-            case SHOW_DETAILS:
-                getComputerDetailsCommand();
-                break;
-            case CREATE_COMPUTER:
-                createComputerCommand();
-                break;
-            case UPDATE_COMPUTER:
-                updateComputerCommand();
-                break;
-            case DELETE_COMPUTER:
-                deleteComputerCommand();
-                break;
-            case EXIT:
-                exitCommand();
-                break;
-            case COMPUTER_PAGINATION:
-                ComputerPagination.paginate();
-                break;
-            case COMPANY_PAGINATION:
-                CompanyPagination.paginate();
-                break;
-            case COMPANY_DELETE:
-                deleteCompanyCommand();
-                break;
-            default:
-                throw new RuntimeException("arrivée dans le default alors que c'est pas censé arriver");
+        case LIST_COMPUTERS:
+            listComputersCommand();
+            break;
+        case LIST_COMPANIES:
+            listCompaniesCommand();
+            break;
+        case SHOW_DETAILS:
+            getComputerDetailsCommand();
+            break;
+        case CREATE_COMPUTER:
+            createComputerCommand();
+            break;
+        case UPDATE_COMPUTER:
+            updateComputerCommand();
+            break;
+        case DELETE_COMPUTER:
+            deleteComputerCommand();
+            break;
+        case EXIT:
+            exitCommand();
+            break;
+        case COMPUTER_PAGINATION:
+            ComputerPagination.paginate();
+            break;
+        case COMPANY_PAGINATION:
+            CompanyPagination.paginate();
+            break;
+        case COMPANY_DELETE:
+            deleteCompanyCommand();
+            break;
+        default:
+            throw new RuntimeException("arrivée dans le default alors que c'est pas censé arriver");
         }
     }
 

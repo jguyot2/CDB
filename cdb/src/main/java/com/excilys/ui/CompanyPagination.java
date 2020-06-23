@@ -7,8 +7,11 @@ import com.excilys.model.Company;
 import com.excilys.model.Page;
 import com.excilys.service.CompanyValidator;
 
+import springConfig.AppConfig;
+
 public class CompanyPagination {
-    private static CompanyValidator companyPagination = new CompanyValidator();
+
+    private static CompanyValidator companyPagination = AppConfig.getContext().getBean(CompanyValidator.class);
     private final static Scanner sc = new Scanner(System.in);
 
     public static void paginate() {
@@ -44,17 +47,17 @@ public class CompanyPagination {
 
     private boolean executeCommand(final PaginationCommand command) {
         switch (command) {
-            case EXIT:
-                return true;
-            case NEXT:
-                printNextPage();
-                return false;
-            case PREVIOUS:
-                printPreviousPage();
-                return false;
-            case CURRENT:
-                printCurrentPage();
-                return false;
+        case EXIT:
+            return true;
+        case NEXT:
+            printNextPage();
+            return false;
+        case PREVIOUS:
+            printPreviousPage();
+            return false;
+        case CURRENT:
+            printCurrentPage();
+            return false;
         }
         return false;
     }

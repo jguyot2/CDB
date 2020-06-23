@@ -4,8 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
  * Gestion de la mise à jour des entreprises dans la base
@@ -13,10 +17,16 @@ import org.slf4j.LoggerFactory;
  * @author jguyot2
  *
  */
+@Repository
 public class CompanyUpdater {
     private static final Logger LOG = LoggerFactory.getLogger(CompanyUpdater.class);
     private static final String REQUEST_DELETE_COMPANY = "DELETE FROM company WHERE id = ?";
-    private ComputerUpdater computerUpdater = new ComputerUpdater();
+
+    @Autowired
+    private ComputerUpdater computerUpdater;
+
+    @Autowired
+    private DataSource ds;
 
     /**
      * Suppression d'une entreprise à partir de son identifiant, ainsi que tous les
@@ -30,10 +40,10 @@ public class CompanyUpdater {
         LOG.trace("Deletion of company nb. " + companyId);
         Connection conn = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = this.ds.getConnection();
             conn.setAutoCommit(false);
-            int nbComputersDeleted = this.computerUpdater
-                    .deleteComputersFromManufacturerIdWithConnection(companyId, conn);
+            int nbComputersDeleted = this.computerUpdater.deleteComputersFromManufacturerIdWithConnection(companyId,
+                    conn);
             LOG.info(nbComputersDeleted + " computers deleted");
             int numberofDeletedCompanies = this.deleteCompany(companyId, conn);
             // Test si une entreprise a été supprimée ?
@@ -57,7 +67,7 @@ public class CompanyUpdater {
      * Suppression de l'entreprise dont l'id est en paramètre, en utilisant la
      * connexion en paramètre.
      *
-     * @param id l'identifiant de l'entreprise à supprimer
+     * @param id   l'identifiant de l'entreprise à supprimer
      * @param conn la connexion à utiliser pour l'identifiant
      * @return 0 si aucune entreprise n'a été supprimée, 1 si l'etnreprise a été
      *         supprimée

@@ -24,6 +24,8 @@ import com.excilys.service.ComputerInstanceProblems;
 import com.excilys.service.InvalidComputerDTOException;
 import com.excilys.service.InvalidComputerInstanceException;
 
+import springConfig.AppConfig;
+
 /**
  * Servlet affichant la page qui permet de modifier un ordinateur de la base
  * (GET) ou effectuant la modification (POST).
@@ -35,13 +37,15 @@ import com.excilys.service.InvalidComputerInstanceException;
 public class EditComputerServlet extends HttpServlet {
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(EditComputerServlet.class);
-    private static CompanyDTOValidator companyValidator = new CompanyDTOValidator();
-    private static ComputerDTOValidator computerValidator = new ComputerDTOValidator();
+
+    private static CompanyDTOValidator companyValidator = AppConfig.getContext().getBean(CompanyDTOValidator.class);
+
+    private static ComputerDTOValidator computerValidator = AppConfig.getContext().getBean(ComputerDTOValidator.class);
+
     private static final long serialVersionUID = 1L;
 
-    private static void invalidComputerCase(final HttpServletRequest request,
-            final HttpServletResponse response, final InvalidComputerInstanceException exnInvalidComputer)
-            throws IOException, ServletException {
+    private static void invalidComputerCase(final HttpServletRequest request, final HttpServletResponse response,
+            final InvalidComputerInstanceException exnInvalidComputer) throws IOException, ServletException {
         List<ComputerInstanceProblems> problems = exnInvalidComputer.getProblems();
         StringBuilder problemsDescription = new StringBuilder();
         for (ComputerInstanceProblems problem : problems) {
@@ -53,9 +57,8 @@ public class EditComputerServlet extends HttpServlet {
         rd.forward(request, response);
     }
 
-    private static void invalidComputerDTOCase(final HttpServletRequest request,
-            final HttpServletResponse response, final InvalidComputerDTOException catchedException)
-            throws IOException, ServletException {
+    private static void invalidComputerDTOCase(final HttpServletRequest request, final HttpServletResponse response,
+            final InvalidComputerDTOException catchedException) throws IOException, ServletException {
         LOG.debug("DTO invalide");
         List<ComputerDTOProblems> problems = catchedException.getProblems();
         StringBuilder problemsDescription = new StringBuilder();
@@ -68,21 +71,17 @@ public class EditComputerServlet extends HttpServlet {
         rd.forward(request, response);
     }
 
-    /** */
-    private ComputerDTOValidator validator = new ComputerDTOValidator();
-
     /**
      * Affiche la page permettant la modification d'un ordinateur de la base (ou
      * l'affichage d'une erreur si l'entrée est invalide).
      *
-     * @param request requête get contenant le paramètre (nécessaire) "id"
-     *        représentant l'identifiant de l'ordinateur.
+     * @param request  requête get contenant le paramètre (nécessaire) "id"
+     *                 représentant l'identifiant de l'ordinateur.
      * @param response
      * @throws IOException
      */ // REFACTO
     @Override
-    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException {
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
 
         RequestDispatcher rd;
         try {
@@ -91,7 +90,7 @@ public class EditComputerServlet extends HttpServlet {
                 String strId = request.getParameter("id");
                 long id = Long.parseLong(strId);
                 LOG.debug("parsed number : " + strId);
-                Optional<ComputerDTO> computer = this.validator.findById(id);
+                Optional<ComputerDTO> computer = computerValidator.findById(id);
 
                 if (!computer.isPresent()) {
                     LOG.debug("The computer was not found");
@@ -125,14 +124,13 @@ public class EditComputerServlet extends HttpServlet {
     }
 
     /**
-     * Paramètres : id computerName introduced discontinued companyId représentant la
-     * nouvelle valeur de l'ordinateur modifié
+     * Paramètres : id computerName introduced discontinued companyId représentant
+     * la nouvelle valeur de l'ordinateur modifié
      *
      * @throws ServletException
      */ // REFACTO
     @Override
-    public void doPost(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException {
+    public void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         try {
             try {
                 ComputerDTO computer = getComputerDTOFromParameters(request);
@@ -182,7 +180,7 @@ public class EditComputerServlet extends HttpServlet {
      *
      * @param request
      * @return
-     * @throws NumberFormatException quand le
+     * @throws NumberFormatException       quand le
      * @throws IllegalArgumentException
      * @throws InvalidComputerDTOException
      */
@@ -198,9 +196,8 @@ public class EditComputerServlet extends HttpServlet {
         String companyId = request.getParameter("companyId");
         CompanyDTO company = null;
         if (companyId != null && !"0".equals(companyId)) {
-            company = companyValidator.findById(Long.parseLong(companyId))
-                    .orElseThrow(() -> new InvalidComputerDTOException(
-                            Arrays.asList(ComputerDTOProblems.INEXISTANT_COMPANY_ID))); // TODO
+            company = companyValidator.findById(Long.parseLong(companyId)).orElseThrow(
+                    () -> new InvalidComputerDTOException(Arrays.asList(ComputerDTOProblems.INEXISTANT_COMPANY_ID))); // TODO
         }
         return new ComputerDTO(name, idStr, company, intro, disco);
     }

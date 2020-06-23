@@ -8,8 +8,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.mapper.DateMapper;
 import com.excilys.model.Computer;
@@ -20,7 +24,10 @@ import com.excilys.model.Computer;
  *
  * @author jguyot2
  */
+@Repository
 public class ComputerUpdater {
+    @Autowired
+    private DataSource ds;
     /** */
     private static final String CREATE_COMPUTER = "INSERT INTO computer(name, introduced, discontinued, company_id) "
             + "VALUES (?, ?, ?, ?)";
@@ -46,16 +53,15 @@ public class ComputerUpdater {
      * donnée en paramètre.
      *
      * @param newComputer l'instance de Computer à enregistrer dans la base de
-     *        données
+     *                    données
      *
      * @return le nouvel identifiant correspondant à la ligne ajoutée si l'ajout a
      *         réussi, 0 si l'ajout a raté
      */ // REFACTO
     public long createComputer(final Computer newComputer) throws SQLException {
         LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(CREATE_COMPUTER,
-                        Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = this.ds.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(CREATE_COMPUTER, Statement.RETURN_GENERATED_KEYS)) {
 
             Optional<Date> introDateOpt = DateMapper.localDateToSqlDate(newComputer.getIntroduction());
             Date introDate = introDateOpt.orElse(null);
@@ -95,7 +101,7 @@ public class ComputerUpdater {
      */
     public int deleteById(final long id) throws SQLException {
         LOG.trace("Suppression du pc d'id : " + id);
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = this.ds.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(DELETE_COMPUTER)) {
             stmt.setLong(1, id);
             return stmt.executeUpdate();
@@ -103,16 +109,17 @@ public class ComputerUpdater {
     }
 
     /**
-     * Suppression des ordinateurs d'un fabricant dont l'identifiant est en paramètre
+     * Suppression des ordinateurs d'un fabricant dont l'identifiant est en
+     * paramètre
      *
      * @param manufacturerId l'identifiant du fabricant dont il faut supprimer les
-     *        ordinateurs.
-     * @param conn la connexion à utiliser
+     *                       ordinateurs.
+     * @param conn           la connexion à utiliser
      * @return le nombre de PC supprimés
      * @throws SQLException
      */
-    public int deleteComputersFromManufacturerIdWithConnection(final long manufacturerId,
-            final Connection conn) throws SQLException {
+    public int deleteComputersFromManufacturerIdWithConnection(final long manufacturerId, final Connection conn)
+            throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE_COMPUTER_FROM_COMPANY_ID)) {
             stmt.setLong(1, manufacturerId);
             return stmt.executeUpdate();
@@ -123,14 +130,14 @@ public class ComputerUpdater {
      * Met à jour l'ordinateur en paramètre, dont l'identifiant est intialisé.
      *
      * @param newComputer la valeur de l'ordinateur à laquelle on veut faire
-     *        correspondre la ligne
+     *                    correspondre la ligne
      *
      * @return 1 si la mise à jour a eu lieu, 0 sinon
      */
     public int updateComputer(final Computer newComputer) throws SQLException {
         LOG.trace("Mise à jour de l'instance de Computer suivante " + newComputer.toString());
 
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = this.ds.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(UPDATE_COMPUTER)) {
 
             long id = newComputer.getId();

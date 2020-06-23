@@ -9,8 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.model.Company;
 import com.excilys.model.Page;
@@ -20,6 +24,7 @@ import com.excilys.model.Page;
  *
  * @author jguyot2
  */
+@Repository
 public class CompanySearcher implements Searcher<Company> {
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(CompanySearcher.class);
@@ -32,6 +37,9 @@ public class CompanySearcher implements Searcher<Company> {
     /** */
     private static final String REQUEST_SEARCH_BY_ID = "SELECT name, id FROM company WHERE id = ?";
 
+    @Autowired
+    private DataSource ds;
+
     /** */
     public CompanySearcher() {
     }
@@ -41,13 +49,13 @@ public class CompanySearcher implements Searcher<Company> {
      *
      * @param searchedId l'identifiant de l'entreprise identifiée
      *
-     * @return Optional.empty() si aucune entreprise n'a été trouvée, ou une instance
-     *         de Optional contenant l'entreprise trouvée
+     * @return Optional.empty() si aucune entreprise n'a été trouvée, ou une
+     *         instance de Optional contenant l'entreprise trouvée
      */
     @Override
     public Optional<Company> fetchById(final long searchedId) throws SQLException {
         LOG.info("Recherche d'un pc avec l'id " + searchedId);
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = this.ds.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(REQUEST_SEARCH_BY_ID)) {
             stmt.setLong(1, searchedId);
             ResultSet res = stmt.executeQuery();
@@ -63,15 +71,15 @@ public class CompanySearcher implements Searcher<Company> {
     }
 
     /**
-     * Rend la liste des entreprises présentes dans la base de données, sous la forme
-     * d'instances de Company.
+     * Rend la liste des entreprises présentes dans la base de données, sous la
+     * forme d'instances de Company.
      *
      * @return La liste des entreprises présentes dans la base de données
      */
     @Override
     public List<Company> fetchList() throws SQLException {
         List<Company> companiesList = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement()) {
+        try (Connection conn = this.ds.getConnection(); Statement stmt = conn.createStatement()) {
             ResultSet res = stmt.executeQuery(REQUEST_COMPANIES);
             while (res.next()) {
                 long id = res.getLong("id");
@@ -93,7 +101,7 @@ public class CompanySearcher implements Searcher<Company> {
     @Override
     public List<Company> fetchList(final Page page) throws SQLException {
         List<Company> ret = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = this.ds.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(REQUEST_COMPANIES_OFFSET)) {
 
             stmt.setInt(1, page.getPageLength());
@@ -116,7 +124,7 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public int getNumberOfElements() throws SQLException {
-        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement()) {
+        try (Connection conn = this.ds.getConnection(); Statement stmt = conn.createStatement()) {
             ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
             if (res.next()) {
                 return res.getInt(1);

@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.excilys.model.Company;
 import com.excilys.model.Page;
@@ -20,13 +22,17 @@ import com.excilys.persistence.CompanyUpdater;
  * @author jguyot2
  *
  */
+@Service
 public class CompanyValidator implements SearchValidator<Company> {
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(CompanyValidator.class);
 
     /** */
-    private CompanySearcher companySearcher = new CompanySearcher();
-    private CompanyUpdater companyUpdater = new CompanyUpdater();
+    @Autowired
+    private CompanySearcher companySearcher;
+
+    @Autowired
+    private CompanyUpdater companyUpdater;
 
     /** */
     public CompanyValidator() {
@@ -36,8 +42,8 @@ public class CompanyValidator implements SearchValidator<Company> {
      * Suppression d'une entreprise à partir de son identifiant
      *
      * @param companyId l'identifiant de l'entreprise à supprimer
-     * @return 1 si l'entreprise a été supprimée, 0 si l'identifiant n'existe pas, -1
-     *         s'il y a eu une erreur dans la base
+     * @return 1 si l'entreprise a été supprimée, 0 si l'identifiant n'existe pas,
+     *         -1 s'il y a eu une erreur dans la base
      */
     public int deleteCompanyById(final long companyId) {
         try {
@@ -64,8 +70,8 @@ public class CompanyValidator implements SearchValidator<Company> {
     }
 
     /**
-     * Renvoie la liste des instances présentes dans la BD qui sont contenues dans la
-     * page en paramètre.
+     * Renvoie la liste des instances présentes dans la BD qui sont contenues dans
+     * la page en paramètre.
      *
      * @param page la page à afficher.
      * @return La liste des entreprises présentes dans la page.
@@ -99,8 +105,8 @@ public class CompanyValidator implements SearchValidator<Company> {
     }
 
     /**
-     * @return le nombre d'entreprises dans la BD, ou -1 s'il y a eu un problème dans
-     *         la base
+     * @return le nombre d'entreprises dans la BD, ou -1 s'il y a eu un problème
+     *         dans la base
      */
     @Override
     public int getNumberOfElements() {

@@ -11,8 +11,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.mapper.DateMapper;
 import com.excilys.model.Company;
@@ -26,24 +30,24 @@ import com.excilys.model.SortEntry;
  *
  * @author jguyot2
  */
+@Repository
 public class ComputerSearcher implements Searcher<Computer> {
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerSearcher.class);
 
     /** */
     private static final String QUERY_COMPUTER_SEARCH_WITH_NAME = "SELECT computer.id, computer.name, introduced, discontinued, "
-            + "company.id, company.name " + "FROM computer LEFT JOIN company "
-            + "ON computer.company_id = company.id " + "WHERE computer.name LIKE ?";
+            + "company.id, company.name " + "FROM computer LEFT JOIN company " + "ON computer.company_id = company.id "
+            + "WHERE computer.name LIKE ?";
 
     /** */
     private static final String QUERY_COMPUTER_FROM_ID = "SELECT computer.id, computer.name, introduced, discontinued, "
-            + "company.id, company.name " + "FROM computer LEFT JOIN company "
-            + "ON computer.company_id = company.id " + "WHERE computer.id = ? ";
+            + "company.id, company.name " + "FROM computer LEFT JOIN company " + "ON computer.company_id = company.id "
+            + "WHERE computer.id = ? ";
 
     /** */
     private static final String QUERY_COMPUTER_LIST = " SELECT computer.id, computer.name, introduced, discontinued, "
-            + "company.id, company.name " + "FROM computer LEFT JOIN company "
-            + "ON computer.company_id = company.id";
+            + "company.id, company.name " + "FROM computer LEFT JOIN company " + "ON computer.company_id = company.id";
 
     /** */
     private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM computer";
@@ -54,8 +58,7 @@ public class ComputerSearcher implements Searcher<Computer> {
     /** Requête avec ordre + nom */
     private static final String ORDER_BY_WITH_NAME = "SELECT computer.id, computer.name,"
             + " introduced, discontinued, company.id, company.name FROM computer LEFT JOIN company "
-            + "ON computer.company_id = company.id WHERE computer.name LIKE ? ORDER BY %s "
-            + "LIMIT ? OFFSET ?";
+            + "ON computer.company_id = company.id WHERE computer.name LIKE ? ORDER BY %s " + "LIMIT ? OFFSET ?";
 
     /** */
     private static final String ORDER_BY_REQUEST = "SELECT computer.id, computer.name,"
@@ -63,18 +66,19 @@ public class ComputerSearcher implements Searcher<Computer> {
             + "ON computer.company_id = company.id ORDER BY %s LIMIT ? OFFSET ?";
 
     /**
-     * Fonction permettant de récupérer une instance de Computer à partir d'une ligne
-     * de ResultSet à partir de requêtes comportant un schéma défini.
+     * Fonction permettant de récupérer une instance de Computer à partir d'une
+     * ligne de ResultSet à partir de requêtes comportant un schéma défini.
      *
      * @param res l'instance de ResultSet résultant d'une requête sur les tables
-     *        computer et company, qui pointe vers une des lignes renvoyée par la
-     *        requête
+     *            computer et company, qui pointe vers une des lignes renvoyée par
+     *            la requête
      *
      * @return une instance de Computer correspondant à la ligne sur laquelle le
      *         curseur de res pointe
      *
      * @throws SQLException
      */
+
     private static Computer getComputerFromResultSet(final ResultSet res) throws SQLException {
         long computerId = res.getLong("computer.id");
         String computerName = res.getString("computer.name");
@@ -91,6 +95,13 @@ public class ComputerSearcher implements Searcher<Computer> {
         return new Computer(computerName, company, introduced, discontinued, computerId);
     }
 
+    @Autowired
+    private DataSource ds;
+
+    public ComputerSearcher(final DataSource ds) {
+        this.ds = ds;
+    }
+
     /**
      * Fonction de conversion d'un critère vers les noms de colonne des requêtes
      *
@@ -99,18 +110,18 @@ public class ComputerSearcher implements Searcher<Computer> {
      */
     private static String sortCriterionToSqlColumn(final SortCriterion sq) {
         switch (sq) {
-            case COMPANY_ID:
-                return "company.id";
-            case COMPANY_NAME:
-                return "company.name";
-            case COMPUTER_NAME:
-                return "computer.name";
-            case DISCONTINUED:
-                return "computer.discontinued";
-            case INTRODUCED:
-                return "computer.introduced";
-            default: // Inutile mais Eclipse casse les couilles si je le mets pas
-                return null;
+        case COMPANY_ID:
+            return "company.id";
+        case COMPANY_NAME:
+            return "company.name";
+        case COMPUTER_NAME:
+            return "computer.name";
+        case DISCONTINUED:
+            return "computer.discontinued";
+        case INTRODUCED:
+            return "computer.introduced";
+        default: // Inutile mais Eclipse casse les couilles si je le mets pas
+            return null;
         }
     }
 
@@ -118,8 +129,8 @@ public class ComputerSearcher implements Searcher<Computer> {
      * Fonction de conversion d'un sortEntry vers une «clause» order by.
      *
      * @param se la sortEntry à ajouter à la requête
-     * @return la chaîne à insérer dans la requête pour que le sortEntry soit pris en
-     *         compte
+     * @return la chaîne à insérer dans la requête pour que le sortEntry soit pris
+     *         en compte
      */
     private static String sortEntryToSqlOrderByClause(final SortEntry se) {
         return sortCriterionToSqlColumn(se.getCriteria()) + " " + (se.isAscending() ? "ASC" : "DESC");
@@ -140,7 +151,7 @@ public class ComputerSearcher implements Searcher<Computer> {
      */
     @Override
     public Optional<Computer> fetchById(final long searchedId) throws SQLException {
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = this.ds.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_FROM_ID)) {
             stmt.setLong(1, searchedId);
             try (ResultSet res = stmt.executeQuery();) {
@@ -165,7 +176,7 @@ public class ComputerSearcher implements Searcher<Computer> {
     @Override
     public List<Computer> fetchList() throws SQLException {
         List<Computer> computerList = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement()) {
+        try (Connection conn = this.ds.getConnection(); Statement stmt = conn.createStatement()) {
             try (ResultSet res = stmt.executeQuery(QUERY_COMPUTER_LIST);) {
                 while (res.next()) {
                     Computer computer = getComputerFromResultSet(res);
@@ -196,8 +207,7 @@ public class ComputerSearcher implements Searcher<Computer> {
         orderByClause.append("computer.id ");
         String request = String.format(ORDER_BY_REQUEST, orderByClause.toString());
         List<Computer> computerList = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(request)) {
+        try (Connection conn = this.ds.getConnection(); PreparedStatement stmt = conn.prepareStatement(request)) {
             stmt.setInt(1, page.getPageLength());
             stmt.setInt(2, page.getOffset());
             try (ResultSet res = stmt.executeQuery();) {
@@ -225,8 +235,7 @@ public class ComputerSearcher implements Searcher<Computer> {
         orderByClause.append("computer.id ");
         String request = String.format(ORDER_BY_WITH_NAME, orderByClause.toString());
 
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(request);) {
+        try (Connection conn = this.ds.getConnection(); PreparedStatement stmt = conn.prepareStatement(request);) {
             String searchedPattern = "%" + search.replace("%", "\\%") + "%";
             stmt.setString(1, searchedPattern);
             stmt.setInt(2, p.getPageLength());
@@ -246,7 +255,7 @@ public class ComputerSearcher implements Searcher<Computer> {
      */
     @Override
     public int getNumberOfElements() throws SQLException {
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = this.ds.getConnection();
                 Statement stmt = conn.createStatement();
                 ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);) {
             if (res.next()) {
@@ -258,7 +267,7 @@ public class ComputerSearcher implements Searcher<Computer> {
     }
 
     public int getNumberOfFoundElements(final String search) throws SQLException {
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = this.ds.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(REQUEST_NB_OF_ROWS_SEARCH)) {
             String searchedPattern = "%" + search.replace("%", "\\%") + "%";
             stmt.setString(1, searchedPattern);
@@ -273,7 +282,7 @@ public class ComputerSearcher implements Searcher<Computer> {
     }
 
     public List<Computer> searchByName(final String search) throws SQLException {
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = this.ds.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(QUERY_COMPUTER_SEARCH_WITH_NAME);) {
             String searchedPattern = "%" + search.replace("%", "\\%") + "%";
             stmt.setString(1, searchedPattern);
