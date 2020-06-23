@@ -13,8 +13,7 @@ import com.excilys.service.CompanyValidator;
 import com.excilys.service.ComputerInstanceProblems;
 import com.excilys.service.ComputerValidator;
 import com.excilys.service.InvalidComputerInstanceException;
-
-import springConfig.AppConfig;
+import com.excilys.springconfig.AppConfig;
 
 /**
  * Interface utilisateur permettant l'interaction avec la BD par ligne de

@@ -6,8 +6,7 @@ import java.util.Scanner;
 import com.excilys.model.Company;
 import com.excilys.model.Page;
 import com.excilys.service.CompanyValidator;
-
-import springConfig.AppConfig;
+import com.excilys.springconfig.AppConfig;
 
 public class CompanyPagination {
 

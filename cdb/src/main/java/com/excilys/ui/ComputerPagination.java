@@ -6,8 +6,7 @@ import java.util.Scanner;
 import com.excilys.model.Computer;
 import com.excilys.model.Page;
 import com.excilys.service.ComputerValidator;
-
-import springConfig.AppConfig;
+import com.excilys.springconfig.AppConfig;
 
 public class ComputerPagination {
     private static ComputerValidator computerValidator = AppConfig.getContext().getBean(ComputerValidator.class);

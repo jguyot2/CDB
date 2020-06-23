@@ -25,8 +25,7 @@ import com.excilys.model.Page;
 import com.excilys.model.SortEntry;
 import com.excilys.service.ComputerDTOValidator;
 import com.excilys.service.DuplicatedSortEntries;
-
-import springConfig.AppConfig;
+import com.excilys.springconfig.AppConfig;
 
 @WebServlet("/page")
 public class ComputerPageServlet extends HttpServlet {

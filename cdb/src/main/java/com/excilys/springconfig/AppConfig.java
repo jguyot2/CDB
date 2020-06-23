@@ -1,4 +1,4 @@
-package springConfig;
+package com.excilys.springconfig;
 
 import javax.sql.DataSource;
 
@@ -14,7 +14,6 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @ComponentScan(basePackages = "com.excilys")
 public class AppConfig {
-
     @Bean(destroyMethod = "")
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig("/hikaricp.properties");

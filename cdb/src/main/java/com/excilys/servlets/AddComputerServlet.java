@@ -22,8 +22,7 @@ import com.excilys.service.ComputerDTOValidator;
 import com.excilys.service.ComputerInstanceProblems;
 import com.excilys.service.InvalidComputerDTOException;
 import com.excilys.service.InvalidComputerInstanceException;
-
-import springConfig.AppConfig;
+import com.excilys.springconfig.AppConfig;
 
 /**
  * Servlet de création d'ordinateur

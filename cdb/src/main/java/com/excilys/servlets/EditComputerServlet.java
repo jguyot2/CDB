@@ -23,8 +23,7 @@ import com.excilys.service.ComputerDTOValidator;
 import com.excilys.service.ComputerInstanceProblems;
 import com.excilys.service.InvalidComputerDTOException;
 import com.excilys.service.InvalidComputerInstanceException;
-
-import springConfig.AppConfig;
+import com.excilys.springconfig.AppConfig;
 
 /**
  * Servlet affichant la page qui permet de modifier un ordinateur de la base
