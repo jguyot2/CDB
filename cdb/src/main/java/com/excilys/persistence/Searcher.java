@@ -13,7 +13,8 @@ import com.excilys.model.Page;
  *
  * @author jguyot2
  *
- * @param <T> Le type d'éléments concernés par la recherche (Company ou Computer)
+ * @param <T> Le type d'éléments concernés par la recherche (Company ou
+ *            Computer)
  */
 interface Searcher<T> {
     /**

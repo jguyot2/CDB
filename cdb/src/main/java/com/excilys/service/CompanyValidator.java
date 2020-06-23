@@ -96,12 +96,9 @@ public class CompanyValidator implements SearchValidator<Company> {
      */
     @Override
     public Optional<Company> findById(final long id) {
-        try {
-            return this.companySearcher.fetchById(id);
-        } catch (SQLException e) {
-            LOG.debug("findById" + e.getMessage(), e);
-            return Optional.empty();
-        }
+
+        return this.companySearcher.fetchById(id);
+
     }
 
     /**

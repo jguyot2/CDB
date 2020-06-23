@@ -1,19 +1,18 @@
 package com.excilys.persistence;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
-import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.model.Company;
@@ -26,19 +25,29 @@ import com.excilys.model.Page;
  */
 @Repository
 public class CompanySearcher implements Searcher<Company> {
+    private static class CompanyRowMapper implements RowMapper<Company> {
+        @Override
+        public Company mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+            String name = rs.getString("name");
+            long id = rs.getLong("id");
+            return new Company(name, id);
+        }
+    }
+
+    private static final CompanyRowMapper rowMapper = new CompanyRowMapper();
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(CompanySearcher.class);
     /** */
     private static final String REQUEST_COMPANIES = "SELECT name, id FROM company";
     /**  */
-    private static final String REQUEST_COMPANIES_OFFSET = "SELECT name, id FROM company ORDER BY id LIMIT ? OFFSET ?";
+    private static final String REQUEST_COMPANIES_OFFSET = "SELECT name, id FROM company ORDER BY id LIMIT :limit OFFSET :offset";
     /** */
     private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM company";
-    /** */
-    private static final String REQUEST_SEARCH_BY_ID = "SELECT name, id FROM company WHERE id = ?";
+
+    private static final String REQUEST_BY_ID = "SELECT name, id FROM company WHERE id = :id";
 
     @Autowired
-    private DataSource ds;
+    NamedParameterJdbcTemplate template;
 
     /** */
     public CompanySearcher() {
@@ -53,21 +62,10 @@ public class CompanySearcher implements Searcher<Company> {
      *         instance de Optional contenant l'entreprise trouvée
      */
     @Override
-    public Optional<Company> fetchById(final long searchedId) throws SQLException {
-        LOG.info("Recherche d'un pc avec l'id " + searchedId);
-        try (Connection conn = this.ds.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(REQUEST_SEARCH_BY_ID)) {
-            stmt.setLong(1, searchedId);
-            ResultSet res = stmt.executeQuery();
-            if (!res.next()) {
-                LOG.debug("fetchById: La recherche n'a donné rien renvoyé pour l'id:" + searchedId);
-                return Optional.empty();
-            }
-            long companyId = res.getLong("id");
-            String companyName = res.getString("name");
-            Company foundCompany = new Company(companyName, companyId);
-            return Optional.of(foundCompany);
-        }
+    public Optional<Company> fetchById(final long searchedId) {
+        Map<String, Object> m = new HashMap<>();
+        m.put("id", searchedId);
+        return Optional.ofNullable(this.template.queryForObject(REQUEST_BY_ID, m, rowMapper));
     }
 
     /**
@@ -78,17 +76,7 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public List<Company> fetchList() throws SQLException {
-        List<Company> companiesList = new ArrayList<>();
-        try (Connection conn = this.ds.getConnection(); Statement stmt = conn.createStatement()) {
-            ResultSet res = stmt.executeQuery(REQUEST_COMPANIES);
-            while (res.next()) {
-                long id = res.getLong("id");
-                String name = res.getString("name");
-                assert name != null;
-                companiesList.add(new Company(name, id));
-            }
-        }
-        return companiesList;
+        return this.template.query(REQUEST_COMPANIES, rowMapper);
     }
 
     /**
@@ -100,21 +88,10 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public List<Company> fetchList(final Page page) throws SQLException {
-        List<Company> ret = new ArrayList<>();
-        try (Connection conn = this.ds.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(REQUEST_COMPANIES_OFFSET)) {
-
-            stmt.setInt(1, page.getPageLength());
-            stmt.setInt(2, page.getOffset());
-
-            ResultSet res = stmt.executeQuery();
-            while (res.next()) {
-                long companyId = res.getLong("id");
-                String companyName = res.getString("name");
-                ret.add(new Company(companyName, companyId));
-            }
-        }
-        return ret;
+        Map<String, Object> m = new HashMap<>();
+        m.put("offset", page.getOffset());
+        m.put("limit", page.getPageLength());
+        return this.template.query(REQUEST_COMPANIES_OFFSET, rowMapper);
     }
 
     /**
@@ -124,13 +101,7 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public int getNumberOfElements() throws SQLException {
-        try (Connection conn = this.ds.getConnection(); Statement stmt = conn.createStatement()) {
-            ResultSet res = stmt.executeQuery(REQUEST_NB_OF_ROWS);
-            if (res.next()) {
-                return res.getInt(1);
-            }
-            LOG.error("La récupération du nombre d'éléments a raté");
-            return -1;
-        }
+        return this.template.queryForObject(REQUEST_NB_OF_ROWS, Collections.emptyMap(),
+                (res, rowNum) -> new Integer(res.getInt(1)));
     }
 }

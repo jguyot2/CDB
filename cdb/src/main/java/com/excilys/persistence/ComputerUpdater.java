@@ -3,19 +3,18 @@ package com.excilys.persistence;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Optional;
-
-import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.mapper.DateMapper;
+import com.excilys.model.Company;
 import com.excilys.model.Computer;
 
 /**
@@ -26,23 +25,26 @@ import com.excilys.model.Computer;
  */
 @Repository
 public class ComputerUpdater {
-    @Autowired
-    private DataSource ds;
-    /** */
-    private static final String CREATE_COMPUTER = "INSERT INTO computer(name, introduced, discontinued, company_id) "
-            + "VALUES (?, ?, ?, ?)";
 
     /** */
-    private static final String DELETE_COMPUTER = "DELETE FROM computer WHERE id = ?";
+    private static final String CREATE_COMPUTER = "INSERT INTO computer(name, introduced, discontinued, company_id) "
+            + "VALUES (:name, :introduced, :discontinued, :companyId)";
+
+    /** */
+    private static final String DELETE_COMPUTER = "DELETE FROM computer WHERE id = :id";
 
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerUpdater.class);
 
     /** */
     private static final String UPDATE_COMPUTER = "UPDATE computer SET "
-            + "name = ?, introduced = ?, discontinued = ?, company_id = ?" + " WHERE id = ?";
+            + "name = :name, introduced = :introduced, discontinued = :discontinued, company_id = :companyId"
+            + " WHERE id = :id";
 
     private static final String REQUEST_DELETE_COMPUTER_FROM_COMPANY_ID = "DELETE FROM computer WHERE company_id = ?";
+
+    @Autowired
+    private NamedParameterJdbcTemplate template;
 
     /** */
     public ComputerUpdater() {
@@ -60,34 +62,17 @@ public class ComputerUpdater {
      */ // REFACTO
     public long createComputer(final Computer newComputer) throws SQLException {
         LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
-        try (Connection conn = this.ds.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(CREATE_COMPUTER, Statement.RETURN_GENERATED_KEYS)) {
+        Date introDate = DateMapper.localDateToSqlDate(newComputer.getIntroduction()).orElse(null);
+        Date discoDate = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation()).orElse(null);
 
-            Optional<Date> introDateOpt = DateMapper.localDateToSqlDate(newComputer.getIntroduction());
-            Date introDate = introDateOpt.orElse(null);
+        Map<String, Object> requestParameters = new HashMap<>();
 
-            Optional<Date> discoDateOpt = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation());
-            Date discoDate = discoDateOpt.orElse(null);
-
-            stmt.setString(1, newComputer.getName());
-            stmt.setDate(2, introDate);
-            stmt.setDate(3, discoDate);
-
-            if (newComputer.getManufacturer() == null) {
-                stmt.setNull(4, java.sql.Types.BIGINT);
-            } else {
-                stmt.setLong(4, newComputer.getManufacturer().getId());
-            }
-            stmt.executeUpdate();
-
-            try (ResultSet keySet = stmt.getGeneratedKeys();) {
-                if (!keySet.next()) {
-                    LOG.debug("Pas de PC créé");
-                    return 0;
-                }
-                return keySet.getLong(1);
-            }
-        }
+        requestParameters.put("name", newComputer.getName());
+        requestParameters.put("introduced", introDate);
+        requestParameters.put("discontinued", discoDate);
+        Company manufacturer = newComputer.getManufacturer();
+        requestParameters.put("companyId", manufacturer == null ? null : manufacturer.getId());
+        return this.template.update(CREATE_COMPUTER, requestParameters);
     }
 
     /**
@@ -101,11 +86,10 @@ public class ComputerUpdater {
      */
     public int deleteById(final long id) throws SQLException {
         LOG.trace("Suppression du pc d'id : " + id);
-        try (Connection conn = this.ds.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(DELETE_COMPUTER)) {
-            stmt.setLong(1, id);
-            return stmt.executeUpdate();
-        }
+        Map<String, Object> requestParameters = new HashMap<>();
+        requestParameters.put("id", id);
+
+        return this.template.update(DELETE_COMPUTER, requestParameters);
     }
 
     /**
@@ -137,25 +121,18 @@ public class ComputerUpdater {
     public int updateComputer(final Computer newComputer) throws SQLException {
         LOG.trace("Mise à jour de l'instance de Computer suivante " + newComputer.toString());
 
-        try (Connection conn = this.ds.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(UPDATE_COMPUTER)) {
+        LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
+        Date introDate = DateMapper.localDateToSqlDate(newComputer.getIntroduction()).orElse(null);
+        Date discoDate = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation()).orElse(null);
 
-            long id = newComputer.getId();
-            Optional<Date> introDateOpt = DateMapper.localDateToSqlDate(newComputer.getIntroduction());
-            Date introDate = introDateOpt.orElse(null);
-            Optional<Date> discoDateOpt = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation());
-            Date discoDate = discoDateOpt.orElse(null);
+        Map<String, Object> requestParameters = new HashMap<>();
 
-            stmt.setString(1, newComputer.getName());
-            stmt.setDate(2, introDate);
-            stmt.setDate(3, discoDate);
-            if (newComputer.getManufacturer() == null) {
-                stmt.setNull(4, java.sql.Types.BIGINT);
-            } else {
-                stmt.setLong(4, newComputer.getManufacturer().getId());
-            }
-            stmt.setLong(5, id);
-            return stmt.executeUpdate();
-        }
+        requestParameters.put("name", newComputer.getName());
+        requestParameters.put("introduced", introDate);
+        requestParameters.put("discontinued", discoDate);
+        Company manufacturer = newComputer.getManufacturer();
+        requestParameters.put("companyId", manufacturer == null ? null : manufacturer.getId());
+        requestParameters.put("id", newComputer.getId());
+        return this.template.update(UPDATE_COMPUTER, requestParameters);
     }
 }

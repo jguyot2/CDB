@@ -19,7 +19,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
- 		<selenium.version>3.141.59</selenium.version>
+		<selenium.version>3.141.59</selenium.version>
 		<hikaricp.version>3.4.5</hikaricp.version>
 		<mysqlconn.version>8.0.19</mysqlconn.version>
 		<slf4j.version>1.7.5</slf4j.version>
@@ -75,6 +75,11 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
 

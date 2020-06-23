@@ -158,12 +158,9 @@ public class ComputerValidator implements SearchValidator<Computer> {
     }
 
     public List<Computer> fetchList(final Page p, final String search) {
-        try {
-            return this.computerSearcher.fetchList(p, search);
-        } catch (SQLException e) {
-            LOG.error("Erreur lors de la recherche avec nom + page", e);
-            return new ArrayList<>();
-        }
+
+        return this.computerSearcher.fetchList(p, search);
+
     }
 
     public List<Computer> fetchList(final Page p, final String search, final List<SortEntry> sortEntries)
@@ -175,21 +172,13 @@ public class ComputerValidator implements SearchValidator<Computer> {
                 }
             }
         }
-        try {
-            return this.computerSearcher.fetchList(p, search, sortEntries);
-        } catch (SQLException e) {
-            LOG.error("Erreur lors du fetchWithOrder", e);
-            return new ArrayList<>();
-        }
+
+        return this.computerSearcher.fetchList(p, search, sortEntries);
+
     }
 
     public List<Computer> fetchList(final String search) {
-        try {
-            return this.computerSearcher.searchByName(search);
-        } catch (SQLException e) {
-            LOG.error("Erreur dans la base lors d'une recherche par nom : ", e);
-            return new ArrayList<>();
-        }
+        return this.computerSearcher.searchByName(search);
     }
 
     /**
@@ -206,9 +195,11 @@ public class ComputerValidator implements SearchValidator<Computer> {
         try {
             return this.computerSearcher.fetchById(id);
         } catch (SQLException e) {
-            LOG.error("findbyId(id = " + id + "): " + e.getMessage(), e);
-            return Optional.empty();
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
         }
+
     }
 
     /**
@@ -216,21 +207,12 @@ public class ComputerValidator implements SearchValidator<Computer> {
      */
     @Override
     public int getNumberOfElements() {
-        try {
-            return this.computerSearcher.getNumberOfElements();
-        } catch (SQLException e) {
-            LOG.error("getNumberOfElements : " + e.getMessage(), e);
-            return -1;
-        }
+        return this.computerSearcher.getNumberOfElements();
     }
 
     public int getNumberOfFoundElements(final String search) {
-        try {
-            return this.computerSearcher.getNumberOfFoundElements(search);
-        } catch (SQLException e) {
-            LOG.error("Erreur dans la bd : ", e);
-            return 0;
-        }
+        return this.computerSearcher.getNumberOfFoundElements(search);
+
     }
 
     /**

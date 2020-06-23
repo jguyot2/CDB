@@ -4,11 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -23,10 +23,9 @@ public class CompanyUpdater {
     private static final String REQUEST_DELETE_COMPANY = "DELETE FROM company WHERE id = ?";
 
     @Autowired
-    private ComputerUpdater computerUpdater;
-
+    private JdbcTemplate template;
     @Autowired
-    private DataSource ds;
+    private ComputerUpdater computerUpdater;
 
     /**
      * Suppression d'une entreprise à partir de son identifiant, ainsi que tous les
@@ -37,10 +36,9 @@ public class CompanyUpdater {
      * @throws SQLException si erreur dans la base
      */
     public int deleteCompany(final long companyId) throws SQLException {
-        LOG.trace("Deletion of company nb. " + companyId);
         Connection conn = null;
         try {
-            conn = this.ds.getConnection();
+            conn = DataSourceUtils.getConnection(this.template.getDataSource());
             conn.setAutoCommit(false);
             int nbComputersDeleted = this.computerUpdater.deleteComputersFromManufacturerIdWithConnection(companyId,
                     conn);
