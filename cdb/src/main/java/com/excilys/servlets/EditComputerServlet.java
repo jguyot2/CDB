@@ -1,6 +1,7 @@
 package com.excilys.servlets;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -43,17 +44,23 @@ public class EditComputerServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
+    private static void forwardToError400Page(final HttpServletRequest request, final HttpServletResponse response,
+            final String errorCause) throws ServletException, IOException {
+        RequestDispatcher rd = request.getRequestDispatcher("/400");
+        request.setAttribute("errorCause", errorCause);
+        rd.forward(request, response);
+    }
+
     private static void invalidComputerCase(final HttpServletRequest request, final HttpServletResponse response,
             final InvalidComputerInstanceException exnInvalidComputer) throws IOException, ServletException {
+
         List<ComputerInstanceProblems> problems = exnInvalidComputer.getProblems();
         StringBuilder problemsDescription = new StringBuilder();
         for (ComputerInstanceProblems problem : problems) {
             problemsDescription.append(problem.getExplanation() + "\n");
             LOG.debug("Cause : " + problem.getExplanation());
         }
-        RequestDispatcher rd = request.getRequestDispatcher("/400");
-        request.setAttribute("errorCause", problemsDescription.toString());
-        rd.forward(request, response);
+        forwardToError400Page(request, response, problemsDescription.toString());
     }
 
     private static void invalidComputerDTOCase(final HttpServletRequest request, final HttpServletResponse response,
@@ -65,9 +72,7 @@ public class EditComputerServlet extends HttpServlet {
             problemsDescription.append(problem.getExplanation() + "\n");
             LOG.debug("Cause : " + problem.getExplanation());
         }
-        RequestDispatcher rd = request.getRequestDispatcher("/400");
-        request.setAttribute("errorCause", problemsDescription.toString());
-        rd.forward(request, response);
+        forwardToError400Page(request, response, problemsDescription.toString());
     }
 
     /**
@@ -80,45 +85,35 @@ public class EditComputerServlet extends HttpServlet {
      * @throws IOException
      */ // REFACTO
     @Override
-    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
-
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException {
         RequestDispatcher rd;
         try {
-            try {
-                LOG.trace("doGet");
-                String strId = request.getParameter("id");
-                long id = Long.parseLong(strId);
-                LOG.debug("parsed number : " + strId);
-                Optional<ComputerDTO> computer = computerValidator.findById(id);
+            LOG.trace("doGet");
+            String strId = request.getParameter("id");
+            long id = Long.parseLong(strId);
+            LOG.debug("parsed number : " + strId);
+            Optional<ComputerDTO> computer = computerValidator.findById(id);
 
-                if (!computer.isPresent()) {
-                    LOG.debug("The computer was not found");
-                    request.setAttribute("errorCause", "The Computer was not found");
-                    rd = request.getRequestDispatcher("/400");
-                    rd.forward(request, response);
-                    return;
-                }
-                List<CompanyDTO> companyList = companyValidator.fetchList();
-                request.setAttribute("computer", computer.get());
-                if (computer.get().getCompany() != null) {
-                    companyList.remove(computer.get().getCompany());
-                }
-
-                request.setAttribute("companyList", companyList);
-                rd = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
-                rd.forward(request, response);
-                return;
-            } catch (NumberFormatException e) {
-                LOG.debug("Catched NFE");
-                String msg = "Invalid identifier parameter";
-                request.setAttribute("errorCause", msg);
-                rd = request.getRequestDispatcher("400");
-                rd.forward(request, response);
-                return;
+            if (!computer.isPresent()) {
+                LOG.debug("The computer was not found");
+                forwardToError400Page(request, response, "The computer was not found");
             }
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-            throw new ServletException(e);
+            List<CompanyDTO> companyList = companyValidator.fetchList();
+            request.setAttribute("computer", computer.get());
+            if (computer.get().getCompany() != null) {
+                companyList.remove(computer.get().getCompany());
+            }
+
+            request.setAttribute("companyList", companyList);
+            rd = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
+            rd.forward(request, response);
+            return;
+        } catch (NumberFormatException e) {
+            LOG.debug("Catched NFE");
+            String msg = "Invalid identifier parameter";
+            forwardToError400Page(request, response, msg);
+            return;
         }
     }
 
@@ -129,50 +124,42 @@ public class EditComputerServlet extends HttpServlet {
      * @throws ServletException
      */ // REFACTO
     @Override
-    public void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
+    public void doPost(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException {
         try {
-            try {
-                ComputerDTO computer = getComputerDTOFromParameters(request);
-                int updatedComputer = computerValidator.updateComputer(computer);
-                if (updatedComputer == 0) {
-                    RequestDispatcher rd = request.getRequestDispatcher("/400");
-                    LOG.debug("update failed. DTO =" + computer);
-                    request.setAttribute("errorCause",
-                            "L'ordi a pas été mis à jour, probablement parce qu'il a un id inexistant");
-                    rd.forward(request, response);
-                    return;
-                }
-                if (updatedComputer == -1) {
-                    LOG.error("-1 returned when updating the computer");
-                    throw new ServletException("update : -1 retourné");
-                }
-            } catch (InvalidComputerDTOException e) {
-
-                LOG.debug("invalid computer dto");
-                invalidComputerDTOCase(request, response, e);
-                return;
-            } catch (InvalidComputerInstanceException e) {
-                LOG.debug("invalid computer instance");
-                invalidComputerCase(request, response, e);
-                return;
-            } catch (NumberFormatException e) {
-                LOG.debug("invalid number");
-                RequestDispatcher rd = request.getRequestDispatcher("/400");
-                request.setAttribute("errorCause", "Invalid company identifier value");
-                rd.forward(request, response);
-                return;
-            } catch (IllegalArgumentException e) {
-                LOG.debug("illegal identifier number");
-                RequestDispatcher rd = request.getRequestDispatcher("/400");
-                request.setAttribute("errorCause", e.getMessage());
-                rd.forward(request, response);
+            ComputerDTO computer = getComputerDTOFromParameters(request);
+            int updatedComputer = computerValidator.updateComputer(computer);
+            if (updatedComputer == 0) {
+                LOG.debug("update failed. DTO =" + computer);
+                forwardToError400Page(request, response,
+                        "L'ordi a pas été mis à jour, probablement parce qu'il a un id inexistant");
                 return;
             }
-            response.sendRedirect(getServletContext().getContextPath() + "/page");
-        } catch (IOException e) {
-            throw new ServletException(e);
+            if (updatedComputer == -1) { // TODO : pê une redirection avec un message d'erreur
+                LOG.error("-1 returned when updating the computer");
+                throw new ServletException("update : -1 retourné");
+            }
+        } catch (InvalidComputerDTOException e) {
+            LOG.debug("invalid computer dto");
+            invalidComputerDTOCase(request, response, e);
+            return;
+        } catch (InvalidComputerInstanceException e) {
+            LOG.debug("invalid computer instance");
+            invalidComputerCase(request, response, e);
+            return;
+        } catch (NumberFormatException e) {
+            LOG.debug("invalid number");
+            forwardToError400Page(request, response, "Invalid company identifier value");
+            return;
+        } catch (IllegalArgumentException e) {
+            LOG.debug("illegal identifier number");
+            forwardToError400Page(request, response, e.getMessage());
+            return;
         }
+        response.sendRedirect(getServletContext().getContextPath() + "/page?message=" + MESSAGE_UPDATE_COMPUTER);
     }
+
+    private static final String MESSAGE_UPDATE_COMPUTER = URLEncoder.encode("L'ordinateur a été mis à jour");
 
     /**
      * Construction d'un ComputerDTO à partir des params de requête POST de la page

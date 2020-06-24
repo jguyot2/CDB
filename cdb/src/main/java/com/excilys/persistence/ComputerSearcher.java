@@ -3,6 +3,7 @@ package com.excilys.persistence;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -133,10 +135,15 @@ public class ComputerSearcher implements Searcher<Computer> {
      *         Une instance de Optional contenant le Computer trouvé sinon
      */
     @Override
-    public Optional<Computer> fetchById(final long searchedId) throws SQLException {
+    public Optional<Computer> fetchById(final long searchedId) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", searchedId);
-        return Optional.ofNullable(this.template.queryForObject(QUERY_COMPUTER_FROM_ID, params, this.rowMapper));
+        try {
+            return Optional.of(this.template.queryForObject(QUERY_COMPUTER_FROM_ID, params, this.rowMapper));
+        } catch (EmptyResultDataAccessException e) {
+            LOG.info("", e);
+            return Optional.empty();
+        }
     }
 
     /**
@@ -148,8 +155,16 @@ public class ComputerSearcher implements Searcher<Computer> {
      * @author jguyot2
      */
     @Override
-    public List<Computer> fetchList() throws SQLException {
-        return this.template.query(QUERY_COMPUTER_LIST, Collections.emptyMap(), this.rowMapper);
+    public List<Computer> fetchList() {
+        try {
+
+            return this.template.query(QUERY_COMPUTER_LIST, Collections.emptyMap(), this.rowMapper);
+
+        } catch (EmptyResultDataAccessException e) {
+            LOG.info("", e);
+            return new ArrayList<>();
+        }
+
     }
 
     /**
@@ -160,12 +175,14 @@ public class ComputerSearcher implements Searcher<Computer> {
      * @return La liste correspondant aux ordinateurs compris dans la page.
      */
     @Override
-    public List<Computer> fetchList(final Page page) throws SQLException {
+    public List<Computer> fetchList(final Page page) {
         return fetchList(page, Arrays.asList());
     }
 
-//TODO refacto pour pas refaire deux fois la dernière chose (pour les deux fetchList)
-    public List<Computer> fetchList(final Page page, final List<SortEntry> entries) throws SQLException {
+    // TODO refacto pour pas refaire deux fois la dernière chose (pour les deux
+    // fetchList)
+    public List<Computer> fetchList(final Page page, final List<SortEntry> entries) {
+
         StringBuilder orderByClause = new StringBuilder();
         for (SortEntry sortEntry : entries) {
             orderByClause.append(sortEntryToSqlOrderByClause(sortEntry) + ", ");
@@ -175,7 +192,13 @@ public class ComputerSearcher implements Searcher<Computer> {
         Map<String, Object> requestParameters = new HashMap<>();
         requestParameters.put("offset", page.getOffset());
         requestParameters.put("limit", page.getPageLength());
-        return this.template.query(request, requestParameters, this.rowMapper);
+        try {
+            return this.template.query(request, requestParameters, this.rowMapper);
+
+        } catch (EmptyResultDataAccessException e) {
+            LOG.info("", e);
+            return new ArrayList<>();
+        }
     }
 
     public List<Computer> fetchList(final Page p, final String search) {
@@ -196,7 +219,13 @@ public class ComputerSearcher implements Searcher<Computer> {
         requestParameters.put("pattern", searchedPattern);
         requestParameters.put("limit", p.getPageLength());
         requestParameters.put("offset", p.getOffset());
-        return this.template.query(request, requestParameters, this.rowMapper);
+        try {
+            return this.template.query(request, requestParameters, this.rowMapper);
+
+        } catch (EmptyResultDataAccessException e) {
+            LOG.info("", e);
+            return new ArrayList<>();
+        }
 
     }
 
@@ -205,20 +234,38 @@ public class ComputerSearcher implements Searcher<Computer> {
      */
     @Override
     public int getNumberOfElements() {
-        return this.template.queryForObject(REQUEST_NB_OF_ROWS, Collections.emptyMap(), (res, rowNum) -> res.getInt(1));
+        try {
+            return this.template.queryForObject(REQUEST_NB_OF_ROWS, Collections.emptyMap(),
+                    (res, rowNum) -> res.getInt(1));
+        } catch (EmptyResultDataAccessException e) {
+            LOG.info("", e);
+            return 0;
+        }
     }
 
     public int getNumberOfFoundElements(final String search) {
         String searchPattern = "%" + search.replace("%", "\\%") + "%";
         Map<String, Object> requestParameters = new HashMap<>();
         requestParameters.put("pattern", searchPattern);
-        return this.template.queryForObject(REQUEST_NB_OF_ROWS_SEARCH, requestParameters, (rs, rowNum) -> rs.getInt(1));
+        try {
+            return this.template.queryForObject(REQUEST_NB_OF_ROWS_SEARCH, requestParameters,
+                    (rs, rowNum) -> rs.getInt(1));
+
+        } catch (EmptyResultDataAccessException e) {
+            LOG.info("", e);
+            return 0;
+        }
     }
 
     public List<Computer> searchByName(final String search) {
         String searchedPattern = "%" + search.replace("%", "\\%") + "%";
         Map<String, Object> requestParameters = new HashMap<>();
         requestParameters.put("pattern", searchedPattern);
-        return this.template.query(QUERY_COMPUTER_SEARCH_WITH_NAME, requestParameters, this.rowMapper);
+        try {
+            return this.template.query(QUERY_COMPUTER_SEARCH_WITH_NAME, requestParameters, this.rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            LOG.info("", e);
+            return new ArrayList<>();
+        }
     }
 }

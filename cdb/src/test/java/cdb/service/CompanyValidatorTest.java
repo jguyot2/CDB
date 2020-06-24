@@ -17,11 +17,18 @@ import com.excilys.persistence.CompanySearcher;
 import com.excilys.service.CompanyValidator;
 
 public class CompanyValidatorTest {
-    private static final Company[] fakeCompanyList = { new Company("POUET", 1),
-            new Company("J'AIME L'OCA", 2), new Company("Café Oz", 5), new Company("Chocolatine", 10) };
+    private static final Company[] fakeCompanyList = { new Company("POUET", 1), new Company("J'AIME L'OCA", 2),
+            new Company("Café Oz", 5), new Company("Chocolatine", 10) };
 
     private CompanySearcher companySearcherMock = Mockito.mock(CompanySearcher.class);
-    private CompanyValidator companyValidator = new CompanyValidator();
+    private CompanyValidator companyValidator;
+
+    @Before
+    public void init() {
+        MockitoAnnotations.initMocks(this);
+        this.companyValidator = new CompanyValidator();
+        this.companyValidator.setCompanySearcher(this.companySearcherMock);
+    }
 
     @Test
     public void fetchListTest() throws SQLException {
@@ -30,7 +37,7 @@ public class CompanyValidatorTest {
             companyList.add(c);
         }
 
-        Mockito.when(companySearcherMock.fetchList()).thenReturn(companyList);
+        Mockito.when(this.companySearcherMock.fetchList()).thenReturn(companyList);
 
         List<Company> l = this.companyValidator.fetchList();
         Assert.assertEquals(l.size(), fakeCompanyList.length);
@@ -47,8 +54,8 @@ public class CompanyValidatorTest {
         for (Company c : fakeCompanyList) {
             companyList.add(0, c);
         }
-        Mockito.when(companySearcherMock.fetchList(p)).thenReturn(companyList);
-        Assert.assertEquals(companyValidator.fetchList(p), companyList);
+        Mockito.when(this.companySearcherMock.fetchList(p)).thenReturn(companyList);
+        Assert.assertEquals(this.companyValidator.fetchList(p), companyList);
     }
 
     @Test
@@ -57,8 +64,8 @@ public class CompanyValidatorTest {
         Optional<Company> company42Opt = Optional.of(company42);
         Optional<Company> emptyCompany = Optional.empty();
 
-        Mockito.when(companySearcherMock.fetchById(42)).thenReturn(company42Opt);
-        Mockito.when(companySearcherMock.fetchById(0)).thenReturn(emptyCompany);
+        Mockito.when(this.companySearcherMock.fetchById(42)).thenReturn(company42Opt);
+        Mockito.when(this.companySearcherMock.fetchById(0)).thenReturn(emptyCompany);
 
         Assert.assertEquals(company42Opt, this.companyValidator.findById(42));
         Assert.assertEquals(emptyCompany, this.companyValidator.findById(0));
@@ -67,14 +74,9 @@ public class CompanyValidatorTest {
 
     @Test
     public void getNumberOfElementsTest() throws SQLException {
-        Mockito.when(companySearcherMock.getNumberOfElements()).thenReturn(523);
+        Mockito.when(this.companySearcherMock.getNumberOfElements()).thenReturn(523);
 
-        Assert.assertEquals(companyValidator.getNumberOfElements(), 523);
+        Assert.assertEquals(this.companyValidator.getNumberOfElements(), 523);
     }
 
-    @Before
-    public void testInitialization() {
-        MockitoAnnotations.initMocks(this);
-        companyValidator.setCompanySearcher(companySearcherMock);
-    }
 }

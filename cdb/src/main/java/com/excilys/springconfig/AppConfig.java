@@ -18,6 +18,17 @@ import com.zaxxer.hikari.HikariDataSource;
 public class AppConfig {
     private static DataSource ds;
 
+    private static ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+
+    public static ApplicationContext getContext() {
+        return ctx;
+    }
+
+    @Bean(destroyMethod = "")
+    public DataSource dataSource() {
+        return getDataSource();
+    }
+
     private DataSource getDataSource() {
         if (ds == null) {
             HikariConfig config = new HikariConfig("/hikaricp.properties");
@@ -26,25 +37,14 @@ public class AppConfig {
         return ds;
     }
 
-    @Bean(destroyMethod = "")
-    public DataSource dataSource() {
-        return getDataSource();
-    }
-
-    @Bean
-    public JdbcTemplate template() {
-        return new JdbcTemplate(getDataSource());
-    }
-
     @Bean
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(getDataSource());
     }
 
-    private static ApplicationContext pouet = new AnnotationConfigApplicationContext(AppConfig.class);
-
-    public static ApplicationContext getContext() {
-        return pouet;
+    @Bean
+    public JdbcTemplate template() {
+        return new JdbcTemplate(getDataSource());
     }
 
 }

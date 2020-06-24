@@ -10,7 +10,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.mapper.DateMapper;
@@ -60,7 +64,7 @@ public class ComputerUpdater {
      * @return le nouvel identifiant correspondant à la ligne ajoutée si l'ajout a
      *         réussi, 0 si l'ajout a raté
      */ // REFACTO
-    public long createComputer(final Computer newComputer) throws SQLException {
+    public long createComputer(final Computer newComputer) {
         LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
         Date introDate = DateMapper.localDateToSqlDate(newComputer.getIntroduction()).orElse(null);
         Date discoDate = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation()).orElse(null);
@@ -72,7 +76,10 @@ public class ComputerUpdater {
         requestParameters.put("discontinued", discoDate);
         Company manufacturer = newComputer.getManufacturer();
         requestParameters.put("companyId", manufacturer == null ? null : manufacturer.getId());
-        return this.template.update(CREATE_COMPUTER, requestParameters);
+        KeyHolder kh = new GeneratedKeyHolder();
+        SqlParameterSource sqlParamSource = new MapSqlParameterSource(requestParameters);
+        int nbRows = this.template.update(CREATE_COMPUTER, sqlParamSource, kh, new String[] { "id" });
+        return kh.getKey().longValue();
     }
 
     /**
@@ -84,11 +91,10 @@ public class ComputerUpdater {
      *
      * @throws SQLException
      */
-    public int deleteById(final long id) throws SQLException {
+    public int deleteById(final long id) {
         LOG.trace("Suppression du pc d'id : " + id);
         Map<String, Object> requestParameters = new HashMap<>();
         requestParameters.put("id", id);
-
         return this.template.update(DELETE_COMPUTER, requestParameters);
     }
 
@@ -118,7 +124,7 @@ public class ComputerUpdater {
      *
      * @return 1 si la mise à jour a eu lieu, 0 sinon
      */
-    public int updateComputer(final Computer newComputer) throws SQLException {
+    public int updateComputer(final Computer newComputer) {
         LOG.trace("Mise à jour de l'instance de Computer suivante " + newComputer.toString());
 
         LOG.trace("Création de l'instance de Computer suivante: " + newComputer);

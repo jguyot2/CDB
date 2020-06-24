@@ -1,13 +1,14 @@
 package com.excilys.service;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.excilys.model.Computer;
@@ -86,7 +87,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
         try {
             return this.computerUpdater.createComputer(createdComputer);
 
-        } catch (SQLException e) {
+        } catch (DataAccessException e) {
             LOG.error("createComputer :" + e.getMessage(), e);
             return 0;
         }
@@ -103,7 +104,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
     public int delete(final long id) {
         try {
             return this.computerUpdater.deleteById(id);
-        } catch (SQLException e) {
+        } catch (DataAccessException e) {
             LOG.error("deleteComputer :" + e.getMessage(), e);
             return -1;
         }
@@ -120,7 +121,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
     public List<Computer> fetchList() {
         try {
             return this.computerSearcher.fetchList();
-        } catch (SQLException e) {
+        } catch (DataAccessException e) {
             LOG.error("fetchlist: " + e.getMessage(), e);
             return new ArrayList<>();
         }
@@ -135,7 +136,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
     public List<Computer> fetchList(final Page page) {
         try {
             return this.computerSearcher.fetchList(page);
-        } catch (SQLException e) {
+        } catch (DataAccessException e) {
             LOG.error("fetchListWithOffset: " + e.getMessage(), e);
             return new ArrayList<>();
         }
@@ -151,16 +152,19 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
         try {
             return this.computerSearcher.fetchList(p, sortEntries);
-        } catch (SQLException e) {
+        } catch (DataAccessException e) {
             LOG.error("Erreur lors du fetchWithOrder", e);
             return new ArrayList<>();
         }
     }
 
     public List<Computer> fetchList(final Page p, final String search) {
-
-        return this.computerSearcher.fetchList(p, search);
-
+        try {
+            return this.computerSearcher.fetchList(p, search);
+        } catch (DataAccessException e) {
+            LOG.error("", e);
+            return Arrays.asList();
+        }
     }
 
     public List<Computer> fetchList(final Page p, final String search, final List<SortEntry> sortEntries)
@@ -194,10 +198,9 @@ public class ComputerValidator implements SearchValidator<Computer> {
     public Optional<Computer> findById(final long id) {
         try {
             return this.computerSearcher.fetchById(id);
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
+        } catch (DataAccessException e) {
+            LOG.error("", e);
+            return Optional.empty();
         }
 
     }
@@ -246,7 +249,7 @@ public class ComputerValidator implements SearchValidator<Computer> {
         LOG.info("Instance valide : Mise à jour de la base.");
         try {
             return this.computerUpdater.updateComputer(newComputervalue);
-        } catch (SQLException e) {
+        } catch (DataAccessException e) {
             LOG.error("updateComputer :" + e.getMessage(), e);
             return -1;
         }

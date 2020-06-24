@@ -9,18 +9,18 @@ public enum SortCriterion {
             throw new IllegalCriterionStringException();
         }
         switch (s) {
-            case "name":
-                return COMPUTER_NAME;
-            case "introduced":
-                return INTRODUCED;
-            case "discontinued":
-                return DISCONTINUED;
-            case "companyId":
-                return COMPANY_ID;
-            case "companyName":
-                return COMPANY_NAME;
-            default:
-                throw new IllegalCriterionStringException();
+        case "name":
+            return COMPUTER_NAME;
+        case "introduced":
+            return INTRODUCED;
+        case "discontinued":
+            return DISCONTINUED;
+        case "companyId":
+            return COMPANY_ID;
+        case "companyName":
+            return COMPANY_NAME;
+        default:
+            throw new IllegalCriterionStringException();
         }
     }
 

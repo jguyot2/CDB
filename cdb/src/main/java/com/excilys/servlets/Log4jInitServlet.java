@@ -6,8 +6,6 @@ import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.PropertyConfigurator;
 
@@ -20,11 +18,6 @@ import org.apache.log4j.PropertyConfigurator;
 public class Log4jInitServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-
-    @Override
-    public void doGet(final HttpServletRequest req, final HttpServletResponse res) {
-
-    }
 
     @Override
     public void init() throws ServletException {

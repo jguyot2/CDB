@@ -32,7 +32,7 @@ public class Company {
      * Constructeur avec indication de l'identifiant.
      *
      * @param companyName le nom de l'entreprise
-     * @param companyId l'identifiant de l'entreprise
+     * @param companyId   l'identifiant de l'entreprise
      */
     public Company(final String companyName, final long companyId) {
         this.name = companyName;

@@ -130,6 +130,9 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     @Autowired
     private ComputerValidator computerValidator;
 
+    private ComputerDTOValidator() {
+    }
+
     /**
      * Ajout d'un ordinateur dans la base à partir d'un DTO.
      *
@@ -169,9 +172,6 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      */
     public int delete(final long id) {
         return this.computerValidator.delete(id);
-    }
-
-    private ComputerDTOValidator() {
     }
 
     @Override

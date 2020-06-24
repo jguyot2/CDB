@@ -43,14 +43,6 @@ public class AddComputerServlet extends HttpServlet {
     /** */
     private static final long serialVersionUID = 1L;
 
-    public static void setCompanyValidator(final CompanyDTOValidator dtv) {
-        companyValidator = dtv;
-    }
-
-    public static void setComputerValidator(final ComputerDTOValidator dtv) {
-        computerValidator = dtv;
-    }
-
     /**
      * Crée une instance de CompanyDTO a partir de la requête POST pour créer un
      * ordinateur.
@@ -123,6 +115,14 @@ public class AddComputerServlet extends HttpServlet {
         request.setAttribute("errorCause", problemsDescription.toString());
 
         rd.forward(request, response);
+    }
+
+    public static void setCompanyValidator(final CompanyDTOValidator dtv) {
+        companyValidator = dtv;
+    }
+
+    public static void setComputerValidator(final ComputerDTOValidator dtv) {
+        computerValidator = dtv;
     }
 
     /**

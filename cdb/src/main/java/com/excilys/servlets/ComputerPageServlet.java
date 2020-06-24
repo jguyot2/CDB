@@ -66,7 +66,7 @@ public class ComputerPageServlet extends HttpServlet {
      * @param errorCause
      * @throws ServletException
      * @throws IOException
-     */ // todo : pê la déplacer vers une classe statique
+     */ // todo : pê la déplacer vers une classe statique commune aux servlets
     private static void forwardToError400Page(final HttpServletRequest request, final HttpServletResponse response,
             final String errorCause) throws ServletException, IOException {
         RequestDispatcher rd = request.getRequestDispatcher("/400");
@@ -104,7 +104,7 @@ public class ComputerPageServlet extends HttpServlet {
      * @return la page associée aux paramètres
      * @throws NumberFormatException si pageNumber ou pageLength ne correspondant
      *                               pas à des nombres
-     */
+     */ // REFACTO
     private static Page getPageFromRequest(final HttpServletRequest request) throws NumberFormatException {
         String search = request.getParameter("search");
         String strPageNumber = request.getParameter("pageNumber");

@@ -58,8 +58,8 @@ public class Computer {
      * @param computerIntroduction
      * @param computerDiscontinuation
      */
-    public Computer(final String computerName, final Company computerManufacturer,
-            final LocalDate computerIntroduction, final LocalDate computerDiscontinuation) {
+    public Computer(final String computerName, final Company computerManufacturer, final LocalDate computerIntroduction,
+            final LocalDate computerDiscontinuation) {
 
         this.name = computerName;
         this.manufacturer = computerManufacturer;
@@ -75,9 +75,8 @@ public class Computer {
      * @param computerDiscontinuation
      * @param computerId
      */
-    public Computer(final String computerName, final Company computerManufacturer,
-            final LocalDate computerIntroduction, final LocalDate computerDiscontinuation,
-            final long computerId) {
+    public Computer(final String computerName, final Company computerManufacturer, final LocalDate computerIntroduction,
+            final LocalDate computerDiscontinuation, final long computerId) {
 
         this.name = computerName;
         this.manufacturer = computerManufacturer;

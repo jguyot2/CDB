@@ -145,7 +145,7 @@ public final class ComputerDTO {
 
     @Override
     public String toString() {
-        return "(" + this.name + ", " + this.introductionDate + "-" + this.discontinuationDate + "\t"
-                + this.strId + "\t" + this.company;
+        return "(" + this.name + ", " + this.introductionDate + "-" + this.discontinuationDate + "\t" + this.strId
+                + "\t" + this.company;
     }
 }

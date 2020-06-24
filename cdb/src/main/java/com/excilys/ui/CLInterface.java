@@ -29,34 +29,6 @@ public class CLInterface {
     private static ComputerValidator computerValidator = AppConfig.getContext().getBean(ComputerValidator.class);
     private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
 
-    /**
-     * Fonction affichant un menu et exécutant une commande rentrée par
-     * l'utilisateur
-     */
-    public static void getCommande() {
-        printMenu();
-        String strCommandId = sc.nextLine();
-        int commandId = -1;
-        try {
-            commandId = Integer.parseInt(strCommandId);
-        } catch (NumberFormatException e) {
-            System.out.println("La commande rentrée est invalide");
-        }
-
-        try {
-            CLICommand commandToExecute = CLICommand.getCommandeFromInput(commandId);
-            executeCommand(commandToExecute);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erreur" + e.getMessage());
-        }
-    }
-
-    public static void start() {
-        while (true) {
-            CLInterface.getCommande();
-        }
-    }
-
     private static void createComputerCommand() {
         System.out.println("Entrez le nom de l'ordinateur");
 
@@ -235,6 +207,28 @@ public class CLInterface {
         System.exit(0);
     }
 
+    /**
+     * Fonction affichant un menu et exécutant une commande rentrée par
+     * l'utilisateur
+     */
+    public static void getCommande() {
+        printMenu();
+        String strCommandId = sc.nextLine();
+        int commandId = -1;
+        try {
+            commandId = Integer.parseInt(strCommandId);
+        } catch (NumberFormatException e) {
+            System.out.println("La commande rentrée est invalide");
+        }
+
+        try {
+            CLICommand commandToExecute = CLICommand.getCommandeFromInput(commandId);
+            executeCommand(commandToExecute);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erreur" + e.getMessage());
+        }
+    }
+
     private static void getComputerDetailsCommand() {
         System.out.println("Entrez l'identifiant de l'ordinateur recherché");
         String strComputerId = sc.nextLine();
@@ -283,6 +277,12 @@ public class CLInterface {
         System.out.println("8:\t Pagination des entreprises");
         System.out.println("9:\t Suppression d'une entreprise");
         System.out.println("--------------------------------");
+    }
+
+    public static void start() {
+        while (true) {
+            CLInterface.getCommande();
+        }
     }
 
     private static void updateComputerCommand() {

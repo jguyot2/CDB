@@ -28,22 +28,6 @@ public class CompanyPagination {
         this.page = new Page(companyPagination.getNumberOfElements());
     }
 
-    PaginationCommand getCommand() {
-        printMenu();
-        String userEntry = sc.nextLine().trim();
-        if ("n".equals(userEntry)) {
-            return PaginationCommand.NEXT;
-        } else if ("p".equals(userEntry)) {
-            return PaginationCommand.PREVIOUS;
-        } else if ("e".equals(userEntry)) {
-            return PaginationCommand.EXIT;
-        } else if ("c".equals(userEntry)) {
-            return PaginationCommand.CURRENT;
-        }
-        System.out.println("Commande invalide.");
-        return getCommand();
-    }
-
     private boolean executeCommand(final PaginationCommand command) {
         switch (command) {
         case EXIT:
@@ -59,6 +43,22 @@ public class CompanyPagination {
             return false;
         }
         return false;
+    }
+
+    PaginationCommand getCommand() {
+        printMenu();
+        String userEntry = sc.nextLine().trim();
+        if ("n".equals(userEntry)) {
+            return PaginationCommand.NEXT;
+        } else if ("p".equals(userEntry)) {
+            return PaginationCommand.PREVIOUS;
+        } else if ("e".equals(userEntry)) {
+            return PaginationCommand.EXIT;
+        } else if ("c".equals(userEntry)) {
+            return PaginationCommand.CURRENT;
+        }
+        System.out.println("Commande invalide.");
+        return getCommand();
     }
 
     private void printCurrentPage() {

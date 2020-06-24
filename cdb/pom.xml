@@ -7,7 +7,7 @@
 
 	<groupId>com.excilys.mars2020</groupId>
 	<artifactId>cdbmaven</artifactId>
-	<version>SPRINT-3</version>
+	<version>SPRINT-5</version>
 	<packaging>war</packaging>
 
 	<name>cdbmaven Maven Webapp</name>

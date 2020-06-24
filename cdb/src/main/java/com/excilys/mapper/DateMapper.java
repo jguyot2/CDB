@@ -80,7 +80,7 @@ public final class DateMapper {
      * LocalDate.
      *
      * @param dateRepr une chaine de caractères correspondant à une date au format
-     *        correspondant à <DATE_PATTERN>
+     *                 correspondant à <DATE_PATTERN>
      *
      * @return un optional contenant la date correspondante à la chaîne en param, ou
      *         vide dans le cas où le paramètre est nul ou ne correspondant pasau
