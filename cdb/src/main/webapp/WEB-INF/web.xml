@@ -6,16 +6,7 @@
     version="3.0">
 
   <display-name>Archetype Created Web Application</display-name>
-  <servlet>
-    <servlet-name>log4j-init</servlet-name>
-    <servlet-class>com.excilys.servlets.Log4jInitServlet</servlet-class>
 
-    <init-param>
-      <param-name>log4j-init-file</param-name>
-      <param-value>WEB-INF/classes/log4j.lcf</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
   <error-page>
     <error-code>403</error-code>
     <location>/403</location>

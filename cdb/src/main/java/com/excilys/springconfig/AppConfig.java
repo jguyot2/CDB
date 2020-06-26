@@ -2,25 +2,29 @@ package com.excilys.springconfig;
 
 import javax.sql.DataSource;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+@EnableWebMvc
 @Configuration
 @ComponentScan(basePackages = "com.excilys")
 public class AppConfig {
     private static DataSource ds;
 
-    private static ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+    private static AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
 
-    public static ApplicationContext getContext() {
+    public static AnnotationConfigWebApplicationContext getContext() {
         return ctx;
     }
 
@@ -45,6 +49,15 @@ public class AppConfig {
     @Bean
     public JdbcTemplate template() {
         return new JdbcTemplate(getDataSource());
+    }
+
+    @Bean
+    public ViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setViewClass(JstlView.class);
+        viewResolver.setPrefix("/WEB-INF/views/");
+        viewResolver.setSuffix(".jsp");
+        return viewResolver;
     }
 
 }

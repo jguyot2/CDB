@@ -10,7 +10,8 @@ import com.excilys.springconfig.AppConfig;
 
 public class CompanyPagination {
 
-    private static CompanyValidator companyPagination = AppConfig.getContext().getBean(CompanyValidator.class);
+    private static CompanyValidator companyPagination = AppConfig.getContext()
+            .getBean(CompanyValidator.class);
     private final static Scanner sc = new Scanner(System.in);
 
     public static void paginate() {

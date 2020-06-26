@@ -1,23 +1,21 @@
 package com.excilys.servlets;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.model.ComputerDTO;
 import com.excilys.model.IllegalCriterionStringException;
@@ -25,53 +23,60 @@ import com.excilys.model.Page;
 import com.excilys.model.SortEntry;
 import com.excilys.service.ComputerDTOValidator;
 import com.excilys.service.DuplicatedSortEntries;
-import com.excilys.springconfig.AppConfig;
 
-@WebServlet("/page")
-public class ComputerPageServlet extends HttpServlet {
+@Controller
+public class ComputerPageServlet {
 
     private static final String CHARSET = "UTF-8";
-    private static final long serialVersionUID = 1L;
+
     private static Logger LOG = LoggerFactory.getLogger(ComputerPageServlet.class);
 
-    private static ComputerDTOValidator validator = AppConfig.getContext().getBean(ComputerDTOValidator.class);
+    @Autowired
+    private ComputerDTOValidator validator;
 
-    /**
-     * Suppression des ordinateurs dont les identifiants sont dans la base
-     *
-     * @param computersIdToDelete la liste des identidiants des ordinateurs à
-     *                            supprimer
-     * @return la liste des identifiants qui n'ont pas été supprimées
-     */
-    private static List<Long> deleteComputers(final List<Long> computersIdToDelete) {
-        List<Long> notDeletedIds = new ArrayList<>();
-        for (long id : computersIdToDelete) {
-            int res = validator.delete(id);
-            if (res == 0) {
-                LOG.info("Deletion : ID not found ( " + id + ")");
-                notDeletedIds.add(id);
-            } else if (res == -1) {
-                LOG.error("-1 retourné lors du deleteComputer => problème lors de l'exécution de la requête");
-                notDeletedIds.add(id);
-            }
+    @GetMapping("/page")
+    public String showPage(
+            @RequestParam(required = false, name = "pageLength") final Integer pageLength,
+            @RequestParam(defaultValue = "0", name = "pageNumber") final Integer pageNumber,
+            @RequestParam(required = false, name = "search") final String search,
+            @RequestParam(required = false, name = "sort") final String sortParam,
+            @RequestParam(required = false, name = "newSortParam") final String newSortParameter,
+            @RequestParam(required = false, name = "message") final String message,
+            final Model model) {
+        try {
+            Page p = getPageFromParameters(pageLength, pageNumber, search);
+            List<SortEntry> sortEntries = getSortEntryFromParameters(sortParam, newSortParameter);
+            List<ComputerDTO> computerList = getComputerList(p, search, sortEntries);
+            List<Integer> pagesToShow = getPagesToShow(p);
+            Optional<String> sortUrl = getUrlParameterFromSortEntries(sortEntries);
+            Optional<String> searchUrl = getSearchUrl(search);
+
+            setModelParameters(p, computerList, search, message, sortUrl.orElse(null),
+                    searchUrl.orElse(null), pagesToShow, model);
+        } catch (IllegalArgumentException e) { // TODO remplacer par une exception moins
+                                               // dégueulasse
+            model.addAttribute("errorCause", "The page number or page length parameter is invalid");
+            return "forward:/400";
+        } catch (IllegalCriterionStringException e) {
+            model.addAttribute("errorCause", "The sort criterion string is invalid");
+            return "forward:/400";
+        } catch (DuplicatedSortEntries e) {
+            model.addAttribute("errorCause", "There is several sort parameters at the same time");
+            return "forward:/400";
         }
-        return notDeletedIds;
+        return "dashboard";
     }
 
-    /**
-     * Redirection vers la page d'erreur 400.
-     *
-     * @param request
-     * @param response
-     * @param errorCause
-     * @throws ServletException
-     * @throws IOException
-     */ // todo : pê la déplacer vers une classe statique commune aux servlets
-    private static void forwardToError400Page(final HttpServletRequest request, final HttpServletResponse response,
-            final String errorCause) throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("/400");
-        request.setAttribute("errorCause", errorCause);
-        rd.forward(request, response);
+    private static final Optional<String> getSearchUrl(final String search) {
+        if (search == null) {
+            return Optional.empty();
+        } else {
+            try {
+                return Optional.of(URLEncoder.encode(search, CHARSET));
+            } catch (UnsupportedEncodingException e) {
+                return Optional.of(URLEncoder.encode(search));
+            }
+        }
     }
 
     /**
@@ -86,53 +91,37 @@ public class ComputerPageServlet extends HttpServlet {
      *                               associés à un même paramètre (e.g deux ordres
      *                               sur le nom).
      */
-    private static List<ComputerDTO> getComputerList(final Page page, final String search,
+    private List<ComputerDTO> getComputerList(final Page page, final String search,
             final List<SortEntry> sortEntries) throws DuplicatedSortEntries {
         if (search != null) {
-            return validator.fetchList(page, search, sortEntries);
+            return this.validator.fetchList(page, search, sortEntries);
         } else {
-            return validator.fetchList(page, sortEntries);
+            return this.validator.fetchList(page, sortEntries);
         }
     }
 
-    /**
-     * Récupération d'un object page lors de l'affichage de la requête GET pour
-     * afficher les ordinateurs
-     *
-     * @param request la requête, comprenant les paramètres optionnels search
-     *                (=chaîne recherchée) pageNumber et pageLength
-     * @return la page associée aux paramètres
-     * @throws NumberFormatException si pageNumber ou pageLength ne correspondant
-     *                               pas à des nombres
-     */ // REFACTO
-    private static Page getPageFromRequest(final HttpServletRequest request) throws NumberFormatException {
-        String search = request.getParameter("search");
-        String strPageNumber = request.getParameter("pageNumber");
-        String strPageLength = request.getParameter("pageLength");
-        Page page = new Page();
+    private Page getPageFromParameters(@Nullable final Integer pageLength,
+            @NonNull final Integer pageNumber, @Nullable final String search)
+            throws IllegalArgumentException {
+        Page p = new Page();
         if (search == null) {
-            page.setTotalNumberOfElements(validator.getNumberOfElements());
+            p.setTotalNumberOfElements(this.validator.getNumberOfElements());
         } else {
-            page.setTotalNumberOfElements(validator.getNumberOfFoundElements(search));
+            p.setTotalNumberOfElements(this.validator.getNumberOfFoundElements(search));
         }
-        if (strPageNumber != null) {
-            int pageNumber = Integer.parseInt(strPageNumber);
-            if (pageNumber >= 0) {
-                page.setPageNumber(pageNumber);
+        if (pageLength != null) {
+            if (pageLength <= 0) {
+                throw new IllegalArgumentException("pageLength is invalid");
             } else {
-                throw new NumberFormatException();
+                p.setPageLength(pageLength);
             }
         }
-        if (strPageLength != null) {
-            int pageLength = Integer.parseInt(strPageLength);
-            if (pageLength > 0) {
-                page.setPageLength(pageLength);
-
-            } else {
-                throw new NumberFormatException();
-            }
+        if (pageNumber >= 0) {
+            p.setPageNumber(pageNumber);
+        } else {
+            throw new IllegalArgumentException();
         }
-        return page;
+        return p;
     }
 
     /**
@@ -152,48 +141,12 @@ public class ComputerPageServlet extends HttpServlet {
         return pagesToShow;
     }
 
-    /**
-     * Récupération de la liste des ordinateurs que l'on cherche à supprimer dans
-     * une requête POST
-     *
-     * @param request la requête POST pour la suppression d'ordinateurs
-     * @return la liste des identifiants sélectionnés
-     * @throws NumberFormatException
-     * @throws IllegalArgumentException
-     */
-    private static List<Long> getSelectedComputersFromRequest(final HttpServletRequest request)
-            throws NumberFormatException, IllegalArgumentException {
-        String selectionParameter = request.getParameter("selection");
-        if (selectionParameter == null) {
-            throw new IllegalArgumentException();
-        }
-        String[] selectedComputerIds = request.getParameter("selection").split(",");
-        Long[] identifiers = new Long[selectedComputerIds.length];
-        for (int i = 0; i < selectedComputerIds.length; ++i) {
-            identifiers[i] = Long.parseLong(selectedComputerIds[i].trim());
-        }
-        return Arrays.asList(identifiers);
-    }
+    private static List<SortEntry> getSortEntryFromParameters(@Nullable final String sortParam,
+            @Nullable final String newSortParameter) throws IllegalCriterionStringException {
 
-    /**
-     * Récupération de toutes les instructions de tri directement à partir de la
-     * requête GET
-     *
-     * @param request
-     * @return Une list représentant les instructions de tri s'il y en avait, une
-     *         liste vide sinon
-     * @throws IllegalCriterionStringException
-     */ // refacto
-    private static List<SortEntry> getSortEntriesFromRequest(final HttpServletRequest request)
-            throws IllegalCriterionStringException {
-        String sortParam = request.getParameter("sort");
-        String newSortParameter = request.getParameter("newSortParam");
-        LOG.info("Récup des params de tri");
         List<SortEntry> entries = getSortEntryFromParameter(sortParam);
 
-        if (newSortParameter == null || newSortParameter.trim().isEmpty()) {
-            return entries;
-        } else {
+        if (newSortParameter != null && !newSortParameter.trim().isEmpty()) {
             boolean[] addNewParameter = { true };
             LOG.info("Récup des params de tri : nouveau param");
             SortEntry se = SortEntry.fromString(newSortParameter);
@@ -208,8 +161,8 @@ public class ComputerPageServlet extends HttpServlet {
                 entries.add(se);
             }
             LOG.info("found params: " + entries.toString());
-            return entries;
         }
+        return entries;
     }
 
     /**
@@ -246,7 +199,8 @@ public class ComputerPageServlet extends HttpServlet {
      * @return un optional contenant la valeur du paramètre de tri dans le lien url
      *
      */
-    private static Optional<String> getUrlParameterFromSortEntries(final List<SortEntry> sortEntries) {
+    private static Optional<String> getUrlParameterFromSortEntries(
+            final List<SortEntry> sortEntries) {
         if (sortEntries.isEmpty()) {
             return Optional.empty();
         } else {
@@ -262,143 +216,17 @@ public class ComputerPageServlet extends HttpServlet {
         }
     }
 
-    /**
-     * Assignation des attributs de la requête qui seront utilisés dans la page jsp.
-     *
-     * @param request
-     * @param page
-     * @param computerList
-     * @param pagesToShow
-     * @param search
-     * @param message
-     * @param sortUrl
-     * @throws UnsupportedEncodingException
-     */
-    private static void setAttributes(final HttpServletRequest request, final Page page,
-            final List<ComputerDTO> computerList, final List<Integer> pagesToShow, final String search,
-            final String message, final Optional<String> sortUrl) throws UnsupportedEncodingException {
-
-        if (search != null) {
-            String urlSearch = URLEncoder.encode(search, CHARSET);
-            request.setAttribute("urlSearch", urlSearch);
-        }
-        request.setAttribute("message", message);
-        request.setAttribute("search", search);
-        request.setAttribute("page", page);
-        request.setAttribute("computerList", computerList);
-        request.setAttribute("pageList", pagesToShow);
-        if (sortUrl.isPresent()) {
-            request.setAttribute("sortParameterValue", sortUrl.get());
-        }
+    public static void setModelParameters(@NonNull final Page page,
+            @NonNull final List<ComputerDTO> computerList, @Nullable final String search,
+            @Nullable final String message, @Nullable final String sortUrlParameterValue,
+            @Nullable final String urlSearch, @NonNull final List<Integer> pagesToShow,
+            @NonNull final Model m) {
+        m.addAttribute("page", page);
+        m.addAttribute("computerList", computerList);
+        m.addAttribute("search", search);
+        m.addAttribute("message", message);
+        m.addAttribute("sortParameterValue");
+        m.addAttribute("urlSearch", urlSearch);
     }
 
-    // TODO javadoc et pê changer le nom de fonction
-    private static void setRequestAttributes(final HttpServletRequest request) throws UnsupportedEncodingException,
-            DuplicatedSortEntries, IllegalCriterionStringException, NumberFormatException {
-
-        String search = request.getParameter("search");
-        String message = request.getParameter("message");
-        Page page = getPageFromRequest(request);
-        List<SortEntry> sortEntries = getSortEntriesFromRequest(request);
-        Optional<String> sortUrlParameterValue = getUrlParameterFromSortEntries(sortEntries);
-        List<ComputerDTO> computerList = getComputerList(page, search, sortEntries);
-        List<Integer> pagesToShow = getPagesToShow(page);
-
-        setAttributes(request, page, computerList, pagesToShow, search, message, sortUrlParameterValue);
-    }
-
-    /**
-     * Envoi d'une page représentant un certain nombre d'instances de Computer
-     *
-     * @param request  la requête, contenant les paramètres suivants <br/>
-     *                 - pageLength : la taille de la page à afficher. 10 par défaut
-     *                 <br/>
-     *                 - pageNumber : le numéro de la page à afficher. 0 par défaut
-     *                 <br/>
-     *                 - search : la recherche effectuée (optionnel) <br/>
-     *                 - sort : Les instructions de tri. Une instruction de tri
-     *                 correspond à une chaîne de la forme "[critère de
-     *                 tri]-[sens]". cf SortEntry ou SortCriterion pour les
-     *                 formes<br/>
-     *                 - newSortParam : La dernière instruction de tri effectuée.
-     *                 <br/>
-     * @param response
-     * @throws ServletException
-     * @throws IOException
-     * @see SortEntry
-     */
-    @Override
-    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            setRequestAttributes(request);
-            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
-            rd.forward(request, response);
-        } catch (NumberFormatException e) {
-            LOG.debug("", e);
-            forwardToError400Page(request, response, "the page number or page length parameter is invalid");
-            return;
-        } catch (DuplicatedSortEntries e) {
-            LOG.debug("", e);
-            forwardToError400Page(request, response, "there is several times the same search criterion");
-            return;
-        } catch (IllegalCriterionStringException e) {
-            LOG.debug("", e);
-            forwardToError400Page(request, response, "The sort parameter is invalid");
-            return;
-        }
-    }
-
-    /**
-     * Suppression d'un certain nombre d'ordinateurs sélectionnés.
-     *
-     * @param request  la requête avec un paramètre "selection" indiquant les
-     *                 identifiants des ordinateurs à supprimer
-     * @param response
-     *
-     */ // REFACTO Séparation en deux sous-fonctions (pê)
-    @Override
-    public void doPost(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException, IOException {
-
-        List<Long> identifiers;
-        try {
-            identifiers = getSelectedComputersFromRequest(request);
-        } catch (NumberFormatException e) {
-            LOG.debug("Erreur lors de la récupération des paramètres de suppression d'un ordi", e);
-            forwardToError400Page(request, response, "un des paramètres n'était pas un nombre correct");
-            return;
-        } catch (IllegalArgumentException e) {
-            LOG.debug("", e);
-            forwardToError400Page(request, response, "pas de paramètre de sélection");
-            return;
-        }
-
-        List<Long> notDeletedId = deleteComputers(identifiers);
-        String message = getMessageFromNotDeletedId(notDeletedId);
-        String urlParameterMessage = URLEncoder.encode(message, CHARSET);
-        String url = getServletContext().getContextPath() + "/page?message=" + urlParameterMessage;
-        response.sendRedirect(url);
-    }
-
-    /**
-     * Récupération du message indiquant si tous les ordinateurs ont été (ou non)
-     * supprimés
-     *
-     * @param notDeletedId la liste des ordinateurs pas supprimés
-     * @return la chaîne de caractères qui indique quels identifiants n'ont pas été
-     *         supprimés
-     */
-    public String getMessageFromNotDeletedId(final List<Long> notDeletedId) {
-        String message;
-        if (notDeletedId.isEmpty()) {
-            message = "Les ordinateurs ont été supprimés de la base";
-        } else {
-            message = "Les ordinateurs avec les identifiants suivants dans la base n'ont pas été supprimés : ";
-            for (Long i : notDeletedId) {
-                message += " " + i;
-            }
-        }
-        return message;
-    }
 }

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.PropertyConfigurator;
 
@@ -15,18 +15,17 @@ import org.apache.log4j.PropertyConfigurator;
  * @author jguyot2
  *
  */
-public class Log4jInitServlet extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
+public class Log4jInitServlet implements ServletContextListener {
 
     @Override
-    public void init() throws ServletException {
-        try (InputStream os = getServletContext().getResourceAsStream("/WEB-INF/classes/log4j.properties");) {
+    public void contextInitialized(final ServletContextEvent cte) {
+        try (InputStream os = cte.getServletContext()
+                .getResourceAsStream("/WEB-INF/classes/log4j.properties");) {
             Properties properties = new Properties();
             properties.load(os);
             PropertyConfigurator.configure(properties);
         } catch (IOException e) {
-            throw new ServletException(e);
+            throw new RuntimeException(e);
         }
     }
 }

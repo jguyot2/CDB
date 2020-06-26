@@ -9,7 +9,8 @@ import com.excilys.service.ComputerValidator;
 import com.excilys.springconfig.AppConfig;
 
 public class ComputerPagination {
-    private static ComputerValidator computerValidator = AppConfig.getContext().getBean(ComputerValidator.class);
+    private static ComputerValidator computerValidator = AppConfig.getContext()
+            .getBean(ComputerValidator.class);
     private final static Scanner sc = new Scanner(System.in);
 
     public static void paginate() {

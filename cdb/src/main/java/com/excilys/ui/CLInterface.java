@@ -24,9 +24,11 @@ import com.excilys.springconfig.AppConfig;
 
 public class CLInterface {
 
-    private static CompanyValidator companyValidator = AppConfig.getContext().getBean(CompanyValidator.class);
+    private static CompanyValidator companyValidator = AppConfig.getContext()
+            .getBean(CompanyValidator.class);
 
-    private static ComputerValidator computerValidator = AppConfig.getContext().getBean(ComputerValidator.class);
+    private static ComputerValidator computerValidator = AppConfig.getContext()
+            .getBean(ComputerValidator.class);
     private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
 
     private static void createComputerCommand() {
@@ -35,7 +37,8 @@ public class CLInterface {
         String computerName = sc.nextLine().trim();
         System.out.println("Nom entré:'" + computerName + "'");
 
-        System.out.println("Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
+        System.out.println(
+                "Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
         String strCompanyId = sc.nextLine().trim();
         System.out.println("ID entré:" + strCompanyId);
 
@@ -46,7 +49,8 @@ public class CLInterface {
             try {
                 companyId = Long.parseLong(strCompanyId);
             } catch (NumberFormatException e) {
-                System.out.println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
+                System.out
+                        .println("L'identifiant entré ne correspond pas à un ID. Fin de la saisie");
                 return;
             }
             Optional<Company> companyOpt = companyValidator.findById(companyId);
@@ -81,7 +85,8 @@ public class CLInterface {
         LocalDate discontinued = null;
         if (!strDiscontinuation.isEmpty()) {
             try {
-                Optional<LocalDate> discontinuedOpt = DateMapper.stringToLocalDate(strDiscontinuation);
+                Optional<LocalDate> discontinuedOpt = DateMapper
+                        .stringToLocalDate(strDiscontinuation);
                 if (!discontinuedOpt.isPresent()) {
                     return;
                 }
@@ -127,7 +132,8 @@ public class CLInterface {
                     if (nbdeletedCompany == 1) {
                         System.out.println("l'entreprise a été supprimée");
                     } else {
-                        System.out.println("la suppression a foiré (nb = " + nbdeletedCompany + ")");
+                        System.out
+                                .println("la suppression a foiré (nb = " + nbdeletedCompany + ")");
                     }
                 }
                 return;
@@ -303,7 +309,8 @@ public class CLInterface {
         }
         Computer foundComputer = optFoundComputer.get();
 
-        System.out.println("Modification du nom: Ne rien entrer pour ne pas changer, entrer un nom sinon");
+        System.out.println(
+                "Modification du nom: Ne rien entrer pour ne pas changer, entrer un nom sinon");
         System.out.println("Nom courant: " + foundComputer.getName());
         String newName = sc.nextLine().trim();
         if (!newName.isEmpty()) {
