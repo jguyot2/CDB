@@ -6,11 +6,11 @@
  		-> pageList : Liste des pages affichables
  // TODO : maj
 --%>
-<%@ page isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
+<%@ page isELIgnored="false"%>
 <%@ page
 	import="com.excilys.model.ComputerDTO,com.excilys.model.Page,java.util.ArrayList,java.util.List,java.util.Objects"%>
 
@@ -25,8 +25,9 @@
 <head>
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta charset="utf-8"> 
+<meta charset="utf-8">
 <!-- Bootstrap -->
+
 <spring:url value="/resources/css/bootstrap.min.css" var="bootstrapStyle" />
 <spring:url value="/resources/css/font-awesome.css" var="fontAweSomeStyle" />
 <spring:url value="/resources/css/main.css" var="mainCss" />
@@ -265,12 +266,12 @@
 
 	</footer>
 	<spring:url value="/resources/js/jquery.min.js" var="jqueryMinJS" />
-<spring:url value="/resources/js/bootstrap.min.js" var="bootsrapJS" />
-<spring:url value="/resources/js/dashboard.js" var="dashboardJS" />
+	<spring:url value="/resources/js/bootstrap.min.js" var="bootsrapJS" />
+	<spring:url value="/resources/js/dashboard.js" var="dashboardJS" />
 
-<script src="${jqueryMinJS }"></script>
-<script src="${bootsrapJS }"></script>
-<script src="${dashboardJS }"></script>
+	<script src="${jqueryMinJS }"></script>
+	<script src="${bootsrapJS }"></script>
+	<script src="${dashboardJS }"></script>
 
 
 </body>

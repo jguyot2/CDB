@@ -53,7 +53,7 @@ public class AddComputerServlet {
                 sb.append(problem.getExplanation() + " <br />\n");
             }
             m.addAttribute("errorCause", sb.toString());
-            return "forward:/400";
+            return "400";
         } catch (InvalidComputerInstanceException e) {
             List<ComputerInstanceProblems> problems = e.getProblems();
             StringBuilder sb = new StringBuilder();
@@ -61,10 +61,10 @@ public class AddComputerServlet {
                 sb.append(problem.getExplanation() + " <br />\n");
             }
             m.addAttribute("errorCause", sb.toString());
-            return "forward:/400";
+            return "400";
         }
         m.addAttribute("message", "L'ordinateur a bien été ajouté à la base");
-        return "redirect:/page";
+        return "page";
     }
 
     private Optional<CompanyDTO> getCompanyDtoFromId(@NonNull final Long companyId) {
@@ -73,7 +73,6 @@ public class AddComputerServlet {
         } else {
             // TODO : lancer une exception si company inexistante.
             return this.companyValidator.findById(companyId);
-
         }
     }
 

@@ -59,7 +59,7 @@ public class EditComputerServlet extends HttpServlet {
             if (isComputerEdited == 0) {
                 // TODO : le cas -1
                 m.addAttribute("errorCause", "The computer was not updated");
-                return "forward:/400";
+                return "400";
             } else {
                 m.addAttribute("message", "L'ordinateur a bien été mis à jour");
                 return "redirect:/page";
@@ -71,7 +71,7 @@ public class EditComputerServlet extends HttpServlet {
                 sb.append(problem.getExplanation() + " <br />\n");
             }
             m.addAttribute("errorCause", sb.toString());
-            return "forward:/400";
+            return "400";
         } catch (InvalidComputerInstanceException e) {
             List<ComputerInstanceProblems> problems = e.getProblems();
             StringBuilder sb = new StringBuilder();
@@ -79,7 +79,7 @@ public class EditComputerServlet extends HttpServlet {
                 sb.append(problem.getExplanation() + " <br />\n");
             }
             m.addAttribute("errorCause", sb.toString());
-            return "forward:/400";
+            return "400";
         }
     }
 
@@ -106,8 +106,7 @@ public class EditComputerServlet extends HttpServlet {
             return "editComputer";
         } else {
             m.addAttribute("errorCause", "The computer was not found");
-            return "forward:/400";
+            return "400";
         }
     }
-
 }
