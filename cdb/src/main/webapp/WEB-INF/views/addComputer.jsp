@@ -27,7 +27,6 @@
 <link href="${fontAweSomeStyle}" rel="stylesheet" media="screen">
 <link href="${mainCss}" rel="stylesheet" media="screen">
 
-
 <script>
 	function validateForm() {
 		var form = document.forms["addComputer"];
