@@ -28,7 +28,8 @@ public class ComputerValidator implements SearchValidator<Computer> {
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerValidator.class);
 
-    private static void checkComputerValidity(final Computer computer) throws InvalidComputerInstanceException {
+    private static void checkComputerValidity(final Computer computer)
+            throws InvalidComputerInstanceException {
         List<ComputerInstanceProblems> problems = getComputerInstanceProblems(computer);
         if (problems.size() > 0) {
             LOG.debug("Détection d'une instance de Computer invalide : " + computer);
@@ -42,18 +43,21 @@ public class ComputerValidator implements SearchValidator<Computer> {
      * @return Une liste contenant la liste des problèmes sur l'instance de Computer
      *         passée en paramètre
      */ // refacto
-    private static List<ComputerInstanceProblems> getComputerInstanceProblems(final Computer computer) {
+    private static List<ComputerInstanceProblems> getComputerInstanceProblems(
+            final Computer computer) {
         List<ComputerInstanceProblems> problems = new ArrayList<>();
         if (computer.getName() == null || computer.getName().trim().isEmpty()) {
             problems.add(ComputerInstanceProblems.INVALID_NAME);
         }
         if (computer.getIntroduction() != null) {
-            if (computer.getIntroduction().getYear() < 1970 || computer.getIntroduction().getYear() > 2037) {
+            if (computer.getIntroduction().getYear() < 1970
+                    || computer.getIntroduction().getYear() > 2037) {
                 problems.add(ComputerInstanceProblems.OUT_OF_RANGE_INTRO_DATE);
             }
             if (computer.getDiscontinuation() != null
                     && computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0) {
-                if (computer.getDiscontinuation().getYear() < 1970 || computer.getDiscontinuation().getYear() > 2037) {
+                if (computer.getDiscontinuation().getYear() < 1970
+                        || computer.getDiscontinuation().getYear() > 2037) {
                     problems.add(ComputerInstanceProblems.OUT_OF_RANGE_DISCO_DATE);
                 }
                 problems.add(ComputerInstanceProblems.INVALID_DISCONTINUATION_DATE);
@@ -82,7 +86,8 @@ public class ComputerValidator implements SearchValidator<Computer> {
      *
      * @throws InvalidComputerInstanceException si l'instance en paramètre
      */
-    public long addComputer(final Computer createdComputer) throws InvalidComputerInstanceException {
+    public long addComputer(final Computer createdComputer)
+            throws InvalidComputerInstanceException {
         checkComputerValidity(createdComputer);
         try {
             return this.computerUpdater.createComputer(createdComputer);
@@ -142,10 +147,12 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
-    public List<Computer> fetchList(final Page p, final List<SortEntry> sortEntries) throws DuplicatedSortEntries {
+    public List<Computer> fetchList(final Page p, final List<SortEntry> sortEntries)
+            throws DuplicatedSortEntries {
         for (int i = 0; i < sortEntries.size(); ++i) {
             for (int j = 0; j < sortEntries.size(); ++j) {
-                if (i != j && sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria()) {
+                if (i != j
+                        && sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria()) {
                     throw new DuplicatedSortEntries();
                 }
             }
@@ -167,11 +174,12 @@ public class ComputerValidator implements SearchValidator<Computer> {
         }
     }
 
-    public List<Computer> fetchList(final Page p, final String search, final List<SortEntry> sortEntries)
-            throws DuplicatedSortEntries {
+    public List<Computer> fetchList(final Page p, final String search,
+            final List<SortEntry> sortEntries) throws DuplicatedSortEntries {
         for (int i = 0; i < sortEntries.size(); ++i) {
             for (int j = 0; j < sortEntries.size(); ++j) {
-                if (i != j && sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria()) {
+                if (i != j
+                        && sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria()) {
                     throw new DuplicatedSortEntries();
                 }
             }

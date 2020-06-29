@@ -1,10 +1,11 @@
 package com.excilys.model;
 
 public enum SortCriterion {
-    COMPUTER_NAME("name"), INTRODUCED("introduced"), DISCONTINUED("discontinued"), COMPANY_ID("companyId"),
-    COMPANY_NAME("companyName");
+    COMPUTER_NAME("name"), INTRODUCED("introduced"), DISCONTINUED("discontinued"),
+    COMPANY_ID("companyId"), COMPANY_NAME("companyName");
 
-    public static SortCriterion getCriteriaFromString(final String s) throws IllegalCriterionStringException {
+    public static SortCriterion getCriteriaFromString(final String s)
+            throws IllegalCriterionStringException {
         if (s == null) {
             throw new IllegalCriterionStringException();
         }

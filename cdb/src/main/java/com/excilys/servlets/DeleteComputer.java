@@ -18,9 +18,9 @@ import com.excilys.service.ComputerDTOValidator;
 @Controller
 public class DeleteComputer {
     private static final String CHARSET = "UTF-8";
+    private static final Logger LOG = LoggerFactory.getLogger(DeleteComputer.class);
     @Autowired
     private ComputerDTOValidator validator;
-    private static final Logger LOG = LoggerFactory.getLogger(DeleteComputer.class);
 
     @PostMapping("/page")
     public String computerDeletion(
@@ -35,7 +35,7 @@ public class DeleteComputer {
         } catch (UnsupportedEncodingException e) {
             urlParameterMessage = URLEncoder.encode(message);
         }
-
+        // TODO : pê dégager ça
         return "redirect:/page?message=" + urlParameterMessage;
     }
 

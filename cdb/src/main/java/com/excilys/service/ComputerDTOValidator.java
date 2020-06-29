@@ -30,7 +30,8 @@ import com.excilys.model.SortEntry;
 public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
 
     private static List<ComputerDTO> convertList(final List<Computer> l) {
-        return l.stream().map(c -> ComputerMapper.computerToDTO(c).get()).collect(Collectors.toList());
+        return l.stream().map(c -> ComputerMapper.computerToDTO(c).get())
+                .collect(Collectors.toList());
     }
 
     /**
@@ -61,10 +62,12 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     private static Optional<LocalDate> getDiscontinuationDateFromDTO(final ComputerDTO computerDTO,
             final List<ComputerDTOProblems> problems) {
 
-        if (computerDTO.getDiscontinuationDate() == null || computerDTO.getDiscontinuationDate().isEmpty()) {
+        if (computerDTO.getDiscontinuationDate() == null
+                || computerDTO.getDiscontinuationDate().isEmpty()) {
             return Optional.empty();
         }
-        Optional<LocalDate> discoOpt = DateMapper.stringToLocalDate(computerDTO.getDiscontinuationDate());
+        Optional<LocalDate> discoOpt = DateMapper
+                .stringToLocalDate(computerDTO.getDiscontinuationDate());
         if (!discoOpt.isPresent()) {
             problems.add(ComputerDTOProblems.INVALID_DATE_DISCO);
         }
@@ -79,7 +82,8 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      * @param problems
      * @return
      */
-    private static long getIdFromDTO(final ComputerDTO computerDTO, final List<ComputerDTOProblems> problems) {
+    private static long getIdFromDTO(final ComputerDTO computerDTO,
+            final List<ComputerDTOProblems> problems) {
         String idRepr = computerDTO.getId();
         if (idRepr == null || idRepr.isEmpty() || "0".equals(idRepr)) {
             return 0;
@@ -101,10 +105,12 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
     private static Optional<LocalDate> getIntroductionDateFromDTO(final ComputerDTO computerDTO,
             final List<ComputerDTOProblems> problems) {
 
-        if (computerDTO.getIntroductionDate() == null || computerDTO.getIntroductionDate().isEmpty()) {
+        if (computerDTO.getIntroductionDate() == null
+                || computerDTO.getIntroductionDate().isEmpty()) {
             return Optional.empty();
         }
-        Optional<LocalDate> introOpt = DateMapper.stringToLocalDate(computerDTO.getIntroductionDate());
+        Optional<LocalDate> introOpt = DateMapper
+                .stringToLocalDate(computerDTO.getIntroductionDate());
         if (!introOpt.isPresent()) {
             problems.add(ComputerDTOProblems.INVALID_DATE_INTRO);
         }
@@ -116,7 +122,8 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
      * @param problems
      * @return le nom du DTO
      */
-    private static String getNameFromDTO(final ComputerDTO computerDTO, final List<ComputerDTOProblems> problems) {
+    private static String getNameFromDTO(final ComputerDTO computerDTO,
+            final List<ComputerDTOProblems> problems) {
 
         if (computerDTO.getName() == null || computerDTO.getName().isEmpty()) {
             problems.add(ComputerDTOProblems.INVALID_NAME);
@@ -184,7 +191,8 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
         return convertList(this.computerValidator.fetchList(page));
     }
 
-    public List<ComputerDTO> fetchList(final Page p, final List<SortEntry> sortEntries) throws DuplicatedSortEntries {
+    public List<ComputerDTO> fetchList(final Page p, final List<SortEntry> sortEntries)
+            throws DuplicatedSortEntries {
         return convertList(this.computerValidator.fetchList(p, sortEntries));
     }
 
@@ -193,8 +201,8 @@ public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
 
     }
 
-    public List<ComputerDTO> fetchList(final Page p, final String search, final List<SortEntry> sortEntries)
-            throws DuplicatedSortEntries {
+    public List<ComputerDTO> fetchList(final Page p, final String search,
+            final List<SortEntry> sortEntries) throws DuplicatedSortEntries {
         return convertList(this.computerValidator.fetchList(p, search, sortEntries));
     }
 

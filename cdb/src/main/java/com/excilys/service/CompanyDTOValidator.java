@@ -33,15 +33,16 @@ public final class CompanyDTOValidator implements SearchValidator<CompanyDTO> {
     public List<CompanyDTO> fetchList() {
         LOG.info("DTOCompany : fetchlist");
         List<Company> companyList = this.companyValidator.fetchList();
-        return companyList.stream().map(c -> CompanyMapper.companyToDTO(c).orElseThrow(IllegalArgumentException::new))
+        return companyList.stream()
+                .map(c -> CompanyMapper.companyToDTO(c).orElseThrow(IllegalArgumentException::new))
                 .filter(dto -> dto != null).collect(Collectors.toList());
     }
 
     @Override
     public List<CompanyDTO> fetchList(final Page page) {
         List<Company> companyList = this.companyValidator.fetchList(page);
-        return companyList.stream().map(c -> CompanyMapper.companyToDTO(c).orElse(null)).filter(dto -> dto != null)
-                .collect(Collectors.toList());
+        return companyList.stream().map(c -> CompanyMapper.companyToDTO(c).orElse(null))
+                .filter(dto -> dto != null).collect(Collectors.toList());
     }
 
     @Override

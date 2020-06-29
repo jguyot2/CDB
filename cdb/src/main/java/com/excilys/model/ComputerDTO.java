@@ -40,8 +40,9 @@ public final class ComputerDTO {
      * @param strIntroductionDate
      * @param strDiscontinuationDate
      */
-    public ComputerDTO(final String computerName, final String computerId, final CompanyDTO companyId,
-            final String strIntroductionDate, final String strDiscontinuationDate) {
+    public ComputerDTO(final String computerName, final String computerId,
+            final CompanyDTO companyId, final String strIntroductionDate,
+            final String strDiscontinuationDate) {
         this.name = computerName;
         this.strId = computerId;
         this.company = companyId;
@@ -145,7 +146,7 @@ public final class ComputerDTO {
 
     @Override
     public String toString() {
-        return "(" + this.name + ", " + this.introductionDate + "-" + this.discontinuationDate + "\t" + this.strId
-                + "\t" + this.company;
+        return "(" + this.name + ", " + this.introductionDate + "-" + this.discontinuationDate
+                + "\t" + this.strId + "\t" + this.company;
     }
 }

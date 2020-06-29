@@ -24,21 +24,17 @@ import com.excilys.service.InvalidComputerDTOException;
 import com.excilys.service.InvalidComputerInstanceException;
 
 @Controller
-@RequestMapping("addComputer")
+@RequestMapping("/addComputer")
 public class AddComputerServlet {
 
-    @Autowired
-    private static CompanyDTOValidator companyValidator;
+    /** */
+    private static final Logger LOG = LoggerFactory.getLogger(AddComputerServlet.class);
 
     @Autowired
-    private static ComputerDTOValidator computerValidator;
+    private CompanyDTOValidator companyValidator;
 
-    @GetMapping
-    public String showAddComputerPage(final Model m) {
-        List<CompanyDTO> companyList = AddComputerServlet.companyValidator.fetchList();
-        m.addAttribute("companyList", companyList);
-        return "addComputer";
-    }
+    @Autowired
+    private ComputerDTOValidator computerValidator;
 
     @PostMapping
     public String addComputerToDatabase(
@@ -49,7 +45,7 @@ public class AddComputerServlet {
         try {
             ComputerDTO c = new ComputerDTO(computerName, "0", null, introduced, discontinued);
             c.setCompany(getCompanyDtoFromId(companyId).orElse(null));
-            computerValidator.addComputerDTO(c); // TODO vérifier la valeur retournée
+            this.computerValidator.addComputerDTO(c); // TODO vérifier la valeur retournée
         } catch (InvalidComputerDTOException e) {
             List<ComputerDTOProblems> problems = e.getProblems();
             StringBuilder sb = new StringBuilder();
@@ -76,20 +72,24 @@ public class AddComputerServlet {
             return Optional.empty();
         } else {
             // TODO : lancer une exception si company inexistante.
-            return companyValidator.findById(companyId);
+            return this.companyValidator.findById(companyId);
 
         }
     }
 
-    /** */
-    private static final Logger LOG = LoggerFactory.getLogger(AddComputerServlet.class);
-
-    public static void setCompanyValidator(final CompanyDTOValidator dtv) {
-        companyValidator = dtv;
+    public void setCompanyValidator(final CompanyDTOValidator dtv) {
+        this.companyValidator = dtv;
     }
 
-    public static void setComputerValidator(final ComputerDTOValidator dtv) {
-        computerValidator = dtv;
+    public void setComputerValidator(final ComputerDTOValidator dtv) {
+        this.computerValidator = dtv;
+    }
+
+    @GetMapping
+    public String showAddComputerPage(final Model m) {
+        List<CompanyDTO> companyList = this.companyValidator.fetchList();
+        m.addAttribute("companyList", companyList);
+        return "addComputer";
     }
 
 }

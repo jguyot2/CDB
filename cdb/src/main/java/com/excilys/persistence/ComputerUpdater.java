@@ -67,7 +67,8 @@ public class ComputerUpdater {
     public long createComputer(final Computer newComputer) {
         LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
         Date introDate = DateMapper.localDateToSqlDate(newComputer.getIntroduction()).orElse(null);
-        Date discoDate = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation()).orElse(null);
+        Date discoDate = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation())
+                .orElse(null);
 
         Map<String, Object> requestParameters = new HashMap<>();
 
@@ -78,7 +79,8 @@ public class ComputerUpdater {
         requestParameters.put("companyId", manufacturer == null ? null : manufacturer.getId());
         KeyHolder kh = new GeneratedKeyHolder();
         SqlParameterSource sqlParamSource = new MapSqlParameterSource(requestParameters);
-        int nbRows = this.template.update(CREATE_COMPUTER, sqlParamSource, kh, new String[] { "id" });
+        int nbRows = this.template.update(CREATE_COMPUTER, sqlParamSource, kh,
+                new String[] { "id" });
         return kh.getKey().longValue();
     }
 
@@ -108,9 +110,10 @@ public class ComputerUpdater {
      * @return le nombre de PC supprimés
      * @throws SQLException
      */
-    public int deleteComputersFromManufacturerIdWithConnection(final long manufacturerId, final Connection conn)
-            throws SQLException {
-        try (PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE_COMPUTER_FROM_COMPANY_ID)) {
+    public int deleteComputersFromManufacturerIdWithConnection(final long manufacturerId,
+            final Connection conn) throws SQLException {
+        try (PreparedStatement stmt = conn
+                .prepareStatement(REQUEST_DELETE_COMPUTER_FROM_COMPANY_ID)) {
             stmt.setLong(1, manufacturerId);
             return stmt.executeUpdate();
         }
@@ -129,7 +132,8 @@ public class ComputerUpdater {
 
         LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
         Date introDate = DateMapper.localDateToSqlDate(newComputer.getIntroduction()).orElse(null);
-        Date discoDate = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation()).orElse(null);
+        Date discoDate = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation())
+                .orElse(null);
 
         Map<String, Object> requestParameters = new HashMap<>();
 

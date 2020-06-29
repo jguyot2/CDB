@@ -42,7 +42,8 @@ public final class ComputerMapper {
      *         "manufacturer" égal au second paramètre (pouvant être nul), ou un
      *         Optional vide si les valeurs du DTO sont incohérentes.
      */
-    private static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer, final Company manufacturer) {
+    private static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer,
+            final Company manufacturer) {
         if (dtoComputer == null) {
             LOG.info("DTO > computer : param nul");
             return Optional.empty();
@@ -56,9 +57,10 @@ public final class ComputerMapper {
         }
         String computerName = getNameFromComputerDTO(dtoComputer);
         Optional<LocalDate> intro = DateMapper.stringToLocalDate(dtoComputer.getIntroductionDate());
-        Optional<LocalDate> discontinuation = DateMapper.stringToLocalDate(dtoComputer.getDiscontinuationDate());
-        return Optional
-                .of(new Computer(computerName, manufacturer, intro.orElse(null), discontinuation.orElse(null), id));
+        Optional<LocalDate> discontinuation = DateMapper
+                .stringToLocalDate(dtoComputer.getDiscontinuationDate());
+        return Optional.of(new Computer(computerName, manufacturer, intro.orElse(null),
+                discontinuation.orElse(null), id));
     }
 
     /**
@@ -78,8 +80,8 @@ public final class ComputerMapper {
         Optional<String> dateIntro = DateMapper.localDateToString(c.getIntroduction());
         Optional<String> dateDisco = DateMapper.localDateToString(c.getDiscontinuation());
         Optional<CompanyDTO> company = CompanyMapper.companyToDTO(c.getManufacturer());
-        return Optional
-                .of(new ComputerDTO(name, id, company.orElse(null), dateIntro.orElse(null), dateDisco.orElse(null)));
+        return Optional.of(new ComputerDTO(name, id, company.orElse(null), dateIntro.orElse(null),
+                dateDisco.orElse(null)));
     }
 
     private static String getNameFromComputerDTO(final ComputerDTO dtoComputer) {

@@ -38,22 +38,12 @@ public class EditComputerServlet extends HttpServlet {
     /** */
     private static final Logger LOG = LoggerFactory.getLogger(EditComputerServlet.class);
 
+    private static final long serialVersionUID = 1L;
     @Autowired
     private CompanyDTOValidator companyValidator;
+
     @Autowired
     private ComputerDTOValidator computerValidator;
-
-    private static final long serialVersionUID = 1L;
-
-    private Optional<CompanyDTO> getCompanyDtoFromId(@NonNull final Long companyId) {
-        if (companyId == 0) {
-            return Optional.empty();
-        } else {
-            // TODO : lancer une exception si company inexistante.
-            return this.companyValidator.findById(companyId);
-
-        }
-    }
 
     @PostMapping
     private String editcomputer(@RequestParam(name = "computerName") final String computerName,
@@ -90,6 +80,15 @@ public class EditComputerServlet extends HttpServlet {
             }
             m.addAttribute("errorCause", sb.toString());
             return "forward:/400";
+        }
+    }
+
+    private Optional<CompanyDTO> getCompanyDtoFromId(@NonNull final Long companyId) {
+        if (companyId == 0) {
+            return Optional.empty();
+        } else {
+            // TODO : lancer une exception si company inexistante.
+            return this.companyValidator.findById(companyId);
         }
     }
 

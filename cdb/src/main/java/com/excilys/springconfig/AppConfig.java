@@ -59,5 +59,4 @@ public class AppConfig {
         viewResolver.setSuffix(".jsp");
         return viewResolver;
     }
-
 }

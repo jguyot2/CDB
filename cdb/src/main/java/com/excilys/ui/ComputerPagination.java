@@ -17,7 +17,6 @@ public class ComputerPagination {
         ComputerPagination page = new ComputerPagination();
         boolean exit = false;
         while (!exit) {
-
             PaginationCommand userCommand = page.getCommand();
             exit = page.executeCommand(userCommand);
         }

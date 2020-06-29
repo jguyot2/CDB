@@ -40,8 +40,8 @@ public class CompanyUpdater {
         try {
             conn = DataSourceUtils.getConnection(this.template.getDataSource());
             conn.setAutoCommit(false);
-            int nbComputersDeleted = this.computerUpdater.deleteComputersFromManufacturerIdWithConnection(companyId,
-                    conn);
+            int nbComputersDeleted = this.computerUpdater
+                    .deleteComputersFromManufacturerIdWithConnection(companyId, conn);
             LOG.info(nbComputersDeleted + " computers deleted");
             int numberofDeletedCompanies = this.deleteCompany(companyId, conn);
             // Test si une entreprise a été supprimée ?

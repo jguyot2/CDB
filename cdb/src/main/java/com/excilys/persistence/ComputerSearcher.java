@@ -40,14 +40,17 @@ public class ComputerSearcher implements Searcher<Computer> {
             long computerId = res.getLong("computer.id");
             String computerName = res.getString("computer.name");
 
-            Optional<LocalDate> introducedDateOpt = DateMapper.sqlDateToLocalDate(res.getDate("introduced"));
+            Optional<LocalDate> introducedDateOpt = DateMapper
+                    .sqlDateToLocalDate(res.getDate("introduced"));
             LocalDate introduced = introducedDateOpt.orElse(null);
 
-            Optional<LocalDate> discontinuedDateOpt = DateMapper.sqlDateToLocalDate(res.getDate("discontinued"));
+            Optional<LocalDate> discontinuedDateOpt = DateMapper
+                    .sqlDateToLocalDate(res.getDate("discontinued"));
             LocalDate discontinued = discontinuedDateOpt.orElse(null);
 
             String companyName = res.getString("company.name");
-            Company company = companyName == null ? null : new Company(companyName, res.getLong("company.id"));
+            Company company = companyName == null ? null
+                    : new Company(companyName, res.getLong("company.id"));
 
             return new Computer(computerName, company, introduced, discontinued, computerId);
         }
@@ -58,16 +61,17 @@ public class ComputerSearcher implements Searcher<Computer> {
     private static final Logger LOG = LoggerFactory.getLogger(ComputerSearcher.class);
     /** */
     private static final String QUERY_COMPUTER_SEARCH_WITH_NAME = "SELECT computer.id, computer.name, introduced, discontinued, "
-            + "company.id, company.name " + "FROM computer LEFT JOIN company " + "ON computer.company_id = company.id "
-            + "WHERE computer.name LIKE :pattern";
+            + "company.id, company.name " + "FROM computer LEFT JOIN company "
+            + "ON computer.company_id = company.id " + "WHERE computer.name LIKE :pattern";
     /** */
     private static final String QUERY_COMPUTER_FROM_ID = "SELECT computer.id, computer.name, introduced, discontinued, "
-            + "company.id, company.name " + "FROM computer LEFT JOIN company " + "ON computer.company_id = company.id "
-            + "WHERE computer.id = :id ";
+            + "company.id, company.name " + "FROM computer LEFT JOIN company "
+            + "ON computer.company_id = company.id " + "WHERE computer.id = :id ";
 
     /** */
     private static final String QUERY_COMPUTER_LIST = " SELECT computer.id, computer.name, introduced, discontinued, "
-            + "company.id, company.name " + "FROM computer LEFT JOIN company " + "ON computer.company_id = company.id";
+            + "company.id, company.name " + "FROM computer LEFT JOIN company "
+            + "ON computer.company_id = company.id";
 
     /** */
     private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM computer";
@@ -117,7 +121,8 @@ public class ComputerSearcher implements Searcher<Computer> {
      *         en compte
      */
     private static String sortEntryToSqlOrderByClause(final SortEntry se) {
-        return sortCriterionToSqlColumn(se.getCriteria()) + " " + (se.isAscending() ? "ASC" : "DESC");
+        return sortCriterionToSqlColumn(se.getCriteria()) + " "
+                + (se.isAscending() ? "ASC" : "DESC");
     }
 
     private final ComputerRowMapper rowMapper = new ComputerRowMapper();
@@ -139,7 +144,8 @@ public class ComputerSearcher implements Searcher<Computer> {
         Map<String, Object> params = new HashMap<>();
         params.put("id", searchedId);
         try {
-            return Optional.of(this.template.queryForObject(QUERY_COMPUTER_FROM_ID, params, this.rowMapper));
+            return Optional.of(
+                    this.template.queryForObject(QUERY_COMPUTER_FROM_ID, params, this.rowMapper));
         } catch (EmptyResultDataAccessException e) {
             LOG.info("", e);
             return Optional.empty();
@@ -205,7 +211,8 @@ public class ComputerSearcher implements Searcher<Computer> {
         return fetchList(p, search, Arrays.asList());
     }
 
-    public List<Computer> fetchList(final Page p, final String search, final List<SortEntry> entries) {
+    public List<Computer> fetchList(final Page p, final String search,
+            final List<SortEntry> entries) {
 
         StringBuilder orderByClause = new StringBuilder(" ");
         for (SortEntry sortEntry : entries) {
@@ -226,7 +233,6 @@ public class ComputerSearcher implements Searcher<Computer> {
             LOG.info("", e);
             return new ArrayList<>();
         }
-
     }
 
     /**
@@ -262,7 +268,8 @@ public class ComputerSearcher implements Searcher<Computer> {
         Map<String, Object> requestParameters = new HashMap<>();
         requestParameters.put("pattern", searchedPattern);
         try {
-            return this.template.query(QUERY_COMPUTER_SEARCH_WITH_NAME, requestParameters, this.rowMapper);
+            return this.template.query(QUERY_COMPUTER_SEARCH_WITH_NAME, requestParameters,
+                    this.rowMapper);
         } catch (EmptyResultDataAccessException e) {
             LOG.info("", e);
             return new ArrayList<>();

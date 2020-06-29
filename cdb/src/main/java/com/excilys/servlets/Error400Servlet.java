@@ -1,21 +1,19 @@
 package com.excilys.servlets;
 
-import javax.servlet.http.HttpServlet;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-public class Error400Servlet extends HttpServlet {
+@Controller
+public class Error400Servlet {
     private static final Logger LOG = LoggerFactory.getLogger(Error400Servlet.class);
 
     private static final long serialVersionUID = 1L;
 
-    @GetMapping
-    @PostMapping
+    @RequestMapping("/400")
     public String showError400(
             @RequestParam(required = false, name = "errorCause") final String errorCause,
             final Model m) {
