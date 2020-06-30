@@ -12,9 +12,11 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.model.Company;
@@ -27,6 +29,7 @@ import com.excilys.model.Page;
  */
 @Repository
 public class CompanySearcher implements Searcher<Company> {
+
     private static class CompanyRowMapper implements RowMapper<Company> {
         @Override
         public Company mapRow(final ResultSet rs, final int rowNum) throws SQLException {
@@ -58,9 +61,11 @@ public class CompanySearcher implements Searcher<Company> {
      *
      * @return Optional.empty() si aucune entreprise n'a été trouvée, ou une
      *         instance de Optional contenant l'entreprise trouvée
+     * @throws PersistanceException
      */
     @Override
-    public Optional<Company> fetchById(final long searchedId) {
+    public Optional<Company> fetchById(final long searchedId) throws PersistanceException {
+
         Map<String, Object> m = new HashMap<>();
         m.put("id", searchedId);
         try {
@@ -68,6 +73,8 @@ public class CompanySearcher implements Searcher<Company> {
             return Optional.of(ret);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
+        } catch (DataAccessException e) {
+            throw new PersistanceException(e);
         }
     }
 
@@ -78,12 +85,15 @@ public class CompanySearcher implements Searcher<Company> {
      * @return La liste des entreprises présentes dans la base de données
      */
     @Override
-    public List<Company> fetchList() {
+    public List<Company> fetchList() throws PersistanceException {
+
         try {
             return this.template.query(REQUEST_COMPANIES, rowMapper);
         } catch (EmptyResultDataAccessException e) {
             LOG.info("", e);
             return new ArrayList<>();
+        } catch (DataAccessException e) {
+            throw new PersistanceException(e);
         }
     }
 
@@ -93,9 +103,10 @@ public class CompanySearcher implements Searcher<Company> {
      * @param page la page à afficher
      *
      * @return la liste des Company de la BD comprises dans la page en paramètre
+     * @throws PersistanceException
      */
     @Override
-    public List<Company> fetchList(final Page page) {
+    public List<Company> fetchList(@NonNull final Page page) throws PersistanceException {
         Map<String, Object> m = new HashMap<>();
         m.put("offset", page.getOffset());
         m.put("limit", page.getPageLength());
@@ -104,6 +115,8 @@ public class CompanySearcher implements Searcher<Company> {
         } catch (EmptyResultDataAccessException e) {
             LOG.info("", e);
             return new ArrayList<>();
+        } catch (DataAccessException e) {
+            throw new PersistanceException(e);
         }
     }
 
@@ -111,9 +124,10 @@ public class CompanySearcher implements Searcher<Company> {
      * renvoie la taille de la table company.
      *
      * @return le nombre d'entreprises enregistrées dans la base
+     * @throws PersistanceException
      */
     @Override
-    public int getNumberOfElements() {
+    public int getNumberOfElements() throws PersistanceException {
         try {
             return this.template.queryForObject(REQUEST_NB_OF_ROWS, Collections.emptyMap(),
                     (res, rowNum) -> new Integer(res.getInt(1)));
@@ -121,6 +135,8 @@ public class CompanySearcher implements Searcher<Company> {
         } catch (EmptyResultDataAccessException e) {
             LOG.info("", e);
             return 0;
+        } catch (DataAccessException e) {
+            throw new PersistanceException(e);
         }
     }
 }

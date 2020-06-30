@@ -1,9 +1,7 @@
-package com.excilys.servlets;
+package com.excilys.controllers;
 
 import java.util.List;
 import java.util.Optional;
-
-import javax.servlet.http.HttpServlet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.excilys.adapters.CompanyAdapter;
+import com.excilys.adapters.ComputerDTOProblems;
+import com.excilys.adapters.ComputerAdapter;
+import com.excilys.adapters.InvalidComputerDtoException;
 import com.excilys.model.CompanyDTO;
 import com.excilys.model.ComputerDTO;
-import com.excilys.service.CompanyDTOValidator;
-import com.excilys.service.ComputerDTOProblems;
-import com.excilys.service.ComputerDTOValidator;
-import com.excilys.service.ComputerInstanceProblems;
-import com.excilys.service.InvalidComputerDTOException;
-import com.excilys.service.InvalidComputerInstanceException;
+import com.excilys.service.ComputerProblems;
+import com.excilys.service.InvalidComputerException;
 
 /**
  * Servlet affichant la page qui permet de modifier un ordinateur de la base
@@ -34,66 +32,83 @@ import com.excilys.service.InvalidComputerInstanceException;
  */
 @Controller
 @RequestMapping("/editComputer")
-public class EditComputerServlet extends HttpServlet {
-    /** */
-    private static final Logger LOG = LoggerFactory.getLogger(EditComputerServlet.class);
+public class EditComputerController {
 
-    private static final long serialVersionUID = 1L;
-    @Autowired
-    private CompanyDTOValidator companyValidator;
+    private static final Logger LOG = LoggerFactory.getLogger(EditComputerController.class);
 
     @Autowired
-    private ComputerDTOValidator computerValidator;
+    private CompanyAdapter companyValidator;
 
+    @Autowired
+    private ComputerAdapter computerValidator;
+
+    /**
+     * Modification d'un ordinateur dans la base
+     *
+     * @param computerName
+     * @param computerId
+     * @param introduced
+     * @param discontinued
+     * @param companyId
+     * @param m
+     * @return
+     */ // XXX : màj pour prendre un dto en paramètre
     @PostMapping
     private String editcomputer(@RequestParam(name = "computerName") final String computerName,
             @RequestParam(name = "id") final Long computerId,
             @RequestParam(name = "introduced") final String introduced,
             @RequestParam(name = "discontinued") final String discontinued,
-            @RequestParam(name = "companyId") final Long companyId, final Model m) {
+            @RequestParam(name = "companyId") final Long companyId, @NonNull final Model m) {
+        LOG.trace("Computer edition");
         try {
             ComputerDTO c = new ComputerDTO(computerName, computerId.toString(), null, introduced,
                     discontinued);
-            c.setCompany(getCompanyDtoFromId(companyId).orElse(null));
+            c.setCompany(this.companyValidator.findById(companyId).orElse(null));
             int isComputerEdited = this.computerValidator.updateComputer(c);
             if (isComputerEdited == 0) {
-                // TODO : le cas -1
                 m.addAttribute("errorCause", "The computer was not updated");
                 return "400";
+            } else if (isComputerEdited == -1) {
+                LOG.info("erreur lors de la modif d'un ordinateur");
+                m.addAttribute("errorCause", "Internal db bullshit");
+                return "500";
             } else {
-                m.addAttribute("message", "L'ordinateur a bien été mis à jour");
-                return "redirect:/page";
+                return "redirect:/page?message=" + UrlEncoding
+                        .encode("L'ordinateur a bien été mis à jour");
             }
-        } catch (InvalidComputerDTOException e) {
+        } catch (InvalidComputerDtoException e) {
             List<ComputerDTOProblems> problems = e.getProblems();
             StringBuilder sb = new StringBuilder();
             for (ComputerDTOProblems problem : problems) {
                 sb.append(problem.getExplanation() + " <br />\n");
             }
+
+            LOG.info("Instance de DTO pas valide : " + sb.toString());
             m.addAttribute("errorCause", sb.toString());
             return "400";
-        } catch (InvalidComputerInstanceException e) {
-            List<ComputerInstanceProblems> problems = e.getProblems();
+        } catch (InvalidComputerException e) {
+            List<ComputerProblems> problems = e.getProblems();
             StringBuilder sb = new StringBuilder();
-            for (ComputerInstanceProblems problem : problems) {
+            for (ComputerProblems problem : problems) {
                 sb.append(problem.getExplanation() + " <br />\n");
             }
+
+            LOG.info("Instance de computer pas valide : " + sb.toString());
             m.addAttribute("errorCause", sb.toString());
             return "400";
         }
     }
 
-    private Optional<CompanyDTO> getCompanyDtoFromId(@NonNull final Long companyId) {
-        if (companyId == 0) {
-            return Optional.empty();
-        } else {
-            // TODO : lancer une exception si company inexistante.
-            return this.companyValidator.findById(companyId);
-        }
-    }
-
+    /**
+     * Affichage de la page de l'ordinateur dont l'identifiant est donné en para
+     *
+     * @param computerId l'identifiant
+     * @param m
+     * @return
+     */
     @GetMapping
-    private String getToEditPage(@RequestParam(name = "id") final Long computerId, final Model m) {
+    private String getToEditPage(@RequestParam(name = "id") final Long computerId,
+            @NonNull final Model m) {
         List<CompanyDTO> companyList = this.companyValidator.fetchList();
         Optional<ComputerDTO> foundComputerOpt = this.computerValidator.findById(computerId);
         if (foundComputerOpt.isPresent()) {

@@ -4,7 +4,6 @@ import com.excilys.ui.CLInterface;
 
 public final class Main {
 
-    // TODO Selenium
     /**
      * Classe principale.
      *

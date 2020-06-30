@@ -5,12 +5,12 @@ import java.util.Scanner;
 
 import com.excilys.model.Computer;
 import com.excilys.model.Page;
-import com.excilys.service.ComputerValidator;
+import com.excilys.service.ComputerService;
 import com.excilys.springconfig.AppConfig;
 
 public class ComputerPagination {
-    private static ComputerValidator computerValidator = AppConfig.getContext()
-            .getBean(ComputerValidator.class);
+    private static ComputerService computerValidator = AppConfig.getContext()
+            .getBean(ComputerService.class);
     private final static Scanner sc = new Scanner(System.in);
 
     public static void paginate() {

@@ -3,53 +3,35 @@ package com.excilys.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+
 /**
  * Classe représentant un ordinateur.
  *
  * @author jguyot2
  */
 public class Computer {
-    /**
-     * Date de retrait de la vente sur le marché.
-     */
+
+    @Nullable
     private LocalDate discontinuation;
 
-    /**
-     * Identifiant dans la base de données.
-     */
     private long id;
-    /**
-     * Date d'introduction sur le marché.
-     */
+
+    @Nullable
     private LocalDate introduction;
 
-    /**
-     * Fabricant de l'ordinateur.
-     */
+    @Nullable
     private Company manufacturer;
 
-    /**
-     * Nom de l'ordinateur.
-     */
+    @NonNull
     private String name;
 
-    /**
-     *
-     */
     public Computer() {
     }
 
-    /**
-     * Constructeur de l'ordinateur à partir du nom.
-     *
-     * @param computerName
-     */
     public Computer(final String computerName) {
         this.name = computerName;
-        this.manufacturer = null;
-        this.introduction = null;
-        this.discontinuation = null;
-        this.id = 0;
     }
 
     /**
@@ -65,7 +47,7 @@ public class Computer {
         this.manufacturer = computerManufacturer;
         this.introduction = computerIntroduction;
         this.discontinuation = computerDiscontinuation;
-        this.id = 0;
+
     }
 
     /**
@@ -116,90 +98,51 @@ public class Computer {
         }
     }
 
-    /**
-     * @return la date d'interruption de la vente
-     */
     public LocalDate getDiscontinuation() {
         return this.discontinuation;
 
     }
 
-    /**
-     * @return l'identifiant du Computer dans la Bd associée, ou 0 si l'identifiant
-     *         n'a pas été défini
-     */
     public long getId() {
         return this.id;
     }
 
-    /**
-     * @return la date de début de vente de l'instance.
-     */
     public LocalDate getIntroduction() {
         return this.introduction;
     }
 
-    /**
-     * @return le fabricant de l'ordinateur
-     */
     public Company getManufacturer() {
         return this.manufacturer;
     }
 
-    /**
-     * @return le nom de l'ordinateur
-     */
     public String getName() {
         return this.name;
     }
 
-    /**
-     * Décrit brièvement une instance de Computer.
-     *
-     * @return une chaîne contenant l'id et le nom de l'instance courante
-     */
     public String getShortDescription() {
         return "(" + this.id + ", " + this.name + " )";
     }
 
-    /**
-     * @param newDiscontinuation
-     */
     public void setDiscontinuation(final LocalDate newDiscontinuation) {
         this.discontinuation = newDiscontinuation;
     }
 
-    /**
-     *
-     * @param newId
-     */
     public void setId(final long newId) {
         this.id = newId;
     }
 
-    /**
-     * @param newIntroduction
-     */
     public void setIntroduction(final LocalDate newIntroduction) {
         this.introduction = newIntroduction;
     }
 
-    /**
-     * @param newManufacturer
-     */
     public void setManufacturer(final Company newManufacturer) {
         this.manufacturer = newManufacturer;
     }
 
-    /**
-     * @param newName
-     */
     public void setName(final String newName) {
         this.name = newName;
     }
 
-    /**
-     */
     @Override
     public String toString() {
         String representation = "";

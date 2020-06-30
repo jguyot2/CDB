@@ -1,4 +1,4 @@
-package com.excilys.model;
+package com.excilys.main;
 
 /**
  * Exception lancée pour laisser le code compiler quand toutes les features sont

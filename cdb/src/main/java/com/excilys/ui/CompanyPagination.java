@@ -5,13 +5,13 @@ import java.util.Scanner;
 
 import com.excilys.model.Company;
 import com.excilys.model.Page;
-import com.excilys.service.CompanyValidator;
+import com.excilys.service.CompanyService;
 import com.excilys.springconfig.AppConfig;
 
 public class CompanyPagination {
 
-    private static CompanyValidator companyPagination = AppConfig.getContext()
-            .getBean(CompanyValidator.class);
+    private static CompanyService companyPagination = AppConfig.getContext()
+            .getBean(CompanyService.class);
     private final static Scanner sc = new Scanner(System.in);
 
     public static void paginate() {

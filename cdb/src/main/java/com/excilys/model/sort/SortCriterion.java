@@ -1,4 +1,4 @@
-package com.excilys.model;
+package com.excilys.model.sort;
 
 public enum SortCriterion {
     COMPUTER_NAME("name"), INTRODUCED("introduced"), DISCONTINUED("discontinued"),

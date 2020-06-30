@@ -9,13 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 /**
  * Gestion de la mise à jour des entreprises dans la base
  *
  * @author jguyot2
- *
  */
 @Repository
 public class CompanyUpdater {
@@ -71,7 +71,7 @@ public class CompanyUpdater {
      *         supprimée
      * @throws SQLException si erreur dans la base
      */
-    private int deleteCompany(final long id, final Connection conn) throws SQLException {
+    private int deleteCompany(final long id, @NonNull final Connection conn) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE_COMPANY)) {
             stmt.setLong(1, id);
             return stmt.executeUpdate();

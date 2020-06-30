@@ -9,10 +9,10 @@ import java.util.Scanner;
 import com.excilys.mapper.DateMapper;
 import com.excilys.model.Company;
 import com.excilys.model.Computer;
-import com.excilys.service.CompanyValidator;
-import com.excilys.service.ComputerInstanceProblems;
-import com.excilys.service.ComputerValidator;
-import com.excilys.service.InvalidComputerInstanceException;
+import com.excilys.service.CompanyService;
+import com.excilys.service.ComputerProblems;
+import com.excilys.service.ComputerService;
+import com.excilys.service.InvalidComputerException;
 import com.excilys.springconfig.AppConfig;
 
 /**
@@ -24,11 +24,11 @@ import com.excilys.springconfig.AppConfig;
 
 public class CLInterface {
 
-    private static CompanyValidator companyValidator = AppConfig.getContext()
-            .getBean(CompanyValidator.class);
+    private static CompanyService companyValidator = AppConfig.getContext()
+            .getBean(CompanyService.class);
 
-    private static ComputerValidator computerValidator = AppConfig.getContext()
-            .getBean(ComputerValidator.class);
+    private static ComputerService computerValidator = AppConfig.getContext()
+            .getBean(ComputerService.class);
     private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
 
     private static void createComputerCommand() {
@@ -102,9 +102,9 @@ public class CLInterface {
         long newIdComputer;
         try {
             newIdComputer = computerValidator.addComputer(createdComputer);
-        } catch (InvalidComputerInstanceException e) {
+        } catch (InvalidComputerException e) {
             System.out.println("Instance incorrecte de Computer crée");
-            for (ComputerInstanceProblems problem : e.getProblems()) {
+            for (ComputerProblems problem : e.getProblems()) {
                 System.out.println(problem.getExplanation());
             }
             System.out.println("Fin de la saisie");
@@ -374,9 +374,9 @@ public class CLInterface {
         int updated;
         try {
             updated = computerValidator.update(foundComputer);
-        } catch (InvalidComputerInstanceException e) {
+        } catch (InvalidComputerException e) {
             System.out.println("Instance incorrecte de Computer crée");
-            for (ComputerInstanceProblems problem : e.getProblems()) {
+            for (ComputerProblems problem : e.getProblems()) {
                 System.out.println(problem.getExplanation());
             }
             System.out.println("Fin de la saisie");

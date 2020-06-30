@@ -2,6 +2,9 @@ package com.excilys.model;
 
 import java.util.Objects;
 
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+
 /**
  * Classe pour la transmission des valeurs.
  *
@@ -11,27 +14,32 @@ public final class ComputerDTO {
     /**
      * Représentation de l'identifiant de l'entreprise par son identifiant.
      */
+    @Nullable
     private CompanyDTO company;
 
     /**
-     * Représentation de la date d'arrêt, au format DD/MM/YYYY.
+     * Représentation de la date d'arrêt, au format donné dans DateMapper
      */
-    private String discontinuationDate;
+    @Nullable
+    private String discontinued;
 
     /**
-     * Représentation de la date d'intro, au format DD/MM/YYY.
+     * Représentation de la date d'intro, au format donné dans DateMapper
      */
-    private String introductionDate;
+    @Nullable
+    private String introduced;
 
     /**
      * Nom de l'ordinateur.
      */
+    @NonNull
     private String name;
 
     /**
      * Représentation de l'identifiant de l'ordinateur.
      */
-    private String strId;
+    @NonNull
+    private Long id = 0L;
 
     /**
      * @param computerName
@@ -44,10 +52,28 @@ public final class ComputerDTO {
             final CompanyDTO companyId, final String strIntroductionDate,
             final String strDiscontinuationDate) {
         this.name = computerName;
-        this.strId = computerId;
+        this.id = Long.valueOf(computerId);
         this.company = companyId;
-        this.introductionDate = strIntroductionDate;
-        this.discontinuationDate = strDiscontinuationDate;
+        this.introduced = strIntroductionDate;
+        this.discontinued = strDiscontinuationDate;
+    }
+
+    public ComputerDTO(final String name, final Long id, final Long companyId,
+            final String introduced, final String discontinued) {
+        this.name = name;
+        this.id = id;
+        this.company = new CompanyDTO(companyId);
+        this.introduced = introduced;
+        this.discontinued = discontinued;
+    }
+
+    public ComputerDTO(final String name, final Long id, final CompanyDTO company,
+            final String introduced, final String discontinued) {
+        this.name = name;
+        this.id = id;
+        this.company = company;
+        this.introduced = introduced;
+        this.discontinued = discontinued;
     }
 
     /**
@@ -63,10 +89,9 @@ public final class ComputerDTO {
             return false;
         }
         return Objects.equals(this.name, other.name)
-                && Objects.equals(this.discontinuationDate, other.discontinuationDate)
-                && Objects.equals(this.introductionDate, other.introductionDate)
+                && Objects.equals(this.discontinued, other.discontinued)
+                && Objects.equals(this.introduced, other.introduced)
                 && Objects.equals(this.company, other.company);
-
     }
 
     @Override
@@ -74,79 +99,49 @@ public final class ComputerDTO {
         return o instanceof ComputerDTO ? equals((ComputerDTO) o) : false;
     }
 
-    /**
-     * @return la chaîne de caractères correspondant à l'identifiant de l'entreprise
-     */
     public CompanyDTO getCompany() {
         return this.company;
     }
 
-    /**
-     * @return la date d'arrêt de production
-     */
-    public String getDiscontinuationDate() {
-        return this.discontinuationDate;
+    public String getDiscontinued() {
+        return this.discontinued;
     }
 
-    /**
-     * @return une chaine représentant l'identifiant de l'ordinateur dans la base
-     */
-    public String getId() {
-        return this.strId;
+    public Long getId() {
+        return this.id;
     }
 
-    /**
-     * @return la date d'introduction à la vente
-     */
-    public String getIntroductionDate() {
-        return this.introductionDate;
+    public String getIntroduced() {
+        return this.introduced;
     }
 
-    /**
-     * @return le nom de l'ordinateur
-     */
     public String getName() {
         return this.name;
     }
 
-    /**
-     * @param newStrEntrepriseId
-     */
     public void setCompany(final CompanyDTO newStrEntrepriseId) {
         this.company = newStrEntrepriseId;
     }
 
-    /**
-     * @param newDiscontinuationDate
-     */
-    public void setDiscontinuationDate(final String newDiscontinuationDate) {
-        this.discontinuationDate = newDiscontinuationDate;
+    public void setDiscontinued(final String newDiscontinuationDate) {
+        this.discontinued = newDiscontinuationDate;
     }
 
-    /**
-     * @param newStrId
-     */
-    public void setId(final String newStrId) {
-        this.strId = newStrId;
+    public void setId(final Long newStrId) {
+        this.id = newStrId;
     }
 
-    /**
-     * @param newIntroductionDate
-     */
-    public void setIntroductionDate(final String newIntroductionDate) {
-        this.introductionDate = newIntroductionDate;
+    public void setIntroduced(final String newIntroductionDate) {
+        this.introduced = newIntroductionDate;
     }
 
-    /**
-     * @param newName
-     */
     public void setName(final String newName) {
         this.name = newName;
     }
 
     @Override
     public String toString() {
-        return "(" + this.name + ", " + this.introductionDate + "-" + this.discontinuationDate
-                + "\t" + this.strId + "\t" + this.company;
+        return "(" + this.name + ", " + this.introduced + "-" + this.discontinued + "\t" + this.id
+                + "\t" + this.company;
     }
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
 
 /**
  * Fonctions de conversion de formats de date, notamment entre LocalDate et
@@ -30,7 +31,7 @@ public final class DateMapper {
      * @param localDate la date à laquelle appliquer la conversion
      * @return une instance de java.sql.date correspondante
      */
-    public static Optional<Date> localDateToSqlDate(final LocalDate localDate) {
+    public static Optional<Date> localDateToSqlDate(@Nullable final LocalDate localDate) {
         LOG.trace("Conversion de date locale vers sqlDate. Date = " + localDate);
         if (localDate == null) {
             return Optional.empty();
@@ -67,7 +68,7 @@ public final class DateMapper {
      *         le param est nul.
      */
     @SuppressWarnings("deprecation")
-    public static Optional<LocalDate> sqlDateToLocalDate(final Date sqlDate) {
+    public static Optional<LocalDate> sqlDateToLocalDate(@Nullable final Date sqlDate) {
         LOG.trace("Conversion de java.sql.Date vers localDate. Param=" + sqlDate);
         if (sqlDate == null) {
             return Optional.empty();
@@ -89,7 +90,7 @@ public final class DateMapper {
      *
      * @throws DateTimeParseException si la date n'est pas au bon format
      */
-    public static Optional<LocalDate> stringToLocalDate(final String dateRepr) {
+    public static Optional<LocalDate> stringToLocalDate(@Nullable final String dateRepr) {
         LOG.trace("Conversion de str vers localDate. str =" + dateRepr);
         if (dateRepr == null) {
             return Optional.empty();

@@ -23,7 +23,7 @@ interface Searcher<T> {
      * @return l'objet associé à l'identifient id en paramètre
      * @throws SQLException
      */
-    Optional<T> fetchById(long id) throws SQLException;
+    Optional<T> fetchById(long id) throws PersistanceException;
 
     /**
      * Récupération de la liste des éléments correspondant à la table.
@@ -31,7 +31,7 @@ interface Searcher<T> {
      * @return la liste des instances correspondant aux lignes de la table.
      * @throws SQLException
      */
-    List<T> fetchList() throws SQLException;
+    List<T> fetchList() throws PersistanceException;
 
     /**
      * Récupération d'une liste d'éléments «dans» une page en param
@@ -40,11 +40,11 @@ interface Searcher<T> {
      * @return la liste des objets correspondant à la page en paramètre
      * @throws SQLException
      */
-    List<T> fetchList(Page p) throws SQLException;
+    List<T> fetchList(Page p) throws PersistanceException;
 
     /**
      * @return le nombre d'éléments contenu dans la table
      * @throws SQLException
      */
-    int getNumberOfElements() throws SQLException;
+    int getNumberOfElements() throws PersistanceException;
 }

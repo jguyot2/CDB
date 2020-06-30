@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import com.excilys.model.Company;
 import com.excilys.model.CompanyDTO;
@@ -16,8 +18,6 @@ import com.excilys.model.ComputerDTO;
  * @author jguyot2
  */
 public final class ComputerMapper {
-    /**
-     */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerMapper.class);
 
     /**
@@ -28,7 +28,7 @@ public final class ComputerMapper {
      *         dernier est cohérent (=les identifiants sont bien des nombres, et le
      *         nom n'est pas vide).
      */
-    public static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer) {
+    public static Optional<Computer> computerDTOToComputer(@NonNull final ComputerDTO dtoComputer) {
         Company company = CompanyMapper.companyDTOToCompany(dtoComputer.getCompany()).orElse(null);
         return computerDTOToComputer(dtoComputer, company);
     }
@@ -42,23 +42,18 @@ public final class ComputerMapper {
      *         "manufacturer" égal au second paramètre (pouvant être nul), ou un
      *         Optional vide si les valeurs du DTO sont incohérentes.
      */
-    private static Optional<Computer> computerDTOToComputer(final ComputerDTO dtoComputer,
-            final Company manufacturer) {
+    private static Optional<Computer> computerDTOToComputer(@Nullable final ComputerDTO dtoComputer,
+            @Nullable final Company manufacturer) {
         if (dtoComputer == null) {
-            LOG.info("DTO > computer : param nul");
+            LOG.debug("DTO > computer : param nul");
             return Optional.empty();
         }
-        long id = 0;
-        try {
-            id = Long.parseLong(dtoComputer.getId());
-        } catch (NumberFormatException e) {
-            LOG.debug("DTO > computer : id du dto incohérent");
-            return Optional.empty();
-        }
+        Long id = dtoComputer.getId() == null ? 0 : dtoComputer.getId();
         String computerName = getNameFromComputerDTO(dtoComputer);
-        Optional<LocalDate> intro = DateMapper.stringToLocalDate(dtoComputer.getIntroductionDate());
+        Optional<LocalDate> intro = DateMapper.stringToLocalDate(dtoComputer.getIntroduced());
         Optional<LocalDate> discontinuation = DateMapper
-                .stringToLocalDate(dtoComputer.getDiscontinuationDate());
+                .stringToLocalDate(dtoComputer.getDiscontinued());
+
         return Optional.of(new Computer(computerName, manufacturer, intro.orElse(null),
                 discontinuation.orElse(null), id));
     }
@@ -70,7 +65,7 @@ public final class ComputerMapper {
      * @return un optional contenant une instance de ComputerDTO correspondant à la
      *
      */
-    public static Optional<ComputerDTO> computerToDTO(final Computer c) {
+    public static Optional<ComputerDTO> computerToDTO(@Nullable final Computer c) {
         if (c == null) {
             LOG.info("computer > DTO : param nul");
             return Optional.empty();
@@ -84,7 +79,7 @@ public final class ComputerMapper {
                 dateDisco.orElse(null)));
     }
 
-    private static String getNameFromComputerDTO(final ComputerDTO dtoComputer) {
+    private static String getNameFromComputerDTO(@Nullable final ComputerDTO dtoComputer) {
         String computerName = null;
         if (dtoComputer.getName() != null && !dtoComputer.getName().trim().isEmpty()) {
             computerName = dtoComputer.getName();

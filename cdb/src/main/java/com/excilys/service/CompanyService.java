@@ -8,13 +8,14 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.excilys.model.Company;
 import com.excilys.model.Page;
 import com.excilys.persistence.CompanySearcher;
 import com.excilys.persistence.CompanyUpdater;
+import com.excilys.persistence.PersistanceException;
 
 /**
  * Classe vérifiant que les requêtes sur les entreprises sont bien formée et
@@ -24,11 +25,10 @@ import com.excilys.persistence.CompanyUpdater;
  *
  */
 @Service
-public class CompanyValidator implements SearchValidator<Company> {
-    /** */
-    private static final Logger LOG = LoggerFactory.getLogger(CompanyValidator.class);
+public class CompanyService implements SearchValidator<Company> {
 
-    /** */
+    private static final Logger LOG = LoggerFactory.getLogger(CompanyService.class);
+
     @Autowired
     private CompanySearcher companySearcher;
 
@@ -60,7 +60,7 @@ public class CompanyValidator implements SearchValidator<Company> {
     public List<Company> fetchList() {
         try {
             return this.companySearcher.fetchList();
-        } catch (DataAccessException e) {
+        } catch (PersistanceException e) {
             LOG.error("fetchList: " + e.getMessage(), e);
             return new ArrayList<>();
         }
@@ -74,10 +74,10 @@ public class CompanyValidator implements SearchValidator<Company> {
      * @return La liste des entreprises présentes dans la page.
      */
     @Override
-    public List<Company> fetchList(final Page page) {
+    public List<Company> fetchList(@NonNull final Page page) {
         try {
             return this.companySearcher.fetchList(page);
-        } catch (DataAccessException e) {
+        } catch (PersistanceException e) {
             LOG.error("Recherche de la liste : Exception reçue. Renvoi d'une liste vide");
             return new ArrayList<>();
         }
@@ -95,7 +95,7 @@ public class CompanyValidator implements SearchValidator<Company> {
     public Optional<Company> findById(final long id) {
         try {
             return this.companySearcher.fetchById(id);
-        } catch (DataAccessException e) {
+        } catch (PersistanceException e) {
             return Optional.empty();
         }
     }
@@ -108,7 +108,7 @@ public class CompanyValidator implements SearchValidator<Company> {
     public int getNumberOfElements() {
         try {
             return this.companySearcher.getNumberOfElements();
-        } catch (DataAccessException e) {
+        } catch (PersistanceException e) {
             LOG.error("getNbOfElements : " + e.getMessage(), e);
             return -1;
         }

@@ -1,4 +1,4 @@
-package com.excilys.servlets;
+package com.excilys.controllers;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -17,28 +17,28 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.excilys.adapters.ComputerAdapter;
 import com.excilys.model.ComputerDTO;
-import com.excilys.model.IllegalCriterionStringException;
 import com.excilys.model.Page;
-import com.excilys.model.SortEntry;
-import com.excilys.service.ComputerDTOValidator;
-import com.excilys.service.DuplicatedSortEntries;
+import com.excilys.model.sort.DuplicatedSortEntriesException;
+import com.excilys.model.sort.IllegalCriterionStringException;
+import com.excilys.model.sort.SortEntry;
 
 @Controller
-public class ComputerPageServlet {
+public class ComputerPageController {
 
-    private static final String CHARSET = "UTF-8";
+    private static final String CHARSET = "utf-8";
 
-    private static Logger LOG = LoggerFactory.getLogger(ComputerPageServlet.class);
+    private static Logger LOG = LoggerFactory.getLogger(ComputerPageController.class);
 
     /**
      * Récupération de la liste des numéros de pages à afficher dans le bas de la
      * page
      *
-     * @param page la page courante
+     * @param page
      * @return
      */
-    private static List<Integer> getPagesToShow(final Page page) {
+    private static List<Integer> getPagesToShow(@NonNull final Page page) {
         List<Integer> pagesToShow = new ArrayList<>();
         int firstPageToShow = Math.max(0, page.getPageNumber() - 2);
         int nbPages = page.getNbOfPages();
@@ -48,8 +48,15 @@ public class ComputerPageServlet {
         return pagesToShow;
     }
 
-    private static final Optional<String> getSearchUrl(final String search) {
-        if (search == null) {
+    /**
+     * «Encodage» de la chaîne de caractères représentant la recherche pour pouvoir
+     * être inséree dans l'url.
+     *
+     * @param search la recherche à encoder
+     * @return Optional.empty si la chaîne de recherche
+     */
+    private static final Optional<String> getSearchUrl(@Nullable final String search) {
+        if (search == null || search.isEmpty()) {
             return Optional.empty();
         } else {
             try {
@@ -62,38 +69,46 @@ public class ComputerPageServlet {
 
     /**
      * Récupération de la liste des entrées de tri correspondant au paramètre "sort"
-     *
+     * de la requête.
      *
      * @param sortParam
      * @return
      * @throws IllegalCriterionStringException
      */
-    private static List<SortEntry> getSortEntryFromParameter(final String sortParam)
+    private static List<SortEntry> getSortEntryFromParameter(@Nullable final String sortParam)
             throws IllegalCriterionStringException {
-        LOG.info("Récup des sortEntry");
+        LOG.trace("Récup des sortEntry");
         if (sortParam == null || sortParam.trim().isEmpty()) {
-            LOG.info("pas de param de recherche");
+            LOG.trace("pas de param de recherche");
             return new ArrayList<>();
         }
-        LOG.info("un ou plusieurs params de recherche");
+        LOG.trace("un ou plusieurs params de recherche");
         List<SortEntry> ret = new ArrayList<>();
         String[] sortReprs = sortParam.split(",");
         for (String sortParameter : sortReprs) {
             SortEntry se = SortEntry.fromString(sortParameter);
             ret.add(se);
         }
-        LOG.info("retour : " + ret.toString());
+        LOG.trace("retour : " + ret.toString());
         return ret;
     }
 
+    /**
+     * Récupération de toutes les entrées de tri à partir des paramètres de tri.
+     *
+     * @param sortParam        les «anciens» paramètres de tri = une liste d'entrées
+     *                         de tri, séparés par une virgule
+     * @param newSortParameter le nouveau paramètre de tri
+     * @return
+     * @throws IllegalCriterionStringException Si une des chaînes est mal formée
+     */
     private static List<SortEntry> getSortEntryFromParameters(@Nullable final String sortParam,
             @Nullable final String newSortParameter) throws IllegalCriterionStringException {
-
         List<SortEntry> entries = getSortEntryFromParameter(sortParam);
 
         if (newSortParameter != null && !newSortParameter.trim().isEmpty()) {
             boolean[] addNewParameter = { true };
-            LOG.info("Récup des params de tri : nouveau param");
+            LOG.trace("Récup des params de tri : nouveau param");
             SortEntry se = SortEntry.fromString(newSortParameter);
             entries = entries.stream().filter(secondSortentry -> {
                 if (secondSortentry.equals(se)) {
@@ -105,22 +120,21 @@ public class ComputerPageServlet {
             if (addNewParameter[0]) {
                 entries.add(se);
             }
-            LOG.info("found params: " + entries.toString());
+            LOG.trace("found params: " + entries.toString());
         }
         return entries;
     }
 
     /**
-     * Construction du paramètre de l'url qui permettra de "garder" le tri dans la
-     * page jsp
+     * Construction du paramètre de l'url qui correspondra au paramètre de tri, pour
+     * ajouter dans le lien de la page jsp.
      *
      * @param sortEntries la liste des attributs à trier et ler sens
      * @return un optional contenant la valeur du paramètre de tri dans le lien url
-     *
      */
     private static Optional<String> getUrlParameterFromSortEntries(
-            final List<SortEntry> sortEntries) {
-        if (sortEntries.isEmpty()) {
+            @Nullable final List<SortEntry> sortEntries) {
+        if (sortEntries == null || sortEntries.isEmpty()) {
             return Optional.empty();
         } else {
             StringBuilder searchUrlBuilder = new StringBuilder();
@@ -135,7 +149,19 @@ public class ComputerPageServlet {
         }
     }
 
-    public static void setModelParameters(@NonNull final Page page,
+    /**
+     * Ajout des attributs qui seront transmis à la page jsp au modèle.
+     *
+     * @param page
+     * @param computerList
+     * @param search
+     * @param message
+     * @param sortUrlParameterValue
+     * @param urlSearch
+     * @param pagesToShow
+     * @param m
+     */
+    private static void setModelParameters(@NonNull final Page page,
             @NonNull final List<ComputerDTO> computerList, @Nullable final String search,
             @Nullable final String message, @Nullable final String sortUrlParameterValue,
             @Nullable final String urlSearch, @NonNull final List<Integer> pagesToShow,
@@ -150,22 +176,22 @@ public class ComputerPageServlet {
     }
 
     @Autowired
-    private ComputerDTOValidator validator;
+    private ComputerAdapter validator;
 
     /**
-     * Récupération de la liste des ordinateurs correspondant aux paramètres/
+     * Récupération de la liste des ordinateurs correspondant aux paramètres.
      *
      * @param page        la page de recherche, non nul
      * @param search      la recherche effectuée (peut être nul)
      * @param sortEntries les critère d'ordonnancement
      * @return la liste des ordinateurs à afficher dans la page
-     * @throws DuplicatedSortEntries s'il y a plusieurs requêtes pour
+     * @throws DuplicatedSortEntriesException s'il y a plusieurs requêtes pour
      *                               l'ordonnancement des résultats qui sont
      *                               associés à un même paramètre (e.g deux ordres
      *                               sur le nom).
      */
     private List<ComputerDTO> getComputerList(final Page page, final String search,
-            final List<SortEntry> sortEntries) throws DuplicatedSortEntries {
+            final List<SortEntry> sortEntries) throws DuplicatedSortEntriesException {
         if (search != null) {
             return this.validator.fetchList(page, search, sortEntries);
         } else {
@@ -173,6 +199,15 @@ public class ComputerPageServlet {
         }
     }
 
+    /**
+     * Récupération de la page à partir des paramètres.
+     *
+     * @param pageLength
+     * @param pageNumber
+     * @param search
+     * @return
+     * @throws IllegalArgumentException
+     */
     private Page getPageFromParameters(@Nullable final Integer pageLength,
             @NonNull final Integer pageNumber, @Nullable final String search)
             throws IllegalArgumentException {
@@ -197,6 +232,19 @@ public class ComputerPageServlet {
         return p;
     }
 
+    /**
+     * Affichage de la page
+     *
+     * @param pageLength
+     * @param pageNumber
+     * @param search
+     * @param sortParam
+     * @param newSortParameter
+     * @param message
+     * @param model
+     * @return
+     */ // XXX : Création d'un param et d'une classe "pageDTO" pour éviter d'avoir 10^8
+        // paramètres
     @GetMapping("/page")
     public String showPage(
             @RequestParam(required = false, name = "pageLength") final Integer pageLength,
@@ -216,16 +264,15 @@ public class ComputerPageServlet {
 
             setModelParameters(p, computerList, search, message, sortUrl.orElse(null),
                     searchUrl.orElse(null), pagesToShow, model);
-        } catch (IllegalArgumentException e) { // TODO remplacer par une exception moins
-                                               // dégueulasse
+        } catch (IllegalArgumentException e) {
             model.addAttribute("errorCause", "The page number or page length parameter is invalid");
-            return "forward:/400";
+            return "400";
         } catch (IllegalCriterionStringException e) {
             model.addAttribute("errorCause", "The sort criterion string is invalid");
-            return "forward:/400";
-        } catch (DuplicatedSortEntries e) {
+            return "400";
+        } catch (DuplicatedSortEntriesException e) {
             model.addAttribute("errorCause", "There is several sort parameters at the same time");
-            return "forward:/400";
+            return "400";
         }
         return "dashboard";
     }

@@ -1,4 +1,4 @@
-package com.excilys.servlets;
+package com.excilys.controllers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,8 +15,7 @@ import org.apache.log4j.PropertyConfigurator;
  * @author jguyot2
  *
  */
-public class Log4jInitServlet implements ServletContextListener {
-
+public class Log4jInitListener implements ServletContextListener {
     @Override
     public void contextInitialized(final ServletContextEvent cte) {
         try (InputStream os = cte.getServletContext()

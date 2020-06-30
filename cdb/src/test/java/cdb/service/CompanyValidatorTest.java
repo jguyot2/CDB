@@ -1,6 +1,5 @@
 package cdb.service;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,24 +13,26 @@ import org.mockito.MockitoAnnotations;
 import com.excilys.model.Company;
 import com.excilys.model.Page;
 import com.excilys.persistence.CompanySearcher;
-import com.excilys.service.CompanyValidator;
+import com.excilys.persistence.PersistanceException;
+import com.excilys.service.CompanyService;
 
 public class CompanyValidatorTest {
-    private static final Company[] fakeCompanyList = { new Company("POUET", 1), new Company("J'AIME L'OCA", 2),
-            new Company("Café Oz", 5), new Company("Chocolatine", 10) };
+    private static final Company[] fakeCompanyList = { new Company("POUET", 1L),
+            new Company("J'AIME L'OCA", 2L), new Company("Café Oz", 5L),
+            new Company("Chocolatine", 10L) };
 
     private CompanySearcher companySearcherMock = Mockito.mock(CompanySearcher.class);
-    private CompanyValidator companyValidator;
+    private CompanyService companyValidator;
 
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        this.companyValidator = new CompanyValidator();
+        this.companyValidator = new CompanyService();
         this.companyValidator.setCompanySearcher(this.companySearcherMock);
     }
 
     @Test
-    public void fetchListTest() throws SQLException {
+    public void fetchListTest() throws PersistanceException {
         List<Company> companyList = new ArrayList<>();
         for (Company c : fakeCompanyList) {
             companyList.add(c);
@@ -47,7 +48,7 @@ public class CompanyValidatorTest {
     }
 
     @Test
-    public void fetchWithOffsetTest() throws SQLException {
+    public void fetchWithOffsetTest() throws PersistanceException {
         Page p = new Page(4);
 
         List<Company> companyList = new ArrayList<>();
@@ -59,8 +60,8 @@ public class CompanyValidatorTest {
     }
 
     @Test
-    public void findByIdTest() throws SQLException {
-        Company company42 = new Company("companyWithId42", 42);
+    public void findByIdTest() throws PersistanceException {
+        Company company42 = new Company("companyWithId42", 42L);
         Optional<Company> company42Opt = Optional.of(company42);
         Optional<Company> emptyCompany = Optional.empty();
 
@@ -73,7 +74,7 @@ public class CompanyValidatorTest {
     }
 
     @Test
-    public void getNumberOfElementsTest() throws SQLException {
+    public void getNumberOfElementsTest() throws PersistanceException {
         Mockito.when(this.companySearcherMock.getNumberOfElements()).thenReturn(523);
 
         Assert.assertEquals(this.companyValidator.getNumberOfElements(), 523);

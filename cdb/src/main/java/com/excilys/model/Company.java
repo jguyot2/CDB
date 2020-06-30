@@ -1,6 +1,7 @@
 package com.excilys.model;
 
-import java.util.Objects;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 /**
  * Classe représentant une entreprise par son nom + son identifiant sur la base
@@ -9,54 +10,23 @@ import java.util.Objects;
  * @author jguyot2
  */
 public class Company {
-    /**
-     * Identifiant dans la BD de l'entreprise.
-     */
+
     private long id = 0;
 
-    /**
-     * Nom de l'entreprise.
-     */
+    @NonNull
     private final String name;
 
-    /**
-     * Constructeur d'une entreprise à partir de son nom.
-     *
-     * @param companyName le nom de l'entreprise
-     */
-    public Company(final String companyName) {
+    public Company(@NonNull final String companyName) {
         this.name = companyName;
     }
 
-    /**
-     * Constructeur avec indication de l'identifiant.
-     *
-     * @param companyName le nom de l'entreprise
-     * @param companyId   l'identifiant de l'entreprise
-     */
-    public Company(final String companyName, final long companyId) {
+    public Company(@Nullable final String companyName, @Nullable final Long companyId) {
         this.name = companyName;
-        this.id = companyId;
-    }
-
-    /**
-     * Test d'égalité, uniquement à partir des noms des entreprises.
-     *
-     * @param other
-     * @return true si les deux entreprises sont égales, false sinon
-     */
-    public boolean equals(final Company other) {
-        if (other == null) {
-            return false;
-        }
-        if (this == other) {
-            return true;
-        }
-        return Objects.equals(this.name, other.name);
+        this.id = companyId == null ? 0 : companyId;
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(@Nullable final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -77,20 +47,10 @@ public class Company {
         return true;
     }
 
-    /**
-     * Getter de l'attribut identifiant.
-     *
-     * @return l'identifiant.
-     */
     public long getId() {
         return this.id;
     }
 
-    /**
-     * Getter du nom.
-     *
-     * @return Le nom de l'entreprise
-     */
     public String getName() {
         return this.name;
     }
@@ -103,11 +63,6 @@ public class Company {
         return result;
     }
 
-    /**
-     * Setter de l'identifiant.
-     *
-     * @param companyId l'identifiant.
-     */
     public void setId(final long companyId) {
         this.id = companyId;
     }

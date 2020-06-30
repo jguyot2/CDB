@@ -1,6 +1,8 @@
-package com.excilys.service;
+package com.excilys.adapters;
 
 import java.util.List;
+
+import org.springframework.lang.NonNull;
 
 /**
  * Exception lancée pour indiquer qu'une instance de ComputerDTO passée en
@@ -9,19 +11,15 @@ import java.util.List;
  * @author jguyot2
  *
  */
-public class InvalidComputerDTOException extends Exception {
+public class InvalidComputerDtoException extends Exception {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     List<ComputerDTOProblems> problems;
 
     /**
-     *
      * @param problemList la liste des problèmes associés au DTO.
      */
-    public InvalidComputerDTOException(final List<ComputerDTOProblems> problemList) {
+    public InvalidComputerDtoException(@NonNull final List<ComputerDTOProblems> problemList) {
         super();
         this.problems = problemList;
     }

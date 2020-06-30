@@ -1,12 +1,25 @@
-package com.excilys.model;
+package com.excilys.model.sort;
+
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 public class SortEntry {
-    public static SortEntry fromString(final String s) throws IllegalCriterionStringException {
-        if (s == null) {
+    /**
+     * Création d'un sortEntry à partir d'une chaîne de caractère de la forme
+     * suivante : <attribut>-<sens>, où un attribut correspond à une "colonne" (cf
+     * SortCriterion), le sens de tri étant "desc" ou "asc" (qui est optionnel)
+     *
+     * @param s
+     * @return
+     * @throws IllegalCriterionStringException Si la chaîne en entrée est mal formée
+     * @see SortCriterion
+     */
+    public static SortEntry fromString(@Nullable final String s)
+            throws IllegalCriterionStringException {
+        if (s == null || s.isEmpty()) {
             throw new IllegalCriterionStringException();
         }
         String[] values = s.split("-");
-
         if (values.length == 1) {
             return new SortEntry(SortCriterion.getCriteriaFromString(values[0]), true);
         } else if (values.length == 2) {
@@ -25,19 +38,20 @@ public class SortEntry {
         }
     }
 
-    public static boolean haveSameCriterion(final SortEntry first, final SortEntry snd) {
+    /**
+     * Détermine si deux SortEntry ont la même colonne de recherche
+     *
+     * @param first
+     * @param snd
+     * @return true si les deux critères de tri se font sur le même attribut, false
+     *         sinon
+     */
+    public static boolean haveSameCriterion(@Nullable final SortEntry first,
+            @Nullable final SortEntry snd) {
         if (first == null) {
-            if (snd == null) {
-                return true;
-            } else {
-                return false;
-            }
+            return snd == null;
         } else {
-            if (snd == null) {
-                return false;
-            } else {
-                return first.criteria == snd.criteria;
-            }
+            return snd != null && first.criteria == snd.criteria;
         }
     }
 
@@ -45,13 +59,13 @@ public class SortEntry {
 
     private boolean ascending;
 
-    public SortEntry(final SortCriterion c, final boolean isAscendingSort) {
+    public SortEntry(@NonNull final SortCriterion c, final boolean isAscendingSort) {
         this.ascending = isAscendingSort;
         this.criteria = c;
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(@Nullable final Object obj) {
         if (this == obj) {
             return true;
         }

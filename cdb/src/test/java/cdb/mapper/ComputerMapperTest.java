@@ -15,11 +15,12 @@ import com.excilys.model.Computer;
 import com.excilys.model.ComputerDTO;
 
 public class ComputerMapperTest {
-    private static final Company[] fakeCompanyList = { new Company("POUET", 1),
-            new Company("J'AIME L'OCA", 2), new Company("Café Oz", 5), new Company("Chocolatine", 10) };
+    private static final Company[] fakeCompanyList = { new Company("POUET", 1L),
+            new Company("J'AIME L'OCA", 2L), new Company("Café Oz", 5L),
+            new Company("Chocolatine", 10L) };
 
-    private static final LocalDate[] localDates = { LocalDate.of(1985, 1, 1), LocalDate.of(1985, 1, 19),
-            LocalDate.of(2000, 7, 19), LocalDate.of(2048, 8, 16) };
+    private static final LocalDate[] localDates = { LocalDate.of(1985, 1, 1),
+            LocalDate.of(1985, 1, 19), LocalDate.of(2000, 7, 19), LocalDate.of(2048, 8, 16) };
     private static final Computer[] fakeComputerList = {
             new Computer("PouetComputer", fakeCompanyList[0], null, null, 42),
             new Computer("Raclette", null, localDates[0], localDates[1], 12),
@@ -27,9 +28,9 @@ public class ComputerMapperTest {
             new Computer("PATES", null, null, null, 921),
             new Computer("RIZ", null, localDates[3], null, 245) };
 
-    private static final CompanyDTO[] companyDTOs = { new CompanyDTO("POUET", "1"),
-            new CompanyDTO("J'AIME L'OCA", "2"), new CompanyDTO("Café Oz", "5"),
-            new CompanyDTO("Chocolatine", "10") };
+    private static final CompanyDTO[] companyDTOs = { new CompanyDTO("POUET", 1L),
+            new CompanyDTO("J'AIME L'OCA", 2L), new CompanyDTO("Café Oz", 5L),
+            new CompanyDTO("Chocolatine", 10L) };
 
     private static final String[] strDates = new String[localDates.length];
     static {
@@ -53,15 +54,16 @@ public class ComputerMapperTest {
     @Test
     public void computerToDTOTest() {
         for (int i = 0; i < fakeComputerList.length; ++i) {
-            assertEquals(ComputerMapper.computerToDTO(fakeComputerList[i]).get(), computerDTOList[i]);
+            assertEquals(ComputerMapper.computerToDTO(fakeComputerList[i]).get(),
+                    computerDTOList[i]);
         }
     }
 
     @Test
     public void dtoToComputerTest() {
         for (int i = 0; i < fakeComputerList.length; ++i) {
-            assertEquals(ComputerMapper
-                .computerDTOToComputer(computerDTOList[i]).get(), fakeComputerList[i]);
+            assertEquals(ComputerMapper.computerDTOToComputer(computerDTOList[i]).get(),
+                    fakeComputerList[i]);
         }
     }
 
@@ -69,10 +71,11 @@ public class ComputerMapperTest {
     public void doubleCallTest() {
         for (int i = 0; i < fakeComputerList.length; ++i) {
             assertEquals(ComputerMapper
-                    .computerToDTO(ComputerMapper.computerDTOToComputer(computerDTOList[i]).get()).get(),
-                    computerDTOList[i]);
-            assertEquals(ComputerMapper
-                    .computerDTOToComputer(ComputerMapper.computerToDTO(fakeComputerList[i]).get()).get(),
+                    .computerToDTO(ComputerMapper.computerDTOToComputer(computerDTOList[i]).get())
+                    .get(), computerDTOList[i]);
+            assertEquals(
+                    ComputerMapper.computerDTOToComputer(
+                            ComputerMapper.computerToDTO(fakeComputerList[i]).get()).get(),
                     fakeComputerList[i]);
         }
     }

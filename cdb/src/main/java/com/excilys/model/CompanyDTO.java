@@ -2,34 +2,28 @@ package com.excilys.model;
 
 import java.util.Objects;
 
-public final class CompanyDTO {
-    /**
-     * Identifiant dans la BD.
-     */
-    private String id;
+import org.springframework.lang.Nullable;
 
-    /**
-     * Nom de l'entreprise.
-     */
+public final class CompanyDTO {
+
+    @Nullable
+    private Long id;
+
+    @Nullable
     private String name;
 
-    /** */
     public CompanyDTO() {
     }
 
-    /**
-     * @param companyName
-     */
     public CompanyDTO(final String companyName) {
         this.name = companyName;
     }
 
-    /**
-     *
-     * @param companyName
-     * @param companyId
-     */
-    public CompanyDTO(final String companyName, final String companyId) {
+    public CompanyDTO(final Long id) {
+        this.id = id;
+    }
+
+    public CompanyDTO(final String companyName, final Long companyId) {
         this.name = companyName;
         this.id = companyId;
     }
@@ -49,34 +43,18 @@ public final class CompanyDTO {
         return o instanceof CompanyDTO && equals((CompanyDTO) o);
     }
 
-    /**
-     * @return une chaîne de caractères représentant l'identifiant de l'entreprise
-     */
-    public String getId() {
+    public Long getId() {
         return this.id;
     }
 
-    /**
-     * @return le nom de l'entreprise
-     */
     public String getName() {
         return this.name;
     }
 
-    /**
-     * setter pour la représentation de l'identifiant.
-     *
-     * @param companyId
-     */
-    public void setId(final String companyId) {
+    public void setId(final Long companyId) {
         this.id = companyId;
     }
 
-    /**
-     * Setter pour le nom de l'entreprise.
-     *
-     * @param companyName
-     */
     public void setName(final String companyName) {
         this.name = companyName;
     }

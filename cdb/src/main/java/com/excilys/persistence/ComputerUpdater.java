@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.mapper.DateMapper;
@@ -30,17 +31,13 @@ import com.excilys.model.Computer;
 @Repository
 public class ComputerUpdater {
 
-    /** */
     private static final String CREATE_COMPUTER = "INSERT INTO computer(name, introduced, discontinued, company_id) "
             + "VALUES (:name, :introduced, :discontinued, :companyId)";
 
-    /** */
     private static final String DELETE_COMPUTER = "DELETE FROM computer WHERE id = :id";
 
-    /** */
     private static final Logger LOG = LoggerFactory.getLogger(ComputerUpdater.class);
 
-    /** */
     private static final String UPDATE_COMPUTER = "UPDATE computer SET "
             + "name = :name, introduced = :introduced, discontinued = :discontinued, company_id = :companyId"
             + " WHERE id = :id";
@@ -49,10 +46,6 @@ public class ComputerUpdater {
 
     @Autowired
     private NamedParameterJdbcTemplate template;
-
-    /** */
-    public ComputerUpdater() {
-    }
 
     /**
      * Ajoute une ligne à la base de données, correspondant à l'instance de Computer
@@ -63,8 +56,8 @@ public class ComputerUpdater {
      *
      * @return le nouvel identifiant correspondant à la ligne ajoutée si l'ajout a
      *         réussi, 0 si l'ajout a raté
-     */ // REFACTO
-    public long createComputer(final Computer newComputer) {
+     */
+    public long createComputer(@NonNull final Computer newComputer) {
         LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
         Date introDate = DateMapper.localDateToSqlDate(newComputer.getIntroduction()).orElse(null);
         Date discoDate = DateMapper.localDateToSqlDate(newComputer.getDiscontinuation())
@@ -127,7 +120,7 @@ public class ComputerUpdater {
      *
      * @return 1 si la mise à jour a eu lieu, 0 sinon
      */
-    public int updateComputer(final Computer newComputer) {
+    public int updateComputer(@NonNull final Computer newComputer) {
         LOG.trace("Mise à jour de l'instance de Computer suivante " + newComputer.toString());
 
         LOG.trace("Création de l'instance de Computer suivante: " + newComputer);

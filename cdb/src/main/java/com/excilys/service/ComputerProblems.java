@@ -6,11 +6,12 @@ package com.excilys.service;
  * @author jguyot2
  *
  */
-public enum ComputerInstanceProblems {
-
+public enum ComputerProblems {
+    NULL_COMPUTER("L'ordinateur est nul"),
     INVALID_DISCONTINUATION_DATE(
             "Date d'arrêt de production invalide car précédant celle de début de production"),
-    INVALID_NAME("Nom invalide"),
+    INVALID_NAME("Nom invalide"), INVALID_COMPANY_ID("identifiant du fabricant invalide"),
+    INEXISTENT_COMPANY("Le fabricant donné n'existe pas"),
     NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION(
             "Pas de date de début de production mais une date d'arrêt de production"),
     OUT_OF_RANGE_INTRO_DATE(
@@ -24,7 +25,7 @@ public enum ComputerInstanceProblems {
     /**
      * @param errorExplanation explication de l'erreur
      */
-    ComputerInstanceProblems(final String errorExplanation) {
+    private ComputerProblems(final String errorExplanation) {
         this.explanation = errorExplanation;
     }
 
