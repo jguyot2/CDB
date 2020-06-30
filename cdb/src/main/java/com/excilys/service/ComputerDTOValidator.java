@@ -28,7 +28,6 @@ import com.excilys.model.SortEntry;
  */
 @Service
 public class ComputerDTOValidator implements SearchValidator<ComputerDTO> {
-
     private static List<ComputerDTO> convertList(final List<Computer> l) {
         return l.stream().map(c -> ComputerMapper.computerToDTO(c).get())
                 .collect(Collectors.toList());

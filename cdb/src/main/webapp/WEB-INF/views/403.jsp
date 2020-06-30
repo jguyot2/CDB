@@ -37,7 +37,7 @@
 		<div class="container">
 			<a class="navbar-brand" href="dashboard.html"> Application -
 				Computer Database </a>
-		</div>
+		</div> 
 	</header>
 	<spring:url value="/resources/imgs/403.jpg" var="err403Img" />
 	<img class="centered" src="${err403Img}" alt="error 403" />
