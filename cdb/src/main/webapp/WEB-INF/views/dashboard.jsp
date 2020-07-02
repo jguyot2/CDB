@@ -191,8 +191,8 @@
 							class="cb" value="<c:out value="${c.id}" />"></td>
 						<td><a href="editComputer?id=<c:out value="${c.id}" />"
 							onclick=""> ${c.name} </a></td>
-						<td>${c.introductionDate}</td>
-						<td>${c.discontinuationDate}</td>
+						<td>${c.introduced}</td>
+						<td>${c.discontinued}</td>
 						<td>${c.company.name}</td>
 					</tr>
 				</c:forEach>

@@ -3,6 +3,13 @@ package com.excilys.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -11,20 +18,29 @@ import org.springframework.lang.Nullable;
  *
  * @author jguyot2
  */
+@Entity
+@Table(name = "computer")
 public class Computer {
 
+    @Column(name = "discontinued")
     @Nullable
-    private LocalDate discontinuation;
+    private LocalDate discontinued;
 
-    private long id;
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
 
     @Nullable
-    private LocalDate introduction;
+    @Column(name = "introduced")
+    private LocalDate introduced;
 
     @Nullable
+    @ManyToOne(targetEntity = Company.class)
     private Company manufacturer;
 
     @NonNull
+    @Column(name = "name", nullable = false)
     private String name;
 
     public Computer() {
@@ -40,13 +56,13 @@ public class Computer {
      * @param computerIntroduction
      * @param computerDiscontinuation
      */
-    public Computer(final String computerName, final Company computerManufacturer,
-            final LocalDate computerIntroduction, final LocalDate computerDiscontinuation) {
+    public Computer(final String computerName, final Company computerManufacturer, final LocalDate computerIntroduction,
+            final LocalDate computerDiscontinuation) {
 
         this.name = computerName;
         this.manufacturer = computerManufacturer;
-        this.introduction = computerIntroduction;
-        this.discontinuation = computerDiscontinuation;
+        this.introduced = computerIntroduction;
+        this.discontinued = computerDiscontinuation;
 
     }
 
@@ -57,14 +73,13 @@ public class Computer {
      * @param computerDiscontinuation
      * @param computerId
      */
-    public Computer(final String computerName, final Company computerManufacturer,
-            final LocalDate computerIntroduction, final LocalDate computerDiscontinuation,
-            final long computerId) {
+    public Computer(final String computerName, final Company computerManufacturer, final LocalDate computerIntroduction,
+            final LocalDate computerDiscontinuation, final long computerId) {
 
         this.name = computerName;
         this.manufacturer = computerManufacturer;
-        this.introduction = computerIntroduction;
-        this.discontinuation = computerDiscontinuation;
+        this.introduced = computerIntroduction;
+        this.discontinued = computerDiscontinuation;
         this.id = computerId;
     }
 
@@ -83,9 +98,8 @@ public class Computer {
 
             return true;
         }
-        return Objects.equals(this.name, other.name)
-                && Objects.equals(this.introduction, other.introduction)
-                && Objects.equals(this.discontinuation, other.discontinuation)
+        return Objects.equals(this.name, other.name) && Objects.equals(this.introduced, other.introduced)
+                && Objects.equals(this.discontinued, other.discontinued)
                 && Objects.equals(this.manufacturer, other.manufacturer);
     }
 
@@ -99,7 +113,7 @@ public class Computer {
     }
 
     public LocalDate getDiscontinuation() {
-        return this.discontinuation;
+        return this.discontinued;
 
     }
 
@@ -108,7 +122,7 @@ public class Computer {
     }
 
     public LocalDate getIntroduction() {
-        return this.introduction;
+        return this.introduced;
     }
 
     public Company getManufacturer() {
@@ -124,7 +138,7 @@ public class Computer {
     }
 
     public void setDiscontinuation(final LocalDate newDiscontinuation) {
-        this.discontinuation = newDiscontinuation;
+        this.discontinued = newDiscontinuation;
     }
 
     public void setId(final long newId) {
@@ -132,7 +146,7 @@ public class Computer {
     }
 
     public void setIntroduction(final LocalDate newIntroduction) {
-        this.introduction = newIntroduction;
+        this.introduced = newIntroduction;
     }
 
     public void setManufacturer(final Company newManufacturer) {
@@ -148,8 +162,8 @@ public class Computer {
         String representation = "";
         representation += "name=" + this.name + "\t";
         representation += "manufacturer=" + String.valueOf(this.manufacturer) + "\t";
-        representation += "intro=" + String.valueOf(this.introduction) + "\t";
-        representation += "dicontinuation=" + String.valueOf(this.discontinuation);
+        representation += "intro=" + String.valueOf(this.introduced) + "\t";
+        representation += "dicontinuation=" + String.valueOf(this.discontinued);
         return representation;
     }
 }

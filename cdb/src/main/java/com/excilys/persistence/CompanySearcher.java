@@ -2,12 +2,17 @@ package com.excilys.persistence;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +34,6 @@ import com.excilys.model.Page;
  */
 @Repository
 public class CompanySearcher implements Searcher<Company> {
-
     private static class CompanyRowMapper implements RowMapper<Company> {
         @Override
         public Company mapRow(final ResultSet rs, final int rowNum) throws SQLException {
@@ -40,13 +44,13 @@ public class CompanySearcher implements Searcher<Company> {
     }
 
     private static final CompanyRowMapper rowMapper = new CompanyRowMapper();
-    /** */
+
     private static final Logger LOG = LoggerFactory.getLogger(CompanySearcher.class);
-    /** */
+
     private static final String REQUEST_COMPANIES = "SELECT name, id FROM company";
-    /**  */
+
     private static final String REQUEST_COMPANIES_OFFSET = "SELECT name, id FROM company ORDER BY id LIMIT :limit OFFSET :offset";
-    /** */
+
     private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM company";
 
     private static final String REQUEST_BY_ID = "SELECT name, id FROM company WHERE id = :id";
@@ -59,8 +63,8 @@ public class CompanySearcher implements Searcher<Company> {
      *
      * @param searchedId l'identifiant de l'entreprise identifiée
      *
-     * @return Optional.empty() si aucune entreprise n'a été trouvée, ou une
-     *         instance de Optional contenant l'entreprise trouvée
+     * @return Optional.empty() si aucune entreprise n'a été trouvée, ou une instance de Optional
+     *         contenant l'entreprise trouvée
      * @throws PersistanceException
      */
     @Override
@@ -78,23 +82,26 @@ public class CompanySearcher implements Searcher<Company> {
         }
     }
 
+    @Autowired
+    private EntityManagerFactory emf;
+
+    private EntityManager em;
+
     /**
-     * Rend la liste des entreprises présentes dans la base de données, sous la
-     * forme d'instances de Company.
+     * Rend la liste des entreprises présentes dans la base de données, sous la forme d'instances de
+     * Company.
      *
      * @return La liste des entreprises présentes dans la base de données
      */
     @Override
     public List<Company> fetchList() throws PersistanceException {
-
-        try {
-            return this.template.query(REQUEST_COMPANIES, rowMapper);
-        } catch (EmptyResultDataAccessException e) {
-            LOG.info("", e);
-            return new ArrayList<>();
-        } catch (DataAccessException e) {
-            throw new PersistanceException(e);
-        }
+        this.em = this.emf.createEntityManager();
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<Company> ct = cb.createQuery(Company.class);
+        Root<Company> r = ct.from(Company.class);
+        ct.select(r);
+        TypedQuery<Company> q = this.em.createQuery(ct);
+        return q.getResultList();
     }
 
     /**
@@ -107,17 +114,14 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public List<Company> fetchList(@NonNull final Page page) throws PersistanceException {
-        Map<String, Object> m = new HashMap<>();
-        m.put("offset", page.getOffset());
-        m.put("limit", page.getPageLength());
-        try {
-            return this.template.query(REQUEST_COMPANIES_OFFSET, rowMapper);
-        } catch (EmptyResultDataAccessException e) {
-            LOG.info("", e);
-            return new ArrayList<>();
-        } catch (DataAccessException e) {
-            throw new PersistanceException(e);
-        }
+        this.em = this.emf.createEntityManager();
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<Company> ct = cb.createQuery(Company.class);
+        Root<Company> r = ct.from(Company.class);
+        ct.select(r);
+        TypedQuery<Company> q = this.em.createQuery(ct).setFirstResult(page.getOffset())
+                .setMaxResults(page.getPageLength());
+        return q.getResultList();
     }
 
     /**
@@ -128,15 +132,13 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public int getNumberOfElements() throws PersistanceException {
-        try {
-            return this.template.queryForObject(REQUEST_NB_OF_ROWS, Collections.emptyMap(),
-                    (res, rowNum) -> new Integer(res.getInt(1)));
+        this.em = this.emf.createEntityManager();
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<Long> ct = cb.createQuery(Long.class);
+        Root<Company> r = ct.from(Company.class);
+        ct.select(cb.count(r));
 
-        } catch (EmptyResultDataAccessException e) {
-            LOG.info("", e);
-            return 0;
-        } catch (DataAccessException e) {
-            throw new PersistanceException(e);
-        }
+        TypedQuery<Long> q = this.em.createQuery(ct);
+        return q.getSingleResult().intValue();
     }
 }

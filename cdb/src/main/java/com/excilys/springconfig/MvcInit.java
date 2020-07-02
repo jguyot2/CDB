@@ -15,8 +15,7 @@ public class MvcInit implements WebApplicationInitializer {
         AnnotationConfigWebApplicationContext ctx = AppConfig.getContext();
         ctx.register(AppConfig.class);
         ctx.setServletContext(container);
-        ServletRegistration.Dynamic servlet = container.addServlet("dispatcher",
-                new DispatcherServlet(ctx));
+        ServletRegistration.Dynamic servlet = container.addServlet("dispatcher", new DispatcherServlet(ctx));
         servlet.setLoadOnStartup(1);
         servlet.addMapping("/");
     }

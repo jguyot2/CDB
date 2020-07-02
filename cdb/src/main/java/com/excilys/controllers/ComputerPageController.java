@@ -32,8 +32,7 @@ public class ComputerPageController {
     private static Logger LOG = LoggerFactory.getLogger(ComputerPageController.class);
 
     /**
-     * Récupération de la liste des numéros de pages à afficher dans le bas de la
-     * page
+     * Récupération de la liste des numéros de pages à afficher dans le bas de la page
      *
      * @param page
      * @return
@@ -49,8 +48,8 @@ public class ComputerPageController {
     }
 
     /**
-     * «Encodage» de la chaîne de caractères représentant la recherche pour pouvoir
-     * être inséree dans l'url.
+     * «Encodage» de la chaîne de caractères représentant la recherche pour pouvoir être inséree
+     * dans l'url.
      *
      * @param search la recherche à encoder
      * @return Optional.empty si la chaîne de recherche
@@ -68,8 +67,7 @@ public class ComputerPageController {
     }
 
     /**
-     * Récupération de la liste des entrées de tri correspondant au paramètre "sort"
-     * de la requête.
+     * Récupération de la liste des entrées de tri correspondant au paramètre "sort" de la requête.
      *
      * @param sortParam
      * @return
@@ -96,8 +94,8 @@ public class ComputerPageController {
     /**
      * Récupération de toutes les entrées de tri à partir des paramètres de tri.
      *
-     * @param sortParam        les «anciens» paramètres de tri = une liste d'entrées
-     *                         de tri, séparés par une virgule
+     * @param sortParam        les «anciens» paramètres de tri = une liste d'entrées de tri, séparés
+     *                         par une virgule
      * @param newSortParameter le nouveau paramètre de tri
      * @return
      * @throws IllegalCriterionStringException Si une des chaînes est mal formée
@@ -126,14 +124,13 @@ public class ComputerPageController {
     }
 
     /**
-     * Construction du paramètre de l'url qui correspondra au paramètre de tri, pour
-     * ajouter dans le lien de la page jsp.
+     * Construction du paramètre de l'url qui correspondra au paramètre de tri, pour ajouter dans le
+     * lien de la page jsp.
      *
      * @param sortEntries la liste des attributs à trier et ler sens
      * @return un optional contenant la valeur du paramètre de tri dans le lien url
      */
-    private static Optional<String> getUrlParameterFromSortEntries(
-            @Nullable final List<SortEntry> sortEntries) {
+    private static Optional<String> getUrlParameterFromSortEntries(@Nullable final List<SortEntry> sortEntries) {
         if (sortEntries == null || sortEntries.isEmpty()) {
             return Optional.empty();
         } else {
@@ -161,11 +158,9 @@ public class ComputerPageController {
      * @param pagesToShow
      * @param m
      */
-    private static void setModelParameters(@NonNull final Page page,
-            @NonNull final List<ComputerDTO> computerList, @Nullable final String search,
-            @Nullable final String message, @Nullable final String sortUrlParameterValue,
-            @Nullable final String urlSearch, @NonNull final List<Integer> pagesToShow,
-            @NonNull final Model m) {
+    private static void setModelParameters(@NonNull final Page page, @NonNull final List<ComputerDTO> computerList,
+            @Nullable final String search, @Nullable final String message, @Nullable final String sortUrlParameterValue,
+            @Nullable final String urlSearch, @NonNull final List<Integer> pagesToShow, @NonNull final Model m) {
         m.addAttribute("page", page);
         m.addAttribute("computerList", computerList);
         m.addAttribute("search", search);
@@ -185,13 +180,12 @@ public class ComputerPageController {
      * @param search      la recherche effectuée (peut être nul)
      * @param sortEntries les critère d'ordonnancement
      * @return la liste des ordinateurs à afficher dans la page
-     * @throws DuplicatedSortEntriesException s'il y a plusieurs requêtes pour
-     *                               l'ordonnancement des résultats qui sont
-     *                               associés à un même paramètre (e.g deux ordres
-     *                               sur le nom).
+     * @throws DuplicatedSortEntriesException s'il y a plusieurs requêtes pour l'ordonnancement des
+     *                                        résultats qui sont associés à un même paramètre (e.g
+     *                                        deux ordres sur le nom).
      */
-    private List<ComputerDTO> getComputerList(final Page page, final String search,
-            final List<SortEntry> sortEntries) throws DuplicatedSortEntriesException {
+    private List<ComputerDTO> getComputerList(final Page page, final String search, final List<SortEntry> sortEntries)
+            throws DuplicatedSortEntriesException {
         if (search != null) {
             return this.validator.fetchList(page, search, sortEntries);
         } else {
@@ -208,9 +202,8 @@ public class ComputerPageController {
      * @return
      * @throws IllegalArgumentException
      */
-    private Page getPageFromParameters(@Nullable final Integer pageLength,
-            @NonNull final Integer pageNumber, @Nullable final String search)
-            throws IllegalArgumentException {
+    private Page getPageFromParameters(@Nullable final Integer pageLength, @NonNull final Integer pageNumber,
+            @Nullable final String search) throws IllegalArgumentException {
         Page p = new Page();
         if (search == null) {
             p.setTotalNumberOfElements(this.validator.getNumberOfElements());
@@ -246,14 +239,12 @@ public class ComputerPageController {
      */ // XXX : Création d'un param et d'une classe "pageDTO" pour éviter d'avoir 10^8
         // paramètres
     @GetMapping("/page")
-    public String showPage(
-            @RequestParam(required = false, name = "pageLength") final Integer pageLength,
+    public String showPage(@RequestParam(required = false, name = "pageLength") final Integer pageLength,
             @RequestParam(defaultValue = "0", name = "pageNumber") final Integer pageNumber,
             @RequestParam(required = false, name = "search") final String search,
             @RequestParam(required = false, name = "sort") final String sortParam,
             @RequestParam(required = false, name = "newSortParam") final String newSortParameter,
-            @RequestParam(required = false, name = "message") final String message,
-            final Model model) {
+            @RequestParam(required = false, name = "message") final String message, final Model model) {
         try {
             Page p = getPageFromParameters(pageLength, pageNumber, search);
             List<SortEntry> sortEntries = getSortEntryFromParameters(sortParam, newSortParameter);
@@ -262,9 +253,10 @@ public class ComputerPageController {
             Optional<String> sortUrl = getUrlParameterFromSortEntries(sortEntries);
             Optional<String> searchUrl = getSearchUrl(search);
 
-            setModelParameters(p, computerList, search, message, sortUrl.orElse(null),
-                    searchUrl.orElse(null), pagesToShow, model);
+            setModelParameters(p, computerList, search, message, sortUrl.orElse(null), searchUrl.orElse(null),
+                    pagesToShow, model);
         } catch (IllegalArgumentException e) {
+            LOG.info("", e);
             model.addAttribute("errorCause", "The page number or page length parameter is invalid");
             return "400";
         } catch (IllegalCriterionStringException e) {

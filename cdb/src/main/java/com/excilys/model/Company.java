@@ -1,20 +1,38 @@
 package com.excilys.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 /**
- * Classe représentant une entreprise par son nom + son identifiant sur la base
- * de données.
+ * Classe représentant une entreprise par son nom + son identifiant sur la base de données.
  *
  * @author jguyot2
  */
+@Entity
+@Table(name = "company")
 public class Company {
 
-    private long id = 0;
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id = 0L;
 
+    @Column(name = "name", nullable = false)
     @NonNull
-    private final String name;
+    private String name;
+
+    public Company() {
+    }
+
+    public void setName(String newName) {
+        this.name = newName;
+    }
 
     public Company(@NonNull final String companyName) {
         this.name = companyName;

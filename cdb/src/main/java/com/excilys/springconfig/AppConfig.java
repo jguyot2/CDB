@@ -1,12 +1,17 @@
 package com.excilys.springconfig;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.orm.jpa.DefaultJpaDialect;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -22,7 +27,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @ComponentScan(basePackages = "com.excilys")
 public class AppConfig implements WebMvcConfigurer {
-    private static DataSource ds;
+    private DataSource ds;
 
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
@@ -41,11 +46,12 @@ public class AppConfig implements WebMvcConfigurer {
     }
 
     private DataSource getDataSource() {
-        if (ds == null) {
+        if (this.ds == null) {
             HikariConfig config = new HikariConfig("/hikaricp.properties");
-            ds = new HikariDataSource(config);
+            this.ds = new HikariDataSource(config);
         }
-        return ds;
+
+        return this.ds;
     }
 
     @Bean
@@ -65,5 +71,18 @@ public class AppConfig implements WebMvcConfigurer {
         viewResolver.setPrefix("/WEB-INF/views/");
         viewResolver.setSuffix(".jsp");
         return viewResolver;
+    }
+
+    @Bean
+    public EntityManagerFactory getEntityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean fb = new LocalContainerEntityManagerFactoryBean();
+        fb.setDataSource(dataSource());
+        fb.setPersistenceProviderClass(HibernatePersistenceProvider.class);
+        fb.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        fb.setPackagesToScan("com.excilys.model");
+
+        fb.setJpaDialect(new DefaultJpaDialect());
+        fb.afterPropertiesSet();
+        return fb.getNativeEntityManagerFactory();
     }
 }
