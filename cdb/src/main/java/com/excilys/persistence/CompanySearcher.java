@@ -1,7 +1,5 @@
 package com.excilys.persistence;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +13,6 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
@@ -30,16 +27,6 @@ import com.excilys.model.Page;
  */
 @Repository
 public class CompanySearcher implements Searcher<Company> {
-    private static class CompanyRowMapper implements RowMapper<Company> {
-        @Override
-        public Company mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-            String name = rs.getString("name");
-            long id = rs.getLong("id");
-            return new Company(name, id);
-        }
-    }
-
-    private static final CompanyRowMapper rowMapper = new CompanyRowMapper();
 
     private static final Logger LOG = LoggerFactory.getLogger(CompanySearcher.class);
 
@@ -57,7 +44,6 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public Optional<Company> fetchById(final long searchedId) throws PersistanceException {
-        this.em = this.emf.createEntityManager();
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Company> ct = cb.createQuery(Company.class);
         Root<Company> r = ct.from(Company.class);
@@ -75,6 +61,7 @@ public class CompanySearcher implements Searcher<Company> {
     @Autowired
     private EntityManagerFactory emf;
 
+    @Autowired
     private EntityManager em;
 
     /**
@@ -85,7 +72,7 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public List<Company> fetchList() throws PersistanceException {
-        this.em = this.emf.createEntityManager();
+
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Company> ct = cb.createQuery(Company.class);
         Root<Company> r = ct.from(Company.class);
@@ -122,7 +109,6 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public int getNumberOfElements() throws PersistanceException {
-        this.em = this.emf.createEntityManager();
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Long> ct = cb.createQuery(Long.class);
         Root<Company> r = ct.from(Company.class);

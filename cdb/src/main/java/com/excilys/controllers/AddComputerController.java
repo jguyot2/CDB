@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.adapters.CompanyAdapter;
-import com.excilys.adapters.ComputerDTOProblems;
 import com.excilys.adapters.ComputerAdapter;
+import com.excilys.adapters.ComputerDTOProblems;
 import com.excilys.adapters.InvalidComputerDtoException;
 import com.excilys.model.CompanyDTO;
 import com.excilys.model.ComputerDTO;
@@ -39,34 +39,30 @@ public class AddComputerController {
      * Ajout d'un ordi dans la base
      *
      * @param computerName
-     * @param introduced   Représentant la date de commercialisation, de la forme
-     *                     donnée dans DateMapper
+     * @param introduced   Représentant la date de commercialisation, de la forme donnée dans
+     *                     DateMapper
      * @param discontinued Date d'arrêt de production
      * @param companyId
      * @param m
      * @return
      */ // XXX : Refacto pour obtenir directement une instance de ComputerDTO
     @PostMapping
-    public String addComputerToDatabase(
-            @RequestParam(name = "computerName") final String computerName,
+    public String addComputerToDatabase(@RequestParam(name = "computerName") final String computerName,
             @RequestParam(name = "introduced") final String introduced,
             @RequestParam(name = "discontinued") final String discontinued,
             @RequestParam(name = "companyId") final Long companyId, final Model m) {
 
         LOG.trace("Ajout d'un ordi à la base");
         try {
-
-            CompanyDTO company = companyId == 0 ? null
-                    : this.companyValidator.findById(companyId).orElse(null);
+            CompanyDTO company = companyId == 0 ? null : this.companyValidator.findById(companyId).orElse(null);
             ComputerDTO c = new ComputerDTO(computerName, 0L, company, introduced, discontinued);
-
             long newIdentifier = this.computerValidator.addComputerDTO(c);
-            if (newIdentifier <= 0) {
-                m.addAttribute("errorCause", "The computer could not be added");
-                return "500";
-            }
+            // if (newIdentifier <= 0) {
+            // m.addAttribute("errorCause", "The computer could not be added");
+            // return "500";
+            // }
         } catch (InvalidComputerDtoException e) {
-
+            LOG.debug("", e);
             List<ComputerDTOProblems> problems = e.getProblems();
             StringBuilder sb = new StringBuilder();
             for (ComputerDTOProblems problem : problems) {
@@ -76,7 +72,6 @@ public class AddComputerController {
             m.addAttribute("errorCause", sb.toString());
             return "400";
         } catch (InvalidComputerException e) {
-
             List<ComputerProblems> problems = e.getProblems();
             StringBuilder sb = new StringBuilder();
             for (ComputerProblems problem : problems) {
@@ -86,8 +81,7 @@ public class AddComputerController {
             m.addAttribute("errorCause", sb.toString());
             return "400";
         }
-        String urlMessage = UrlEncoding
-                .encode("L'ordinateur a bien été ajouté à la base");
+        String urlMessage = UrlEncoding.encode("L'ordinateur a bien été ajouté à la base");
         return "redirect:/page?message=" + urlMessage;
     }
 

@@ -1,5 +1,6 @@
 package com.excilys.springconfig;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -73,9 +74,15 @@ public class AppConfig implements WebMvcConfigurer {
         return viewResolver;
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
+    public EntityManager getEntityManager() {
+        return getEntityManagerFactory().createEntityManager();
+    }
+
+    @Bean(destroyMethod = "")
     public EntityManagerFactory getEntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean fb = new LocalContainerEntityManagerFactoryBean();
+
         fb.setDataSource(dataSource());
         fb.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         fb.setJpaVendorAdapter(new HibernateJpaVendorAdapter());

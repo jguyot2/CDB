@@ -25,23 +25,19 @@ import com.excilys.service.InvalidComputerException;
 
 public class ComputerValidatorTest {
 
-    private static final LocalDate[] localDates = { LocalDate.of(1985, 1, 1),
-            LocalDate.of(1985, 1, 19), LocalDate.of(2000, 7, 19), LocalDate.of(2028, 8, 16) };
+    private static final LocalDate[] localDates = { LocalDate.of(1985, 1, 1), LocalDate.of(1985, 1, 19),
+            LocalDate.of(2000, 7, 19), LocalDate.of(2028, 8, 16) };
 
-    private static final Company[] fakeCompanyList = { new Company("POUET", 1L),
-            new Company("J'AIME L'OCA", 2L), new Company("Café Oz", 5L),
-            new Company("Chocolatine", 10L) };
+    private static final Company[] fakeCompanyList = { new Company("POUET", 1L), new Company("J'AIME L'OCA", 2L),
+            new Company("Café Oz", 5L), new Company("Chocolatine", 10L) };
     private static final Computer[] fakeComputerList = {
             new Computer("PouetComputer", fakeCompanyList[0], null, null, 42),
             new Computer("Raclette", null, localDates[0], localDates[1], 12),
             new Computer("PIZZA", fakeCompanyList[1], localDates[0], null, 3),
-            new Computer("PATES", null, null, null, 921),
-            new Computer("RIZ", null, localDates[3], null, 245) };
-    private static final Computer[] invalidComputerInstanceList = {
-            new Computer("", null, null, null, 214), new Computer(null, null, null, null, 0),
-            new Computer("nom", null, localDates[1], localDates[0], 12),
-            new Computer("pouet", null, null, localDates[0], 12),
-            new Computer("", null, null, localDates[0], 1),
+            new Computer("PATES", null, null, null, 921), new Computer("RIZ", null, localDates[3], null, 245) };
+    private static final Computer[] invalidComputerInstanceList = { new Computer("", null, null, null, 214),
+            new Computer(null, null, null, null, 0), new Computer("nom", null, localDates[1], localDates[0], 12),
+            new Computer("pouet", null, null, localDates[0], 12), new Computer("", null, null, localDates[0], 1),
             new Computer("", null, localDates[2], localDates[0], 12) };
     private ComputerSearcher computerSearcherMock = Mockito.mock(ComputerSearcher.class);
     private ComputerUpdater computerUpdaterMock = Mockito.mock(ComputerUpdater.class);
@@ -50,8 +46,7 @@ public class ComputerValidatorTest {
 
     @Test
     public void createComputerTest() throws SQLException {
-        Mockito.when(this.computerUpdaterMock.createComputer(Matchers.any(Computer.class)))
-                .thenReturn(24L);
+        Mockito.when(this.computerUpdaterMock.createComputer(Matchers.any(Computer.class))).thenReturn(24L);
 
         for (Computer c : fakeComputerList) {
             try {
@@ -71,8 +66,7 @@ public class ComputerValidatorTest {
                 Assert.fail();
             } catch (InvalidComputerException exn) {
                 Assert.assertEquals(exn.getProblems().size(), 1);
-                Assert.assertTrue(
-                        exn.getProblems().contains(ComputerProblems.INVALID_NAME));
+                Assert.assertTrue(exn.getProblems().contains(ComputerProblems.INVALID_NAME));
             }
         }
 
@@ -82,8 +76,7 @@ public class ComputerValidatorTest {
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
-            Assert.assertTrue(exn.getProblems()
-                    .contains(ComputerProblems.INVALID_DISCONTINUATION_DATE));
+            Assert.assertTrue(exn.getProblems().contains(ComputerProblems.INVALID_DISCONTINUATION_DATE));
         }
 
         Computer c3 = invalidComputerInstanceList[3];
@@ -92,8 +85,7 @@ public class ComputerValidatorTest {
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
-            Assert.assertTrue(exn.getProblems()
-                    .contains(ComputerProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION));
+            Assert.assertTrue(exn.getProblems().contains(ComputerProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION));
         }
         Computer c4 = invalidComputerInstanceList[4];
         try {
@@ -102,8 +94,7 @@ public class ComputerValidatorTest {
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);
             Assert.assertTrue(exn.getProblems().contains(ComputerProblems.INVALID_NAME));
-            Assert.assertTrue(exn.getProblems()
-                    .contains(ComputerProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION));
+            Assert.assertTrue(exn.getProblems().contains(ComputerProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION));
         }
         Computer c5 = invalidComputerInstanceList[5];
         try {
@@ -112,15 +103,14 @@ public class ComputerValidatorTest {
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);
             Assert.assertTrue(exn.getProblems().contains(ComputerProblems.INVALID_NAME));
-            Assert.assertTrue(exn.getProblems()
-                    .contains(ComputerProblems.INVALID_DISCONTINUATION_DATE));
+            Assert.assertTrue(exn.getProblems().contains(ComputerProblems.INVALID_DISCONTINUATION_DATE));
         }
     }
 
     @Test
     public void deleteComputerTest() throws SQLException {
 
-        Mockito.when(this.computerUpdaterMock.deleteById(56)).thenReturn(1);
+        Mockito.when(this.computerUpdaterMock.deleteById(56L)).thenReturn(1);
 
         Assert.assertEquals(1, this.validator.delete(56));
     }
@@ -189,8 +179,7 @@ public class ComputerValidatorTest {
     @Test
     public void updateComputerTest() {
 
-        Mockito.when(this.computerUpdaterMock.updateComputer(Matchers.any(Computer.class)))
-                .thenReturn(1);
+        Mockito.when(this.computerUpdaterMock.updateComputer(Matchers.any(Computer.class))).thenReturn(1);
 
         for (Computer c : fakeComputerList) {
             try {
@@ -207,8 +196,7 @@ public class ComputerValidatorTest {
                 Assert.fail();
             } catch (InvalidComputerException exn) {
                 Assert.assertEquals(exn.getProblems().size(), 1);
-                Assert.assertTrue(
-                        exn.getProblems().contains(ComputerProblems.INVALID_NAME));
+                Assert.assertTrue(exn.getProblems().contains(ComputerProblems.INVALID_NAME));
             }
         }
 
@@ -218,8 +206,7 @@ public class ComputerValidatorTest {
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
-            Assert.assertTrue(exn.getProblems()
-                    .contains(ComputerProblems.INVALID_DISCONTINUATION_DATE));
+            Assert.assertTrue(exn.getProblems().contains(ComputerProblems.INVALID_DISCONTINUATION_DATE));
         }
 
         Computer c3 = invalidComputerInstanceList[3];
@@ -228,8 +215,7 @@ public class ComputerValidatorTest {
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
-            Assert.assertTrue(exn.getProblems()
-                    .contains(ComputerProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION));
+            Assert.assertTrue(exn.getProblems().contains(ComputerProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION));
         }
         Computer c4 = invalidComputerInstanceList[4];
         try {
@@ -238,8 +224,7 @@ public class ComputerValidatorTest {
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);
             Assert.assertTrue(exn.getProblems().contains(ComputerProblems.INVALID_NAME));
-            Assert.assertTrue(exn.getProblems()
-                    .contains(ComputerProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION));
+            Assert.assertTrue(exn.getProblems().contains(ComputerProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION));
         }
         Computer c5 = invalidComputerInstanceList[5];
         try {
@@ -248,8 +233,7 @@ public class ComputerValidatorTest {
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);
             Assert.assertTrue(exn.getProblems().contains(ComputerProblems.INVALID_NAME));
-            Assert.assertTrue(exn.getProblems()
-                    .contains(ComputerProblems.INVALID_DISCONTINUATION_DATE));
+            Assert.assertTrue(exn.getProblems().contains(ComputerProblems.INVALID_DISCONTINUATION_DATE));
         }
     }
 

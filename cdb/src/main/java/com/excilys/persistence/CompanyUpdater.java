@@ -28,8 +28,8 @@ public class CompanyUpdater {
     private ComputerUpdater computerUpdater;
 
     /**
-     * Suppression d'une entreprise à partir de son identifiant, ainsi que tous les
-     * ordinateurs liés à cette entreprise
+     * Suppression d'une entreprise à partir de son identifiant, ainsi que tous les ordinateurs liés
+     * à cette entreprise
      *
      * @param companyId l'identifiant de l'entreprise à supprimer.
      * @return 1 si l'entreprise a été supprimée, 0 si l'id n'existe pas.
@@ -40,8 +40,8 @@ public class CompanyUpdater {
         try {
             conn = DataSourceUtils.getConnection(this.template.getDataSource());
             conn.setAutoCommit(false);
-            int nbComputersDeleted = this.computerUpdater
-                    .deleteComputersFromManufacturerIdWithConnection(companyId, conn);
+            int nbComputersDeleted = this.computerUpdater.deleteComputersFromManufacturerIdWithConnection(companyId,
+                    conn);
             LOG.info(nbComputersDeleted + " computers deleted");
             int numberofDeletedCompanies = this.deleteCompany(companyId, conn);
             // Test si une entreprise a été supprimée ?
@@ -62,13 +62,12 @@ public class CompanyUpdater {
     }
 
     /**
-     * Suppression de l'entreprise dont l'id est en paramètre, en utilisant la
-     * connexion en paramètre.
+     * Suppression de l'entreprise dont l'id est en paramètre, en utilisant la connexion en
+     * paramètre.
      *
      * @param id   l'identifiant de l'entreprise à supprimer
      * @param conn la connexion à utiliser pour l'identifiant
-     * @return 0 si aucune entreprise n'a été supprimée, 1 si l'etnreprise a été
-     *         supprimée
+     * @return 0 si aucune entreprise n'a été supprimée, 1 si l'etnreprise a été supprimée
      * @throws SQLException si erreur dans la base
      */
     private int deleteCompany(final long id, @NonNull final Connection conn) throws SQLException {
