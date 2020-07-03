@@ -2,9 +2,7 @@ package com.excilys.persistence;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -17,8 +15,6 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.lang.NonNull;
@@ -47,14 +43,6 @@ public class CompanySearcher implements Searcher<Company> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CompanySearcher.class);
 
-    private static final String REQUEST_COMPANIES = "SELECT name, id FROM company";
-
-    private static final String REQUEST_COMPANIES_OFFSET = "SELECT name, id FROM company ORDER BY id LIMIT :limit OFFSET :offset";
-
-    private static final String REQUEST_NB_OF_ROWS = "SELECT count(id) FROM company";
-
-    private static final String REQUEST_BY_ID = "SELECT name, id FROM company WHERE id = :id";
-
     @Autowired
     NamedParameterJdbcTemplate template;
 
@@ -69,16 +57,18 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public Optional<Company> fetchById(final long searchedId) throws PersistanceException {
-
-        Map<String, Object> m = new HashMap<>();
-        m.put("id", searchedId);
-        try {
-            Company ret = this.template.queryForObject(REQUEST_BY_ID, m, rowMapper);
-            return Optional.of(ret);
-        } catch (EmptyResultDataAccessException e) {
+        this.em = this.emf.createEntityManager();
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<Company> ct = cb.createQuery(Company.class);
+        Root<Company> r = ct.from(Company.class);
+        ct.select(r);
+        ct.where(cb.equal(r.get("id"), searchedId));
+        TypedQuery<Company> q = this.em.createQuery(ct);
+        List<Company> cl = q.getResultList();
+        if (cl.size() == 0) {
             return Optional.empty();
-        } catch (DataAccessException e) {
-            throw new PersistanceException(e);
+        } else {
+            return Optional.of(cl.get(0));
         }
     }
 

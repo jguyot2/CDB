@@ -80,7 +80,6 @@ public class AppConfig implements WebMvcConfigurer {
         fb.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         fb.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         fb.setPackagesToScan("com.excilys.model");
-
         fb.setJpaDialect(new DefaultJpaDialect());
         fb.afterPropertiesSet();
         return fb.getNativeEntityManagerFactory();
