@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Computer Database</title>
+<title><spring:message code="cdb.appName"/></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
@@ -34,10 +34,9 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="page"> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="page"> <spring:message code="cdb.appName"/> </a>
 		</div>
-	</header>
+	</header> 
 	<section id="main">
 		<c:if test="${not empty message}">
 			<div class="container">
@@ -48,8 +47,7 @@
 		</c:if>
 	</section>
 	<div class="container">
-		<h1 id="homeTitle">${currentPage.totalNumberOfElements}computers
-			found</h1>
+		<h1 id="homeTitle">${currentPage.totalNumberOfElements}<spring:message code="cdb.computersFound"/></h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
 				<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -84,7 +82,7 @@
 								class="fa fa-trash-o fa-lg"></i>
 						</a>
 					</span></th>
-					<th>Computer name <a
+					<th><spring:message code="cdb.computerName"/> <a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 						<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -109,7 +107,7 @@
 					</c:url>
 						style="font-size: xx-large">&#8595; </a>
 					</th>
-					<th>Introduced date <a
+					<th><spring:message code="cdb.introduced"/> <a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -133,7 +131,7 @@
 					</c:url>
 						style="font-size: xx-large">&#8595; </a></th>
 					<!-- Table header for Discontinued Date -->
-					<th>Discontinued date <a
+					<th><spring:message code="cdb.discontinued"/> <a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -157,7 +155,7 @@
 					</c:url>
 						style="font-size: xx-large">&#8595; </a></th>
 					<!-- Table header for Company -->
-					<th>Company <a
+					<th><spring:message code="cdb.company"/> <a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />

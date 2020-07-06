@@ -35,9 +35,8 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard.html"> Application -
-				Computer Database </a>
-		</div> 
+			<a class="navbar-brand" href="dashboard.html"><spring:message  code="cdb.appName"/></a>
+		</div>
 	</header>
 	<spring:url value="/resources/imgs/403.jpg" var="err403Img" />
 	<img class="centered" src="${err403Img}" alt="error 403" />
@@ -45,7 +44,7 @@
 
 	<section id="main">
 		<div class="container">
-			<div class="alert alert-danger">Error 403: Access denied!</div>
+			<div class="alert alert-danger"></div>
 		</div>
 	</section>
 

@@ -13,7 +13,7 @@
 %>
 <html>
 <head>
-<title>r u retarded ?</title>
+<title> <spring:message code="cdb.err400title"/> </title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <spring:url value="/resources/css/bootstrap.min.css"
@@ -40,8 +40,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="page"> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="page"> <spring:message code="cdb.appName"/> </a>
 		</div>
 	</header>
 	
@@ -52,8 +51,9 @@
 
 	<section id="main">
 		<div class="container">
-			<div class="alert alert-danger">
-				<c:if test="${not empty requestScope.errorCause}">
+			<div class="alert alert-danger"> 
+			<%--TODO : mettre à jour les explications d'erreur --%>
+				<c:if test="${not empty requestScope.errorCause}"> 
 					<br /> Cause(s) : ${requestScope.errorCause} <br />
 				</c:if>
 			</div>

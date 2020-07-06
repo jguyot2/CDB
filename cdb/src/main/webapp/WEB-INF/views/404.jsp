@@ -6,7 +6,7 @@
 %>
 <html>
 <head>
-<title>Computer Database</title>
+<title><spring:message code="cdb.appName"/></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 
@@ -24,8 +24,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard.html"> Application -
-				Computer Database </a>
+			<a class="navbar-brand" href="dashboard.html"> <spring:message code="cdb.appName"/> </a>
 		</div>
 	</header>
 

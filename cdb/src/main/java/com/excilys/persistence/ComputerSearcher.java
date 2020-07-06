@@ -160,7 +160,7 @@ public class ComputerSearcher implements Searcher<Computer> {
         ct.orderBy(getCriteriaList(cb, r, join, entries));
 
         TypedQuery<Computer> q = this.em.createQuery(ct).setFirstResult(page.getOffset())
-                .setMaxResults(page.getPageLength());
+                .setMaxResults(page.getPageLength()); 
 
         return q.getResultList();
     }
