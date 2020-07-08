@@ -63,7 +63,6 @@ public class PersistenceConfig {
     @Bean(destroyMethod = "")
     public EntityManagerFactory getEntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean fb = new LocalContainerEntityManagerFactoryBean();
-
         fb.setDataSource(dataSource());
         fb.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         fb.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
