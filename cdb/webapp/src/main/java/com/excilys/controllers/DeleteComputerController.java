@@ -24,8 +24,7 @@ public class DeleteComputerController {
     /**
      * Suppression des ordinateurs en paramètre.
      *
-     * @param selectedIdentifiers la liste des identifiants des paramètres à
-     *                            détruire.
+     * @param selectedIdentifiers la liste des identifiants des paramètres à détruire.
      * @return
      */
     @PostMapping("/page")
@@ -44,7 +43,7 @@ public class DeleteComputerController {
      *
      * @param computersIdToDelete la liste des identifiants à détruire
      * @return la liste des identifiants des ordinateurs qui n'ont pas été détruits
-     */ // TODO : màj pour détruire tous les ordinateurs à la fois.
+     */ // TODO : màj pour détruire tous les ordinateurs à la fois. => changement du comportement
     private List<Long> deleteComputers(@NonNull final List<Long> computersIdToDelete) {
         List<Long> notDeletedIds = new ArrayList<>();
         for (long id : computersIdToDelete) {
