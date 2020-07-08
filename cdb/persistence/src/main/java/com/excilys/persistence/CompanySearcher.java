@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -12,7 +12,6 @@ import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
@@ -53,10 +52,7 @@ public class CompanySearcher implements Searcher<Company> {
         }
     }
 
-    @Autowired
-    private EntityManagerFactory emf;
-
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
     /**
@@ -86,7 +82,6 @@ public class CompanySearcher implements Searcher<Company> {
      */
     @Override
     public List<Company> fetchList(@NonNull final Page page) throws PersistanceException {
-        this.em = this.emf.createEntityManager();
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Company> ct = cb.createQuery(Company.class);
         Root<Company> r = ct.from(Company.class);

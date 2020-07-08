@@ -11,13 +11,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.orm.jpa.DefaultJpaDialect;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
+@EnableTransactionManagement
 @ComponentScan(basePackages = "com.excilys.persistence")
 public class PersistenceConfig {
     private DataSource ds;
@@ -33,6 +36,13 @@ public class PersistenceConfig {
             this.ds = new HikariDataSource(config);
         }
         return this.ds;
+    }
+
+    @Bean(destroyMethod = "")
+    public JpaTransactionManager getDataSourceTransactionManager() {
+        JpaTransactionManager jpm = new JpaTransactionManager();
+        jpm.setEntityManagerFactory(getEntityManagerFactory());
+        return jpm;
     }
 
     @Bean

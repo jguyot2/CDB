@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,7 +45,7 @@ public class Computer implements Serializable {
 
     @Nullable
     @JoinColumn(name = "company_id", nullable = true)
-    @ManyToOne(targetEntity = Company.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Company.class)
     private Company manufacturer;
 
     @NonNull

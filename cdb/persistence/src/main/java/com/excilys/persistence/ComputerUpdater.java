@@ -1,10 +1,10 @@
 package com.excilys.persistence;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaUpdate;
@@ -12,12 +12,12 @@ import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.model.Computer;
+import com.excilys.model.NotImplementedException;
 
 /**
  * Classe permettant d'effectuer des mises à jour sur les éléments de la table computer à partir
@@ -25,14 +25,12 @@ import com.excilys.model.Computer;
  *
  * @author jguyot2
  */
-@Transactional
 @Repository
 public class ComputerUpdater {
+
     private static final Logger LOG = LoggerFactory.getLogger(ComputerUpdater.class);
 
-    private static final String REQUEST_DELETE_COMPUTER_FROM_COMPANY_ID = "DELETE FROM computer WHERE company_id = ?";
-
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
     /**
@@ -44,20 +42,11 @@ public class ComputerUpdater {
      * @return le nouvel identifiant correspondant à la ligne ajoutée si l'ajout a réussi, 0 si
      *         l'ajout a raté
      */
+    @Transactional
     public long createComputer(@NonNull final Computer newComputer) {
         LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
-        this.em.getTransaction().begin();
-
-        try {
-
-            this.em.merge(newComputer);
-            this.em.getTransaction().commit();
-            return newComputer.getId();
-
-        } catch (Exception e) {
-            LOG.error("", e);
-            throw e;
-        }
+        this.em.merge(newComputer);
+        return newComputer.getId();
     }
 
     /**
@@ -69,21 +58,14 @@ public class ComputerUpdater {
      *
      * @throws SQLException
      */
-    public int deleteById(final Long id) {
-        this.em.getTransaction().begin();
-
-        try {
-            CriteriaBuilder cb = this.em.getCriteriaBuilder();
-            CriteriaDelete<Computer> cd = cb.createCriteriaDelete(Computer.class);
-            Root<Computer> r = cd.from(Computer.class);
-            cd.where(cb.equal(r.get("id"), id));
-            int ret = this.em.createQuery(cd).executeUpdate();
-            this.em.getTransaction().commit();
-            return ret;
-        } catch (Exception e) {
-            LOG.error("", e);
-            throw e;
-        }
+    @Transactional
+    public int deleteById(final Long id) { // TODO : ajout d'un varargs
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaDelete<Computer> cd = cb.createCriteriaDelete(Computer.class);
+        Root<Computer> r = cd.from(Computer.class);
+        cd.where(cb.equal(r.get("id"), id));
+        int ret = this.em.createQuery(cd).executeUpdate();
+        return ret;
     }
 
     /**
@@ -96,10 +78,7 @@ public class ComputerUpdater {
      */
     public int deleteComputersFromManufacturerIdWithConnection(final long manufacturerId, final Connection conn)
             throws SQLException {
-        try (PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE_COMPUTER_FROM_COMPANY_ID)) {
-            stmt.setLong(1, manufacturerId);
-            return stmt.executeUpdate();
-        }
+        throw new NotImplementedException();
     }
 
     /**
@@ -109,25 +88,17 @@ public class ComputerUpdater {
      *
      * @return 1 si la mise à jour a eu lieu, 0 sinon
      */
+    @Transactional
     public int updateComputer(@NonNull final Computer newComputer) {
-
-        this.em.getTransaction().begin();
-
-        try {
-            CriteriaBuilder cb = this.em.getCriteriaBuilder();
-
-            CriteriaUpdate<Computer> p = cb.createCriteriaUpdate(Computer.class);
-            Root<Computer> r = p.from(Computer.class);
-            p.set(r.get("introduced"), newComputer.getIntroduction())
-                    .set("discontinued", newComputer.getDiscontinuation())
-                    .set("manufacturer", newComputer.getManufacturer()).set("name", newComputer.getName())
-                    .where(cb.equal(r.get("id"), new Long(newComputer.getId())));
-            int ret = this.em.createQuery(p).executeUpdate();
-            this.em.getTransaction().commit();
-            return ret;
-        } catch (Exception e) {
-            LOG.error("", e);
-            throw e;
-        }
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaUpdate<Computer> p = cb.createCriteriaUpdate(Computer.class);
+        Root<Computer> r = p.from(Computer.class);
+        p.set(r.get("introduced"), newComputer.getIntroduction())
+                .set("discontinued", newComputer.getDiscontinuation())
+                .set("manufacturer", newComputer.getManufacturer())
+                .set("name", newComputer.getName())
+                .where(cb.equal(r.get("id"), new Long(newComputer.getId())));
+        int ret = this.em.createQuery(p).executeUpdate();
+        return ret;
     }
 }

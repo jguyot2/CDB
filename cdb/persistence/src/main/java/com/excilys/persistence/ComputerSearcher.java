@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,23 +20,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.model.NotImplementedException;
 import com.excilys.model.Company;
-import com.excilys.model.Computer; 
+import com.excilys.model.Computer;
+import com.excilys.model.NotImplementedException;
 import com.excilys.model.Page;
 import com.excilys.model.sort.SortCriterion;
 import com.excilys.model.sort.SortEntry;
 
-/** 
+/**
  * Classe permettant d'effectuer des requêtes sur des Computers.
  *
  * @author jguyot2
  */
 @Repository
+@Transactional
 public class ComputerSearcher implements Searcher<Computer> {
 
-    @Autowired
+    @PersistenceUnit
     private EntityManagerFactory emf;
 
     @Autowired
@@ -150,7 +153,6 @@ public class ComputerSearcher implements Searcher<Computer> {
 
     public List<Computer> fetchList(@NonNull final Page page, @NonNull final String search,
             @NonNull final List<SortEntry> entries) throws PersistanceException {
-
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Computer> ct = cb.createQuery(Computer.class);
         Root<Computer> r = ct.from(Computer.class);
@@ -158,10 +160,8 @@ public class ComputerSearcher implements Searcher<Computer> {
         ct.select(r);
         ct.where(cb.like(r.get("name"), "%" + search.replace("%", "\\%") + "%"));
         ct.orderBy(getCriteriaList(cb, r, join, entries));
-
         TypedQuery<Computer> q = this.em.createQuery(ct).setFirstResult(page.getOffset())
-                .setMaxResults(page.getPageLength()); 
-
+                .setMaxResults(page.getPageLength());
         return q.getResultList();
     }
 

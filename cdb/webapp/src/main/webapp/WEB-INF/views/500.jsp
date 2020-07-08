@@ -24,6 +24,7 @@
 <link href="${fontAweSomeStyle}" rel="stylesheet" media="screen">
 <link href="${mainCss}" rel="stylesheet" media="screen">
 
+<link rel="shortcut icon" href="http://icons.iconarchive.com/icons/musett/coffee-shop/64/Croissant-icon.png">
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
