@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -17,7 +16,6 @@ import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,13 +33,9 @@ import com.excilys.model.sort.SortEntry;
  * @author jguyot2
  */
 @Repository
-@Transactional
 public class ComputerSearcher implements Searcher<Computer> {
 
-    @PersistenceUnit
-    private EntityManagerFactory emf;
-
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
     private static final Logger LOG = LoggerFactory.getLogger(ComputerSearcher.class);
@@ -57,6 +51,7 @@ public class ComputerSearcher implements Searcher<Computer> {
      * @throws PersistanceException
      */
     @Override
+    @Transactional
     public Optional<Computer> fetchById(final long searchedId) throws PersistanceException {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Computer> ct = cb.createQuery(Computer.class);
@@ -78,6 +73,7 @@ public class ComputerSearcher implements Searcher<Computer> {
      * @author jguyot2
      * @throws PersistanceException
      */
+    @Transactional
     @Override
     public List<Computer> fetchList() throws PersistanceException {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
@@ -97,6 +93,7 @@ public class ComputerSearcher implements Searcher<Computer> {
      * @throws PersistanceException
      */
     @Override
+    @Transactional
     public List<Computer> fetchList(@NonNull final Page page) throws PersistanceException {
         return fetchList(page, Arrays.asList());
     }
@@ -123,6 +120,7 @@ public class ComputerSearcher implements Searcher<Computer> {
         }
     }
 
+    @Transactional
     public List<Computer> fetchList(@NonNull final Page page, @NonNull final List<SortEntry> entries)
             throws PersistanceException {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
@@ -137,6 +135,7 @@ public class ComputerSearcher implements Searcher<Computer> {
         return q.getResultList();
     }
 
+    @Transactional
     public List<Computer> fetchList(@NonNull final Page p, @NonNull final String search) throws PersistanceException {
         return fetchList(p, search, Arrays.asList());
     }
@@ -151,6 +150,7 @@ public class ComputerSearcher implements Searcher<Computer> {
         return order;
     }
 
+    @Transactional
     public List<Computer> fetchList(@NonNull final Page page, @NonNull final String search,
             @NonNull final List<SortEntry> entries) throws PersistanceException {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
@@ -169,6 +169,7 @@ public class ComputerSearcher implements Searcher<Computer> {
      * @return Le nombre d'éléments computer enregistrés dans la base.
      * @throws PersistanceException
      */
+    @Transactional
     @Override
     public int getNumberOfElements() throws PersistanceException {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
@@ -180,6 +181,7 @@ public class ComputerSearcher implements Searcher<Computer> {
         return q.getSingleResult().intValue();
     }
 
+    @Transactional
     public int getNumberOfFoundElements(@NonNull final String search) throws PersistanceException {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Long> ct = cb.createQuery(Long.class);
@@ -190,6 +192,7 @@ public class ComputerSearcher implements Searcher<Computer> {
         return q.getSingleResult().intValue();
     }
 
+    @Transactional
     public List<Computer> searchByName(@NonNull final String search) throws PersistanceException {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Computer> ct = cb.createQuery(Computer.class);

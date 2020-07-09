@@ -20,7 +20,8 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@EnableTransactionManagement
+
+@EnableTransactionManagement(proxyTargetClass = true)
 @ComponentScan(basePackages = "com.excilys.persistence")
 public class PersistenceConfig {
     private DataSource ds;

@@ -15,7 +15,7 @@
 <c:set value="${requestScope.sortParameterValue}" var="sortUrl" />
 <!DOCTYPE html>
 <html>
-<head>
+<head> 
 <title><spring:message code="cdb.appName"/></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
