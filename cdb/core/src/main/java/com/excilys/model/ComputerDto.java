@@ -10,12 +10,12 @@ import org.springframework.lang.Nullable;
  *
  * @author jguyot2
  */
-public final class ComputerDTO {
+public final class ComputerDto {
     /**
      * Représentation de l'identifiant de l'entreprise par son identifiant.
      */
     @Nullable
-    private CompanyDTO company;
+    private CompanyDto company;
 
     /**
      * Représentation de la date d'arrêt, au format donné dans DateMapper
@@ -48,8 +48,8 @@ public final class ComputerDTO {
      * @param strIntroductionDate
      * @param strDiscontinuationDate
      */
-    public ComputerDTO(final String computerName, final String computerId,
-            final CompanyDTO companyId, final String strIntroductionDate,
+    public ComputerDto(final String computerName, final String computerId,
+            final CompanyDto companyId, final String strIntroductionDate,
             final String strDiscontinuationDate) {
         this.name = computerName;
         this.id = Long.valueOf(computerId);
@@ -58,16 +58,16 @@ public final class ComputerDTO {
         this.discontinued = strDiscontinuationDate;
     }
 
-    public ComputerDTO(final String name, final Long id, final Long companyId,
+    public ComputerDto(final String name, final Long id, final Long companyId,
             final String introduced, final String discontinued) {
         this.name = name;
         this.id = id;
-        this.company = new CompanyDTO(companyId);
+        this.company = new CompanyDto(companyId);
         this.introduced = introduced;
         this.discontinued = discontinued;
     }
 
-    public ComputerDTO(final String name, final Long id, final CompanyDTO company,
+    public ComputerDto(final String name, final Long id, final CompanyDto company,
             final String introduced, final String discontinued) {
         this.name = name;
         this.id = id;
@@ -81,7 +81,7 @@ public final class ComputerDTO {
      * @param other
      * @return .
      */
-    public boolean equals(final ComputerDTO other) {
+    public boolean equals(final ComputerDto other) {
         if (this == other) {
             return true;
         }
@@ -96,10 +96,10 @@ public final class ComputerDTO {
 
     @Override
     public boolean equals(final Object o) {
-        return o instanceof ComputerDTO ? equals((ComputerDTO) o) : false;
+        return o instanceof ComputerDto ? equals((ComputerDto) o) : false;
     }
 
-    public CompanyDTO getCompany() {
+    public CompanyDto getCompany() {
         return this.company;
     }
 
@@ -119,7 +119,7 @@ public final class ComputerDTO {
         return this.name;
     }
 
-    public void setCompany(final CompanyDTO newStrEntrepriseId) {
+    public void setCompany(final CompanyDto newStrEntrepriseId) {
         this.company = newStrEntrepriseId;
     }
 

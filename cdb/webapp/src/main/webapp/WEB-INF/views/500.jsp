@@ -41,7 +41,7 @@
 			</div>
 		</div>
 	</section>
-
+ 
 	<spring:url value="/resources/js/jquery.min.js" var="jqueryMinJS" />
 	<spring:url value="/resources/js/bootstrap.min.js" var="bootsrapJS" />
 	<spring:url value="/resources/js/dashboard.js" var="dashboardJS" />

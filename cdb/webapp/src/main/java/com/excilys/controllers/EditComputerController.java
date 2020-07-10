@@ -18,8 +18,8 @@ import com.excilys.adapters.CompanyAdapter;
 import com.excilys.adapters.ComputerDTOProblems;
 import com.excilys.adapters.ComputerAdapter;
 import com.excilys.adapters.InvalidComputerDtoException;
-import com.excilys.model.CompanyDTO;
-import com.excilys.model.ComputerDTO;
+import com.excilys.model.CompanyDto;
+import com.excilys.model.ComputerDto;
 import com.excilys.service.ComputerProblems;
 import com.excilys.service.InvalidComputerException;
 
@@ -61,7 +61,7 @@ public class EditComputerController {
             @RequestParam(name = "companyId") final Long companyId, @NonNull final Model m) {
         LOG.trace("Computer edition");
         try {
-            ComputerDTO c = new ComputerDTO(computerName, computerId.toString(), null, introduced,
+            ComputerDto c = new ComputerDto(computerName, computerId.toString(), null, introduced,
                     discontinued);
             c.setCompany(this.companyValidator.findById(companyId).orElse(null));
             int isComputerEdited = this.computerValidator.updateComputer(c);
@@ -109,10 +109,10 @@ public class EditComputerController {
     @GetMapping
     private String getToEditPage(@RequestParam(name = "id") final Long computerId,
             @NonNull final Model m) {
-        List<CompanyDTO> companyList = this.companyValidator.fetchList();
-        Optional<ComputerDTO> foundComputerOpt = this.computerValidator.findById(computerId);
+        List<CompanyDto> companyList = this.companyValidator.fetchList();
+        Optional<ComputerDto> foundComputerOpt = this.computerValidator.findById(computerId);
         if (foundComputerOpt.isPresent()) {
-            ComputerDTO computer = foundComputerOpt.get();
+            ComputerDto computer = foundComputerOpt.get();
             if (computer.getCompany() != null) {
                 companyList.remove(computer.getCompany());
             }

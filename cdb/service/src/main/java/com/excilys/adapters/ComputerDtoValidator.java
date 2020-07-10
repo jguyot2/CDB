@@ -8,11 +8,11 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import com.excilys.mapper.DateMapper;
-import com.excilys.model.ComputerDTO;
+import com.excilys.model.ComputerDto;
 
 @Component
 public class ComputerDtoValidator {
-    public void validate(final ComputerDTO computerDTO) throws InvalidComputerDtoException {
+    public void validate(final ComputerDto computerDTO) throws InvalidComputerDtoException {
         List<ComputerDTOProblems> problems = new ArrayList<>();
         validateDto(computerDTO, problems);
         if (!problems.isEmpty()) {
@@ -22,7 +22,7 @@ public class ComputerDtoValidator {
 
     Logger LOG = org.slf4j.LoggerFactory.getLogger(ComputerDtoValidator.class);
 
-    public void validateDto(final ComputerDTO computerDTO, @NonNull final List<ComputerDTOProblems> problems) {
+    public void validateDto(final ComputerDto computerDTO, @NonNull final List<ComputerDTOProblems> problems) {
 
         if (computerDTO.getName() == null || computerDTO.getName().trim().isEmpty()) {
             problems.add(ComputerDTOProblems.INVALID_NAME);

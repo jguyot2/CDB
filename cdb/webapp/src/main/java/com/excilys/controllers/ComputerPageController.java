@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.adapters.ComputerAdapter;
-import com.excilys.model.ComputerDTO;
+import com.excilys.model.ComputerDto;
 import com.excilys.model.Page;
 import com.excilys.model.sort.DuplicatedSortEntriesException;
 import com.excilys.model.sort.IllegalCriterionStringException;
@@ -158,7 +158,7 @@ public class ComputerPageController {
      * @param pagesToShow
      * @param m
      */
-    private static void setModelParameters(@NonNull final Page page, @NonNull final List<ComputerDTO> computerList,
+    private static void setModelParameters(@NonNull final Page page, @NonNull final List<ComputerDto> computerList,
             @Nullable final String search, @Nullable final String message, @Nullable final String sortUrlParameterValue,
             @Nullable final String urlSearch, @NonNull final List<Integer> pagesToShow, @NonNull final Model m) {
         m.addAttribute("page", page);
@@ -184,7 +184,7 @@ public class ComputerPageController {
      *                                        résultats qui sont associés à un même paramètre (e.g
      *                                        deux ordres sur le nom).
      */
-    private List<ComputerDTO> getComputerList(final Page page, final String search, final List<SortEntry> sortEntries)
+    private List<ComputerDto> getComputerList(final Page page, final String search, final List<SortEntry> sortEntries)
             throws DuplicatedSortEntriesException {
         if (search != null) {
             return this.validator.fetchList(page, search, sortEntries);
@@ -248,7 +248,7 @@ public class ComputerPageController {
         try {
             Page p = getPageFromParameters(pageLength, pageNumber, search);
             List<SortEntry> sortEntries = getSortEntryFromParameters(sortParam, newSortParameter);
-            List<ComputerDTO> computerList = getComputerList(p, search, sortEntries);
+            List<ComputerDto> computerList = getComputerList(p, search, sortEntries);
             List<Integer> pagesToShow = getPagesToShow(p);
             Optional<String> sortUrl = getUrlParameterFromSortEntries(sortEntries);
             Optional<String> searchUrl = getSearchUrl(search);

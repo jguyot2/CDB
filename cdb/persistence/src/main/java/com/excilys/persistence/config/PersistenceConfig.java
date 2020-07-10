@@ -1,6 +1,5 @@
 package com.excilys.persistence.config;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -54,11 +53,6 @@ public class PersistenceConfig {
     @Bean
     public JdbcTemplate template() {
         return new JdbcTemplate(getDataSource());
-    }
-
-    @Bean(destroyMethod = "")
-    public EntityManager getEntityManager() {
-        return getEntityManagerFactory().createEntityManager();
     }
 
     @Bean(destroyMethod = "")

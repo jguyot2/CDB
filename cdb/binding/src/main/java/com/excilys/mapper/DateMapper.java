@@ -11,8 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 
 /**
- * Fonctions de conversion de formats de date, notamment entre LocalDate et
- * java.sql.Date .
+ * Fonctions de conversion de formats de date, notamment entre LocalDate et java.sql.Date .
  *
  * @author jguyot2
  */
@@ -25,8 +24,8 @@ public final class DateMapper {
     private static final Logger LOG = LoggerFactory.getLogger(DateMapper.class);
 
     /**
-     * Fonction de conversion d'une instance de LocalDate vers une instance de
-     * java.sql.Date équivalente.
+     * Fonction de conversion d'une instance de LocalDate vers une instance de java.sql.Date
+     * équivalente.
      *
      * @param localDate la date à laquelle appliquer la conversion
      * @return une instance de java.sql.date correspondante
@@ -41,13 +40,11 @@ public final class DateMapper {
     }
 
     /**
-     * Conversion d'une date en chaîne de caractères au format donné dans
-     * DATE_PATTERN
+     * Conversion d'une date en chaîne de caractères au format donné dans DATE_PATTERN
      *
      * @param ld la date à convertir
-     * @return un optional contenant chaîne correspondant à la date en paramètre au
-     *         format correspondant à DATE_PATTERN, ou Optional.empty() si le
-     *         paramètre est nul
+     * @return un optional contenant chaîne correspondant à la date en paramètre au format
+     *         correspondant à DATE_PATTERN, ou Optional.empty() si le paramètre est nul
      */
     public static Optional<String> localDateToString(final LocalDate ld) {
         LOG.trace("Conversion de localDate vers Str. localDate = " + ld);
@@ -59,13 +56,12 @@ public final class DateMapper {
     }
 
     /**
-     * Fonction de conversion d'une instance de java.sql.Date vers une instance de
-     * LocalDate.
+     * Fonction de conversion d'une instance de java.sql.Date vers une instance de LocalDate.
      *
      * @param sqlDate
      *
-     * @return un Optional<LocalDate> contenant la date passée en param, ou vide si
-     *         le param est nul.
+     * @return un Optional<LocalDate> contenant la date passée en param, ou vide si le param est
+     *         nul.
      */
     @SuppressWarnings("deprecation")
     public static Optional<LocalDate> sqlDateToLocalDate(@Nullable final Date sqlDate) {
@@ -78,15 +74,13 @@ public final class DateMapper {
     }
 
     /**
-     * Convertit une date au format donné dans DATE_PATTERN en une instance de
-     * LocalDate.
+     * Convertit une date au format donné dans DATE_PATTERN en une instance de LocalDate.
      *
-     * @param dateRepr une chaine de caractères correspondant à une date au format
-     *                 correspondant à <DATE_PATTERN>
+     * @param dateRepr une chaine de caractères correspondant à une date au format correspondant à
+     *                 <DATE_PATTERN>
      *
-     * @return un optional contenant la date correspondante à la chaîne en param, ou
-     *         vide dans le cas où le paramètre est nul ou ne correspondant pasau
-     *         format attendu
+     * @return un optional contenant la date correspondante à la chaîne en param, ou vide dans le
+     *         cas où le paramètre est nul ou ne correspondant pasau format attendu
      *
      * @throws DateTimeParseException si la date n'est pas au bon format
      */

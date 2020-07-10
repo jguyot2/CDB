@@ -6,10 +6,12 @@ Attributs de requête nécessaires
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
 
 <%@ page isELIgnored="false"%>
 <%@ page
-	import="com.excilys.model.CompanyDTO,java.util.List,com.excilys.model.ComputerDTO,java.util.Objects"%>
+	import="com.excilys.model.CompanyDto,java.util.List,com.excilys.model.ComputerDto,java.util.Objects"%>
 
 <c:set var="companyList" value="${requestScope.companyList}" />
 <c:set var="computer" value="${requestScope.computer}" />
@@ -49,7 +51,7 @@ Attributs de requête nécessaires
 						${computer.id}</div>
 					<h1>Edit Computer</h1>
 
-					<form action="editComputer" method="POST">
+					<form:form action="editComputer" method="POST">
 						<input type="hidden" value="${computer.id}" id="id" name="id" />
 						<fieldset>
 							<div class="form-group">
@@ -89,7 +91,7 @@ Attributs de requête nécessaires
 							<input type="submit" value="Edit" class="btn btn-primary">
 							or <a href="page" class="btn btn-default">Cancel</a>
 						</div>
-					</form>
+					</form:form>
 				</div>
 			</div>
 		</div>

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaUpdate;
@@ -43,7 +44,7 @@ public class ComputerUpdater {
      *         l'ajout a raté
      */
     @Transactional
-    public long createComputer(@NonNull final Computer newComputer) {
+    public long createComputer(@NonNull final Computer newComputer) throws PersistenceException {
         LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
         this.em.merge(newComputer);
         return newComputer.getId();

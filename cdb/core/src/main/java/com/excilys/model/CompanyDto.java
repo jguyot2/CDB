@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import org.springframework.lang.Nullable;
 
-public final class CompanyDTO {
+public final class CompanyDto {
 
     @Nullable
     private Long id;
@@ -12,23 +12,23 @@ public final class CompanyDTO {
     @Nullable
     private String name;
 
-    public CompanyDTO() {
+    public CompanyDto() {
     }
 
-    public CompanyDTO(final String companyName) {
+    public CompanyDto(final String companyName) {
         this.name = companyName;
     }
 
-    public CompanyDTO(final Long id) {
+    public CompanyDto(final Long id) {
         this.id = id;
     }
 
-    public CompanyDTO(final String companyName, final Long companyId) {
+    public CompanyDto(final String companyName, final Long companyId) {
         this.name = companyName;
         this.id = companyId;
     }
 
-    public boolean equals(final CompanyDTO other) {
+    public boolean equals(final CompanyDto other) {
         if (this == other) {
             return true;
         }
@@ -40,7 +40,7 @@ public final class CompanyDTO {
 
     @Override
     public boolean equals(final Object o) {
-        return o instanceof CompanyDTO && equals((CompanyDTO) o);
+        return o instanceof CompanyDto && equals((CompanyDto) o);
     }
 
     public Long getId() {

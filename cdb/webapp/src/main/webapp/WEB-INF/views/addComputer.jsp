@@ -6,8 +6,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-<%@ page import="com.excilys.model.CompanyDTO,java.util.List"%>
+<%@ page import="com.excilys.model.CompanyDto,java.util.List"%>
 <%@ page isELIgnored="false" %>
 
 <c:set value="${requestScope.companyList}" var="companyList" />
@@ -72,7 +73,7 @@
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1><spring:message code="cdb.addComputer"/></h1>
-					<form name="addComputer" action="addComputer" method="POST"
+					<form:form name="addComputer" action="addComputer" method="POST"
 						onsubmit="return validateForm()">
 						<fieldset>
 							<div class="form-group">
@@ -101,10 +102,10 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="<spring:message code="cdb.add"/>"class="btn btn-primary">
+		 					<input type="submit" value="<spring:message code="cdb.add"/>"class="btn btn-primary">
 							<spring:message code="cdb.or"/> <a href="page" class="btn btn-default"><spring:message code="cdb.cancel"/></a>
 						</div>
-					</form>
+					</form:form>
 				</div>
 			</div>
 		</div>

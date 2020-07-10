@@ -1,44 +1,34 @@
 package com.excilys.controllers.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(final HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/", "/page", "/addUser")
+                .permitAll()
+                .antMatchers(HttpMethod.POST, "/addUser")
+                .permitAll();
 
-        http.csrf().disable();
+        http.authorizeRequests().antMatchers("/editComputer*", "/addComputer")
+                .hasAnyRole("USER", "ADMIN");
+        http.formLogin().permitAll();
+        http.logout().permitAll();
+        http.httpBasic();
+    }
 
-        // The pages does not require login
-        http.authorizeRequests().antMatchers("/").permitAll();
-
-        // /userInfo page requires login as USER or ADMIN.
-        // If no login, it will redirect to /login page.
-        http.authorizeRequests().antMatchers("/page").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");
-
-        // For ADMIN only.
-        // http.authorizeRequests().antMatchers("/admin").access("hasRole('ROLE_ADMIN')");
-
-        // When the user has logged in as XX.
-        // But access a page that requires role YY,
-        // AccessDeniedException will throw.
-        http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
-
-        // Config for Login Form
-        http.authorizeRequests().and().formLogin()//
-                // Submit URL of login page.
-                .loginProcessingUrl("/j_spring_security_check") // Submit URL
-                .loginPage("/login")//
-                .defaultSuccessUrl("/userInfo")//
-                .failureUrl("/login?error=true")//
-                .usernameParameter("username")//
-                .passwordParameter("password")
-                // Config for Logout Page
-                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/logoutSuccessful");
-
+    @Bean
+    public PasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

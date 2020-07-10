@@ -9,9 +9,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import com.excilys.model.Company;
-import com.excilys.model.CompanyDTO;
+import com.excilys.model.CompanyDto;
 import com.excilys.model.Computer;
-import com.excilys.model.ComputerDTO;
+import com.excilys.model.ComputerDto;
 
 /**
  *
@@ -24,11 +24,10 @@ public final class ComputerMapper {
      * Conversion ComputerDTO > Computer.
      *
      * @param dtoComputer
-     * @return un Optional contenant la valeur de Computer associée au DTO si ce
-     *         dernier est cohérent (=les identifiants sont bien des nombres, et le
-     *         nom n'est pas vide).
+     * @return un Optional contenant la valeur de Computer associée au DTO si ce dernier est
+     *         cohérent (=les identifiants sont bien des nombres, et le nom n'est pas vide).
      */
-    public static Optional<Computer> computerDTOToComputer(@NonNull final ComputerDTO dtoComputer) {
+    public static Optional<Computer> computerDTOToComputer(@NonNull final ComputerDto dtoComputer) {
         Company company = CompanyMapper.companyDTOToCompany(dtoComputer.getCompany()).orElse(null);
         return computerDTOToComputer(dtoComputer, company);
     }
@@ -38,11 +37,11 @@ public final class ComputerMapper {
      *
      * @param dtoComputer  un DTO représentant un ordinateur.
      * @param manufacturer Le fabricant de l'ordinateur.
-     * @return un optional contenant l'ordinateur associé au DTO, avec l'attribut
-     *         "manufacturer" égal au second paramètre (pouvant être nul), ou un
-     *         Optional vide si les valeurs du DTO sont incohérentes.
+     * @return un optional contenant l'ordinateur associé au DTO, avec l'attribut "manufacturer"
+     *         égal au second paramètre (pouvant être nul), ou un Optional vide si les valeurs du
+     *         DTO sont incohérentes.
      */
-    private static Optional<Computer> computerDTOToComputer(@Nullable final ComputerDTO dtoComputer,
+    private static Optional<Computer> computerDTOToComputer(@Nullable final ComputerDto dtoComputer,
             @Nullable final Company manufacturer) {
         if (dtoComputer == null) {
             LOG.debug("DTO > computer : param nul");
@@ -65,7 +64,7 @@ public final class ComputerMapper {
      * @return un optional contenant une instance de ComputerDTO correspondant à la
      *
      */
-    public static Optional<ComputerDTO> computerToDTO(@Nullable final Computer c) {
+    public static Optional<ComputerDto> computerToDTO(@Nullable final Computer c) {
         if (c == null) {
             LOG.info("computer > DTO : param nul");
             return Optional.empty();
@@ -74,12 +73,12 @@ public final class ComputerMapper {
         String id = c.getId() == 0 ? null : String.valueOf(c.getId());
         Optional<String> dateIntro = DateMapper.localDateToString(c.getIntroduction());
         Optional<String> dateDisco = DateMapper.localDateToString(c.getDiscontinuation());
-        Optional<CompanyDTO> company = CompanyMapper.companyToDTO(c.getManufacturer());
-        return Optional.of(new ComputerDTO(name, id, company.orElse(null), dateIntro.orElse(null),
+        Optional<CompanyDto> company = CompanyMapper.companyToDTO(c.getManufacturer());
+        return Optional.of(new ComputerDto(name, id, company.orElse(null), dateIntro.orElse(null),
                 dateDisco.orElse(null)));
     }
 
-    private static String getNameFromComputerDTO(@Nullable final ComputerDTO dtoComputer) {
+    private static String getNameFromComputerDTO(@Nullable final ComputerDto dtoComputer) {
         String computerName = null;
         if (dtoComputer.getName() != null && !dtoComputer.getName().trim().isEmpty()) {
             computerName = dtoComputer.getName();

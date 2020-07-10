@@ -5,7 +5,7 @@
 
 <%@ page isELIgnored="false"%>
 <%@ page
-	import="com.excilys.model.ComputerDTO,com.excilys.model.Page,java.util.ArrayList,java.util.List,java.util.Objects"%>
+	import="com.excilys.model.ComputerDto,com.excilys.model.Page,java.util.ArrayList,java.util.List,java.util.Objects"%>
 
 <c:set value="${requestScope.computerList}" var="computerList" />
 <c:set value="${requestScope.page}" var="currentPage" />

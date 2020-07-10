@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.excilys.mapper.ComputerMapper;
 import com.excilys.model.Computer;
-import com.excilys.model.ComputerDTO;
+import com.excilys.model.ComputerDto;
 import com.excilys.model.Page;
 import com.excilys.model.sort.DuplicatedSortEntriesException;
 import com.excilys.model.sort.SortEntry;
@@ -29,12 +29,12 @@ import com.excilys.service.SearchValidator;
  *
  */
 @Service
-public class ComputerAdapter implements SearchValidator<ComputerDTO> {
+public class ComputerAdapter implements SearchValidator<ComputerDto> {
 
     @Autowired
     private ComputerDtoValidator dtoInstanceValidator;
 
-    private Computer getComputerFromDto(final ComputerDTO dtoInstance)
+    private Computer getComputerFromDto(final ComputerDto dtoInstance)
             throws InvalidComputerDtoException {
         if (dtoInstance == null) {
             throw new InvalidComputerDtoException(Arrays.asList(ComputerDTOProblems.NULL_DTO));
@@ -44,7 +44,7 @@ public class ComputerAdapter implements SearchValidator<ComputerDTO> {
 
     }
 
-    private static List<ComputerDTO> convertList(@NonNull final List<Computer> l) {
+    private static List<ComputerDto> convertList(@NonNull final List<Computer> l) {
         return l.stream().map(c -> ComputerMapper.computerToDTO(c).get())
                 .collect(Collectors.toList());
     }
@@ -69,7 +69,7 @@ public class ComputerAdapter implements SearchValidator<ComputerDTO> {
      * @return l'identifiant de l'ordinateur ajouté si la mise à jour a réussi, 0
      *         sinon.
      */
-    public long addComputerDTO(@Nullable final ComputerDTO computerDTO)
+    public long addComputerDTO(@Nullable final ComputerDto computerDTO)
             throws InvalidComputerDtoException, InvalidComputerException {
 
         if (computerDTO == null) {
@@ -91,36 +91,36 @@ public class ComputerAdapter implements SearchValidator<ComputerDTO> {
     }
 
     @Override
-    public List<ComputerDTO> fetchList() {
+    public List<ComputerDto> fetchList() {
         return convertList(this.computerValidator.fetchList());
     }
 
     @Override
-    public List<ComputerDTO> fetchList(@NonNull final Page page) {
+    public List<ComputerDto> fetchList(@NonNull final Page page) {
         return convertList(this.computerValidator.fetchList(page));
     }
 
-    public List<ComputerDTO> fetchList(@NonNull final Page p,
+    public List<ComputerDto> fetchList(@NonNull final Page p,
             @NonNull final List<SortEntry> sortEntries) throws DuplicatedSortEntriesException {
         return convertList(this.computerValidator.fetchList(p, sortEntries));
     }
 
-    public List<ComputerDTO> fetchList(@NonNull final Page p, @NonNull final String searchedName) {
+    public List<ComputerDto> fetchList(@NonNull final Page p, @NonNull final String searchedName) {
         return convertList(this.computerValidator.fetchList(p, searchedName));
     }
 
-    public List<ComputerDTO> fetchList(@NonNull final Page p, @NonNull final String search,
+    public List<ComputerDto> fetchList(@NonNull final Page p, @NonNull final String search,
             @NonNull final List<SortEntry> sortEntries) throws DuplicatedSortEntriesException {
         return convertList(this.computerValidator.fetchList(p, search, sortEntries));
     }
 
-    public List<ComputerDTO> fetchList(@NonNull final String search) {
+    public List<ComputerDto> fetchList(@NonNull final String search) {
         return convertList(this.computerValidator.fetchList(search));
 
     }
 
     @Override
-    public Optional<ComputerDTO> findById(final long id) {
+    public Optional<ComputerDto> findById(final long id) {
         return this.computerValidator.findById(id)
                 .map((final Computer cpt) -> ComputerMapper.computerToDTO(cpt).get());
     }
@@ -145,7 +145,7 @@ public class ComputerAdapter implements SearchValidator<ComputerDTO> {
         }
     }
 
-    public int updateComputer(@Nullable final ComputerDTO computerValue)
+    public int updateComputer(@Nullable final ComputerDto computerValue)
             throws InvalidComputerDtoException, InvalidComputerException {
         if (computerValue == null) {
             throw new InvalidComputerDtoException(Arrays.asList(ComputerDTOProblems.NULL_DTO));

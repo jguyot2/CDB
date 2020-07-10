@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 
 import com.excilys.mapper.CompanyMapper;
 import com.excilys.model.Company;
-import com.excilys.model.CompanyDTO;
+import com.excilys.model.CompanyDto;
 import com.excilys.model.Page;
 import com.excilys.service.CompanyService;
 import com.excilys.service.SearchValidator;
 
 @Service
-public final class CompanyAdapter implements SearchValidator<CompanyDTO> {
+public final class CompanyAdapter implements SearchValidator<CompanyDto> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CompanyAdapter.class);
 
@@ -31,7 +31,7 @@ public final class CompanyAdapter implements SearchValidator<CompanyDTO> {
      * @return La liste des ordinateurs de la base sous forme de DTO
      */
     @Override
-    public List<CompanyDTO> fetchList() {
+    public List<CompanyDto> fetchList() {
         LOG.info("DTOCompany : fetchlist");
         List<Company> companyList = this.companyValidator.fetchList();
         return companyList.stream()
@@ -40,14 +40,14 @@ public final class CompanyAdapter implements SearchValidator<CompanyDTO> {
     }
 
     @Override
-    public List<CompanyDTO> fetchList(@NonNull final Page page) {
+    public List<CompanyDto> fetchList(@NonNull final Page page) {
         List<Company> companyList = this.companyValidator.fetchList(page);
         return companyList.stream().map(c -> CompanyMapper.companyToDTO(c).orElse(null))
                 .filter(dto -> dto != null).collect(Collectors.toList());
     }
 
     @Override
-    public Optional<CompanyDTO> findById(final long id) {
+    public Optional<CompanyDto> findById(final long id) {
         LOG.info("Recherche de l'id " + id);
         Optional<Company> foundCompanyOpt = this.companyValidator.findById(id);
         if (foundCompanyOpt.isPresent()) {

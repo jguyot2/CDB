@@ -17,8 +17,8 @@ import com.excilys.adapters.CompanyAdapter;
 import com.excilys.adapters.ComputerAdapter;
 import com.excilys.adapters.ComputerDTOProblems;
 import com.excilys.adapters.InvalidComputerDtoException;
-import com.excilys.model.CompanyDTO;
-import com.excilys.model.ComputerDTO;
+import com.excilys.model.CompanyDto;
+import com.excilys.model.ComputerDto;
 import com.excilys.service.ComputerProblems;
 import com.excilys.service.InvalidComputerException;
 
@@ -54,8 +54,8 @@ public class AddComputerController {
 
         LOG.trace("Ajout d'un ordi à la base");
         try {
-            CompanyDTO company = companyId == 0 ? null : this.companyValidator.findById(companyId).orElse(null);
-            ComputerDTO c = new ComputerDTO(computerName, 0L, company, introduced, discontinued);
+            CompanyDto company = companyId == 0 ? null : this.companyValidator.findById(companyId).orElse(null);
+            ComputerDto c = new ComputerDto(computerName, 0L, company, introduced, discontinued);
             long newIdentifier = this.computerValidator.addComputerDTO(c);
             // if (newIdentifier <= 0) {
             // m.addAttribute("errorCause", "The computer could not be added");
@@ -102,7 +102,7 @@ public class AddComputerController {
     @GetMapping
     public String showAddComputerPage(@NonNull final Model m) {
         LOG.trace("Redirection vers le computerPage");
-        List<CompanyDTO> companyList = this.companyValidator.fetchList();
+        List<CompanyDto> companyList = this.companyValidator.fetchList();
         m.addAttribute("companyList", companyList);
         return "addComputer";
     }
