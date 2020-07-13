@@ -3,6 +3,7 @@ package com.excilys.service;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.excilys.model.Company;
 import com.excilys.model.Computer;
 import com.excilys.model.Page;
+import com.excilys.model.sort.DuplicatedSortEntriesException;
+import com.excilys.model.sort.SortCriterion;
+import com.excilys.model.sort.SortEntry;
 import com.excilys.persistence.ComputerSearcher;
 import com.excilys.persistence.ComputerUpdater;
 import com.excilys.persistence.PersistanceException;
@@ -29,7 +33,7 @@ import com.excilys.serviceconfig.ServiceConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceConfig.class, PersistenceConfig.class })
-public class ComputerValidatorTest {
+public class ComputerServiceTest {
 
     private static final LocalDate[] localDates = { LocalDate.of(1985, 1, 1), LocalDate.of(1985, 1, 19),
             LocalDate.of(2000, 7, 19), LocalDate.of(2028, 8, 16) };
@@ -54,7 +58,7 @@ public class ComputerValidatorTest {
     @Autowired
     private ComputerService validator;
 
-    @Test
+    @Test // TODO refacto cette fonction de test
     public void createComputerTest() throws SQLException, PersistanceException {
         Mockito.when(this.computerUpdaterMock.createComputer(Matchers.any(Computer.class))).thenReturn(24L);
         System.out.println(this.validator);
@@ -125,6 +129,12 @@ public class ComputerValidatorTest {
     }
 
     @Test
+    public void deleteComputerDbExceptionTest() throws SQLException, PersistanceException {
+        Mockito.when(this.computerUpdaterMock.deleteById(56L)).thenThrow(new PersistanceException());
+        Assert.assertEquals(-1, this.validator.delete(56));
+    }
+
+    @Test
     public void fetchListTest() throws PersistanceException {
         List<Computer> computerList = new ArrayList<>();
         for (Computer c : fakeComputerList) {
@@ -136,6 +146,13 @@ public class ComputerValidatorTest {
         for (Computer comp : fakeComputerList) {
             Assert.assertTrue(l.contains(comp));
         }
+    }
+
+    @Test
+    public void fetchListDbExceptionTest() throws PersistanceException {
+        Mockito.when(this.computerSearcherMock.fetchList()).thenThrow(new PersistanceException());
+        List<Computer> l = this.validator.fetchList();
+        Assert.assertTrue(l.isEmpty());
     }
 
     @Test
@@ -153,6 +170,13 @@ public class ComputerValidatorTest {
     }
 
     @Test
+    public void fetchWithOffsetDbExceptionTest() throws PersistanceException {
+        Page p = new Page(fakeComputerList.length);
+        Mockito.when(this.computerSearcherMock.fetchList(p)).thenThrow(new PersistanceException());
+        Assert.assertTrue(this.validator.fetchList(p).isEmpty());
+    }
+
+    @Test
     public void findByIdTest() throws PersistanceException {
         Computer c = fakeComputerList[0];
         Optional<Computer> computerOpt = Optional.of(c);
@@ -166,14 +190,23 @@ public class ComputerValidatorTest {
 
     }
 
-    //// Partie mise à jour
+    @Test
+    public void findByIdDbExceptionTest() throws PersistanceException {
+        Computer c = fakeComputerList[0];
+        Mockito.when(this.computerSearcherMock.fetchById(c.getId())).thenThrow(new PersistanceException());
+        Assert.assertEquals(Optional.empty(), this.validator.findById(c.getId()));
+    }
 
     @Test
     public void getNumberOfElementsTest() throws PersistanceException {
-
         Mockito.when(this.computerSearcherMock.getNumberOfElements()).thenReturn(523);
-
         Assert.assertEquals(this.validator.getNumberOfElements(), 523);
+    }
+
+    @Test
+    public void getNumberOfElementsDbExceptionTest() throws PersistanceException {
+        Mockito.when(this.computerSearcherMock.getNumberOfElements()).thenThrow(new PersistanceException());
+        Assert.assertEquals(this.validator.getNumberOfElements(), -1);
     }
 
     @Before
@@ -182,7 +215,7 @@ public class ComputerValidatorTest {
         this.validator.setComputerSearcher(this.computerSearcherMock, this.computerUpdaterMock);
     }
 
-    @Test
+    @Test // TODO refacto de cette fonction
     public void updateComputerTest() {
         try {
             Mockito.when(this.computerUpdaterMock.updateComputer(Matchers.any(Computer.class))).thenReturn(1);
@@ -245,4 +278,74 @@ public class ComputerValidatorTest {
         }
     }
 
+    @Test
+    public void fetchListWithSortAndSearchTest() throws PersistanceException, DuplicatedSortEntriesException {
+        Mockito.when(this.computerSearcherMock.fetchList(Matchers.any(Page.class), Matchers.any(String.class),
+                Matchers.any()))
+                .thenReturn(Arrays.asList(fakeComputerList));
+        Assert.assertEquals(Arrays.asList(fakeComputerList), this.validator.fetchList(new Page(), "", Arrays.asList()));
+    }
+
+    @Test
+    public void fetchListWithSortAndSearchDbExceptionTest()
+            throws PersistanceException, DuplicatedSortEntriesException {
+
+        Mockito.when(this.computerSearcherMock.fetchList(Matchers.any(Page.class), Matchers.any(), Matchers.any()))
+                .thenThrow(new PersistanceException());
+        Assert.assertEquals(Arrays.asList(), this.validator.fetchList(new Page(), "", Arrays.asList()));
+
+    }
+
+    @Test
+    public void fetchListWithDuplicatedEntriesTest() throws PersistanceException {
+        Mockito.when(this.computerSearcherMock.fetchList(Matchers.any(Page.class), Matchers.any(String.class),
+                Matchers.any()))
+                .thenReturn(Arrays.asList(fakeComputerList));
+        SortEntry sortParam1 = new SortEntry(SortCriterion.COMPUTER_NAME, true);
+        SortEntry sortParam2 = new SortEntry(SortCriterion.COMPUTER_NAME, false);
+        try {
+            this.validator.fetchList(new Page(), "", Arrays.asList(sortParam1, sortParam2));
+            Assert.fail();
+        } catch (DuplicatedSortEntriesException e) {
+
+        }
+    }
+
+    @Test
+    public void addComputerDbExceptionTest() throws PersistanceException, InvalidComputerException {
+        Mockito.when(this.computerUpdaterMock.createComputer(Matchers.any())).thenThrow(new PersistanceException());
+        Assert.assertEquals(0, this.validator.addComputer(fakeComputerList[0]));
+    }
+
+    @Test
+    public void testFetchListPageSortEntriesDbExceptionTest()
+            throws PersistanceException, DuplicatedSortEntriesException {
+        Mockito.when(this.computerSearcherMock.fetchList(Matchers.any(Page.class), Matchers.anyList()))
+                .thenThrow(new PersistanceException());
+        Assert.assertEquals(Arrays.asList(), this.validator.fetchList(new Page(), Arrays.asList()));
+    }
+
+    @Test
+    public void testFetchListPageSortEntriesTest()
+            throws PersistanceException, DuplicatedSortEntriesException {
+        Mockito.when(this.computerSearcherMock.fetchList(Matchers.any(Page.class), Matchers.anyList()))
+                .thenReturn(Arrays.asList(fakeComputerList));
+        Assert.assertEquals(Arrays.asList(fakeComputerList), this.validator.fetchList(new Page(), Arrays.asList()));
+    }
+
+    @Test
+    public void testFetchListPageSortEntriesDuplicatedTest()
+            throws PersistanceException, DuplicatedSortEntriesException {
+
+        SortEntry s1 = new SortEntry(SortCriterion.COMPUTER_NAME, true);
+        SortEntry s2 = new SortEntry(SortCriterion.COMPUTER_NAME, true);
+        Mockito.when(this.computerSearcherMock.fetchList(Matchers.any(Page.class), Matchers.anyList()))
+                .thenReturn(Arrays.asList());
+        try {
+            this.validator.fetchList(new Page(), Arrays.asList(s1, s2));
+            Assert.fail();
+        } catch (DuplicatedSortEntriesException e) {
+
+        }
+    }
 }

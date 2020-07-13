@@ -6,4 +6,8 @@ public class PersistanceException extends Exception {
     public PersistanceException(final Throwable e) {
         super(e);
     }
+
+    public PersistanceException() {
+        super();
+    }
 }

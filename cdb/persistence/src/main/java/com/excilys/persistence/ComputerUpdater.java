@@ -86,8 +86,9 @@ public class ComputerUpdater {
      * @throws SQLException
      */
     public int deleteComputersFromManufacturerIdWithConnection(final long manufacturerId, final Connection conn)
-            throws SQLException {
-        throw new NotImplementedException();
+            throws PersistanceException {
+        throw new PersistanceException(new NotImplementedException());
+
     }
 
     /**

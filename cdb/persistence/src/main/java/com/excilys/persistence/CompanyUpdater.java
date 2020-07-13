@@ -33,9 +33,10 @@ public class CompanyUpdater {
      *
      * @param companyId l'identifiant de l'entreprise à supprimer.
      * @return 1 si l'entreprise a été supprimée, 0 si l'id n'existe pas.
-     * @throws SQLException si erreur dans la base
+     * @throws SQLException         si erreur dans la base
+     * @throws PersistanceException
      */
-    public int deleteCompany(final long companyId) throws SQLException {
+    public int deleteCompany(final long companyId) throws SQLException, PersistanceException {
         Connection conn = null;
         try {
             conn = DataSourceUtils.getConnection(this.template.getDataSource());
@@ -43,7 +44,7 @@ public class CompanyUpdater {
             int nbComputersDeleted = this.computerUpdater.deleteComputersFromManufacturerIdWithConnection(companyId,
                     conn);
             LOG.info(nbComputersDeleted + " computers deleted");
-            int numberofDeletedCompanies = this.deleteCompany(companyId, conn);
+            int numberofDeletedCompanies = deleteCompany(companyId, conn);
             // Test si une entreprise a été supprimée ?
             conn.commit();
             return numberofDeletedCompanies;

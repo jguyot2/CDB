@@ -141,7 +141,7 @@ public class ComputerService implements SearchValidator<Computer> {
                 if (i != j
                         && sortEntries.get(i).getCriteria() == sortEntries.get(j).getCriteria()) {
                     throw new DuplicatedSortEntriesException();
-                }
+                } // TODO : refacto ici parce que c'est sale et stupide
             }
         }
         try {

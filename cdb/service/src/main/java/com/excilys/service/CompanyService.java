@@ -44,7 +44,7 @@ public class CompanyService implements SearchValidator<Company> {
     public int deleteCompanyById(final long companyId) {
         try {
             return this.companyUpdater.deleteCompany(companyId);
-        } catch (SQLException e) {
+        } catch (SQLException | PersistanceException e) {
             LOG.error(e.getMessage(), e);
             return -1;
         }
