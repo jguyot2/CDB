@@ -18,10 +18,10 @@ import com.excilys.service.UserProblems;
 public class UserRegister {
 
     @Autowired
-    UserDtoAdapter adapter;
+    PasswordEncoder encoder;
 
     @Autowired
-    PasswordEncoder encoder;
+    UserDtoAdapter adapter;
 
     @GetMapping("/addUser")
     public String addUser() {
@@ -32,9 +32,10 @@ public class UserRegister {
     public String registerUser(@RequestParam("username") final String username,
             @RequestParam("password") final String password, final Model m) {
         UserDto createdUser = new UserDto();
+
+        String encodedPassword = this.encoder.encode(password);
         createdUser.setUsername(username);
-        String encryptedPassword = this.encoder.encode(password);
-        createdUser.setPassword(encryptedPassword);
+        createdUser.setPassword(encodedPassword);
         createdUser.setRole(UserRoles.ROLE_USER);
         try {
             this.adapter.addUser(createdUser);

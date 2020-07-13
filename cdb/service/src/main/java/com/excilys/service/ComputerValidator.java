@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +16,17 @@ import com.excilys.model.Computer;
 public class ComputerValidator {
     private static final Logger LOG = LoggerFactory.getLogger(ComputerValidator.class);
 
-    @Autowired
-    private CompanyService cv;
-
     public void validate(final Computer instance) throws InvalidComputerException {
         checkComputerValidity(instance);
+    }
+
+    private void checkCompany(final Computer c, final List<ComputerProblems> problems) {
+        Company company = c.getManufacturer();
+        if (company != null) {
+            if (company.getId() <= 0) {
+                problems.add(ComputerProblems.INVALID_COMPANY_ID);
+            }
+        }
     }
 
     private void checkComputerValidity(final Computer computer) throws InvalidComputerException {
@@ -33,17 +38,6 @@ public class ComputerValidator {
         if (problems.size() > 0) {
             LOG.debug("Détection d'une instance de Computer invalide : " + computer);
             throw new InvalidComputerException(problems);
-        }
-    }
-
-    private void checkCompany(final Computer c, final List<ComputerProblems> problems) {
-        Company company = c.getManufacturer();
-        if (company != null) {
-            if (company.getId() <= 0) {
-                problems.add(ComputerProblems.INVALID_COMPANY_ID);
-            } else if (!this.cv.findById(company.getId()).isPresent()) {
-                problems.add(ComputerProblems.INEXISTENT_COMPANY);
-            }
         }
     }
 
@@ -62,7 +56,6 @@ public class ComputerValidator {
         } else if (computer.getDiscontinuation() != null) {
             problems.add(ComputerProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION);
         }
-
     }
 
     /**

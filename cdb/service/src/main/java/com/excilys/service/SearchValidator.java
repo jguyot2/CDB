@@ -25,8 +25,7 @@ public interface SearchValidator<T> {
      * Recherche d'un élément par identifiant.
      *
      * @param id
-     * @return Un optional contenant une valeur si la valeur a été retrouvée,
-     *         Optional.empty() sinon
+     * @return Un optional contenant une valeur si la valeur a été retrouvée, Optional.empty() sinon
      */
     Optional<T> findById(long id);
 

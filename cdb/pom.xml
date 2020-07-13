@@ -31,8 +31,8 @@
 		<mysqlconn.version>8.0.19</mysqlconn.version>
 		<slf4j.version>1.7.5</slf4j.version>
 		<jstl.version>1.2</jstl.version>
-		<mockito.version>1.10.19</mockito.version>
-		<junit.version>4.11</junit.version>
+		<mockito.version>1.10.19</mockito.version> 
+		<junit.version>4.12</junit.version>
 		<tomcat.version>9.0.31</tomcat.version>
 		<spring.version>5.2.5.RELEASE</spring.version>
 		<hibernate.version>5.1.17.Final</hibernate.version>
@@ -95,8 +95,15 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
- 
+
 	<reporting>
 		<plugins>
 			<plugin>

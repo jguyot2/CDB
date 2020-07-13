@@ -66,4 +66,5 @@ public class PersistenceConfig {
         fb.afterPropertiesSet();
         return fb.getNativeEntityManagerFactory();
     }
+
 }

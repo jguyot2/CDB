@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaUpdate;
@@ -13,6 +12,7 @@ import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,10 +44,14 @@ public class ComputerUpdater {
      *         l'ajout a raté
      */
     @Transactional
-    public long createComputer(@NonNull final Computer newComputer) throws PersistenceException {
-        LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
-        this.em.merge(newComputer);
-        return newComputer.getId();
+    public long createComputer(@NonNull final Computer newComputer) throws PersistanceException {
+        try {
+            LOG.trace("Création de l'instance de Computer suivante: " + newComputer);
+            this.em.merge(newComputer);
+            return newComputer.getId();
+        } catch (DataAccessException e) {
+            throw new PersistanceException(e);
+        }
     }
 
     /**
@@ -60,13 +64,17 @@ public class ComputerUpdater {
      * @throws SQLException
      */
     @Transactional
-    public int deleteById(final Long id) { // TODO : ajout d'un varargs
-        CriteriaBuilder cb = this.em.getCriteriaBuilder();
-        CriteriaDelete<Computer> cd = cb.createCriteriaDelete(Computer.class);
-        Root<Computer> r = cd.from(Computer.class);
-        cd.where(cb.equal(r.get("id"), id));
-        int ret = this.em.createQuery(cd).executeUpdate();
-        return ret;
+    public int deleteById(final Long id) throws PersistanceException { // TODO : ajout d'un varargs
+        try {
+            CriteriaBuilder cb = this.em.getCriteriaBuilder();
+            CriteriaDelete<Computer> cd = cb.createCriteriaDelete(Computer.class);
+            Root<Computer> r = cd.from(Computer.class);
+            cd.where(cb.equal(r.get("id"), id));
+            int ret = this.em.createQuery(cd).executeUpdate();
+            return ret;
+        } catch (DataAccessException e) {
+            throw new PersistanceException(e);
+        }
     }
 
     /**
@@ -90,16 +98,21 @@ public class ComputerUpdater {
      * @return 1 si la mise à jour a eu lieu, 0 sinon
      */
     @Transactional
-    public int updateComputer(@NonNull final Computer newComputer) {
-        CriteriaBuilder cb = this.em.getCriteriaBuilder();
-        CriteriaUpdate<Computer> p = cb.createCriteriaUpdate(Computer.class);
-        Root<Computer> r = p.from(Computer.class);
-        p.set(r.get("introduced"), newComputer.getIntroduction())
-                .set("discontinued", newComputer.getDiscontinuation())
-                .set("manufacturer", newComputer.getManufacturer())
-                .set("name", newComputer.getName())
-                .where(cb.equal(r.get("id"), new Long(newComputer.getId())));
-        int ret = this.em.createQuery(p).executeUpdate();
-        return ret;
+    public int updateComputer(@NonNull final Computer newComputer) throws PersistanceException {
+        try {
+            CriteriaBuilder cb = this.em.getCriteriaBuilder();
+
+            CriteriaUpdate<Computer> p = cb.createCriteriaUpdate(Computer.class);
+            Root<Computer> r = p.from(Computer.class);
+            p.set(r.get("introduced"), newComputer.getIntroduction())
+                    .set("discontinued", newComputer.getDiscontinuation())
+                    .set("manufacturer", newComputer.getManufacturer())
+                    .set("name", newComputer.getName())
+                    .where(cb.equal(r.get("id"), new Long(newComputer.getId())));
+            int ret = this.em.createQuery(p).executeUpdate();
+            return ret;
+        } catch (DataAccessException e) {
+            throw new PersistanceException(e);
+        }
     }
 }

@@ -3,9 +3,8 @@ package com.excilys.service;
 import java.util.List;
 
 /**
- * Exception lancée lors de la rencontre d'une instance de Computer invalide.
- * Contient une liste de ComputerInstanceProblems indiquant le ou les problèmes
- * associées à une instance
+ * Exception lancée lors de la rencontre d'une instance de Computer invalide. Contient une liste de
+ * ComputerInstanceProblems indiquant le ou les problèmes associées à une instance
  *
  * @author jguyot2
  *

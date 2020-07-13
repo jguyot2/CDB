@@ -9,9 +9,14 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.model.Company;
 import com.excilys.model.Computer;
@@ -19,7 +24,11 @@ import com.excilys.model.Page;
 import com.excilys.persistence.ComputerSearcher;
 import com.excilys.persistence.ComputerUpdater;
 import com.excilys.persistence.PersistanceException;
+import com.excilys.persistence.config.PersistenceConfig;
+import com.excilys.serviceconfig.ServiceConfig;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ServiceConfig.class, PersistenceConfig.class })
 public class ComputerValidatorTest {
 
     private static final LocalDate[] localDates = { LocalDate.of(1985, 1, 1), LocalDate.of(1985, 1, 19),
@@ -36,15 +45,20 @@ public class ComputerValidatorTest {
             new Computer(null, null, null, null, 0), new Computer("nom", null, localDates[1], localDates[0], 12),
             new Computer("pouet", null, null, localDates[0], 12), new Computer("", null, null, localDates[0], 1),
             new Computer("", null, localDates[2], localDates[0], 12) };
-    private ComputerSearcher computerSearcherMock = Mockito.mock(ComputerSearcher.class);
-    private ComputerUpdater computerUpdaterMock = Mockito.mock(ComputerUpdater.class);
 
+    @Mock
+    private ComputerSearcher computerSearcherMock;
+    @Mock
+    private ComputerUpdater computerUpdaterMock;
+
+    @Autowired
     private ComputerService validator;
 
     @Test
-    public void createComputerTest() throws SQLException {
+    public void createComputerTest() throws SQLException, PersistanceException {
         Mockito.when(this.computerUpdaterMock.createComputer(Matchers.any(Computer.class))).thenReturn(24L);
-
+        System.out.println(this.validator);
+        System.out.println(fakeComputerList);
         for (Computer c : fakeComputerList) {
             try {
                 Assert.assertEquals(24L, this.validator.addComputer(c));
@@ -105,10 +119,8 @@ public class ComputerValidatorTest {
     }
 
     @Test
-    public void deleteComputerTest() throws SQLException {
-
+    public void deleteComputerTest() throws SQLException, PersistanceException {
         Mockito.when(this.computerUpdaterMock.deleteById(56L)).thenReturn(1);
-
         Assert.assertEquals(1, this.validator.delete(56));
     }
 
@@ -118,9 +130,7 @@ public class ComputerValidatorTest {
         for (Computer c : fakeComputerList) {
             computerList.add(c);
         }
-
         Mockito.when(this.computerSearcherMock.fetchList()).thenReturn(computerList);
-
         List<Computer> l = this.validator.fetchList();
         Assert.assertEquals(l.size(), fakeComputerList.length);
         for (Computer comp : fakeComputerList) {
@@ -169,15 +179,16 @@ public class ComputerValidatorTest {
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        this.validator = new ComputerService();
         this.validator.setComputerSearcher(this.computerSearcherMock, this.computerUpdaterMock);
     }
 
     @Test
     public void updateComputerTest() {
-
-        Mockito.when(this.computerUpdaterMock.updateComputer(Matchers.any(Computer.class))).thenReturn(1);
-
+        try {
+            Mockito.when(this.computerUpdaterMock.updateComputer(Matchers.any(Computer.class))).thenReturn(1);
+        } catch (PersistanceException e) {
+            Assert.fail();
+        }
         for (Computer c : fakeComputerList) {
             try {
                 Assert.assertEquals(1, this.validator.update(c));

@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,7 @@ import com.excilys.persistence.ComputerUpdater;
 import com.excilys.persistence.PersistanceException;
 
 /**
- * Classe validant les requêtes/mises à jour avant de les envoyer au paquet
- * persistance.
+ * Classe validant les requêtes/mises à jour avant de les envoyer au paquet persistance.
  *
  * @author jguyot2
  */
@@ -45,8 +43,8 @@ public class ComputerService implements SearchValidator<Computer> {
      *
      * @param createdComputer l'ordinateur ajouté.
      *
-     * @return 0 si la création n'a pas pu se faire dans la BD, ou le nouvel
-     *         identifiant qui vient d'être créé
+     * @return 0 si la création n'a pas pu se faire dans la BD, ou le nouvel identifiant qui vient
+     *         d'être créé
      *
      * @throws InvalidComputerException si l'instance en paramètre
      */
@@ -55,7 +53,7 @@ public class ComputerService implements SearchValidator<Computer> {
         this.validator.validate(createdComputer);
         try {
             return this.computerUpdater.createComputer(createdComputer);
-        } catch (DataAccessException e) {
+        } catch (PersistanceException e) {
             LOG.error("createComputer :" + e.getMessage(), e);
             return 0;
         }
@@ -66,24 +64,23 @@ public class ComputerService implements SearchValidator<Computer> {
      *
      * @param id l'identifiant de l'ordinateur à supprimer.
      *
-     * @return 1 si l'ordi a été supprimé, 0 si l'id n'a pas été trouvé. -1 s'il y a
-     *         eu une erreur dans la bd
+     * @return 1 si l'ordi a été supprimé, 0 si l'id n'a pas été trouvé. -1 s'il y a eu une erreur
+     *         dans la bd
      */
     public int delete(final long id) {
         try {
             return this.computerUpdater.deleteById(id);
-        } catch (DataAccessException e) {
+        } catch (PersistanceException e) {
             LOG.error("deleteComputer :" + e.getMessage(), e);
             return -1;
         }
     }
 
     /**
-     * Recherche de la liste de tous les ordinateurs présents dans la base de
-     * données.
+     * Recherche de la liste de tous les ordinateurs présents dans la base de données.
      *
-     * @return La liste des ordinateurs présents dans la base de données, ou une
-     *         liste vide en cas d'erreur.
+     * @return La liste des ordinateurs présents dans la base de données, ou une liste vide en cas
+     *         d'erreur.
      */
     @Override
     public List<Computer> fetchList() {
@@ -165,13 +162,12 @@ public class ComputerService implements SearchValidator<Computer> {
     }
 
     /**
-     * Recherche d'une instance de Computer dans la base à partir de son
-     * identifiant.
+     * Recherche d'une instance de Computer dans la base à partir de son identifiant.
      *
      * @param id l'identifiant du computer recherché dans la base de donné
      *
-     * @return Optional.empty() si la recherche a échoué, ou un Optional contenant
-     *         la valeur de l'identifiant recherché sinon
+     * @return Optional.empty() si la recherche a échoué, ou un Optional contenant la valeur de
+     *         l'identifiant recherché sinon
      */
     @Override
     public Optional<Computer> findById(final long id) {
@@ -207,8 +203,8 @@ public class ComputerService implements SearchValidator<Computer> {
     }
 
     /**
-     * Changement des attributs associés à la persistance, uniquement utilisé pour
-     * des tests avec des classes mock.
+     * Changement des attributs associés à la persistance, uniquement utilisé pour des tests avec
+     * des classes mock.
      *
      * @param newComputerSearcher
      * @param newComputerUpdater
@@ -222,14 +218,12 @@ public class ComputerService implements SearchValidator<Computer> {
     /**
      * Mise à jour de l'instance de Computer passée en paramètre.
      *
-     * @param newComputervalue la nouvelle valeur de l'instance, avec un identifiant
-     *                         défini.
+     * @param newComputervalue la nouvelle valeur de l'instance, avec un identifiant défini.
      *
-     * @return -1 si exception lors de la requête, 0 si pas de mise à jour, ou 1 si
-     *         la mise à jour a eu lieu
+     * @return -1 si exception lors de la requête, 0 si pas de mise à jour, ou 1 si la mise à jour a
+     *         eu lieu
      *
-     * @throws InvalidComputerException Si l'instance en paramètre n'est pas
-     *                                          valide
+     * @throws InvalidComputerException Si l'instance en paramètre n'est pas valide
      */
     public int update(@NonNull final Computer newComputervalue)
             throws InvalidComputerException {
@@ -238,7 +232,7 @@ public class ComputerService implements SearchValidator<Computer> {
         LOG.info("Instance valide : Mise à jour de la base.");
         try {
             return this.computerUpdater.updateComputer(newComputervalue);
-        } catch (DataAccessException e) {
+        } catch (PersistanceException e) {
             LOG.error("updateComputer :" + e.getMessage(), e);
             return -1;
         }

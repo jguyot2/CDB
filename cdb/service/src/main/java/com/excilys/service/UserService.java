@@ -15,28 +15,15 @@ import com.excilys.persistence.UserUpdater;
 
 @Service
 public class UserService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UserSearcher searcher;
+
     @Autowired
     private UserUpdater updater;
 
     @Autowired
     private UserValidator validator;
-
-    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
-
-    public Optional<User> getUserDetails(@Nullable final String username) {
-        try {
-            if (username == null || username.isEmpty()) {
-                return Optional.empty();
-            } else {
-                return this.searcher.getUserDetails(username);
-            }
-        } catch (final PersistanceException e) {
-            LOG.error("Persistence exception found", e);
-            return Optional.empty();
-        }
-    }
 
     public boolean addUser(@Nullable final User user) throws InvalidUserException {
         this.validator.validate(user);
@@ -49,6 +36,19 @@ public class UserService {
         } catch (final PersistanceException e) {
             LOG.error("db error", e);
             return false;
+        }
+    }
+
+    public Optional<User> getUserDetails(@Nullable final String username) {
+        try {
+            if (username == null || username.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return this.searcher.getUserDetails(username);
+            }
+        } catch (final PersistanceException e) {
+            LOG.error("Persistence exception found", e);
+            return Optional.empty();
         }
     }
 }

@@ -16,7 +16,7 @@ public class UserUpdater {
     EntityManager em;
 
     @Transactional
-    public boolean createUser(@NonNull User newUser) throws PersistanceException {
+    public boolean createUser(@NonNull final User newUser) throws PersistanceException {
         try {
             this.em.merge(newUser);
             return true;

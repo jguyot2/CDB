@@ -24,9 +24,11 @@ public class MvcInit implements WebApplicationInitializer {
         ctx.register(ControllerConfig.class);
         ctx.register(ServiceConfig.class);
         ctx.register(PersistenceConfig.class);
+        ctx.register(SecurityConfig.class);
         ctx.setServletContext(container);
         ServletRegistration.Dynamic servlet = container.addServlet("dispatcher", new DispatcherServlet(ctx));
         servlet.setLoadOnStartup(1);
         servlet.addMapping("/");
     }
+
 }
