@@ -1,10 +1,12 @@
 package com.excilys.adapters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import com.excilys.mapper.DateMapper;
@@ -12,7 +14,12 @@ import com.excilys.model.ComputerDto;
 
 @Component
 public class ComputerDtoValidator {
-    public void validate(final ComputerDto computerDTO) throws InvalidComputerDtoException {
+    Logger LOG = org.slf4j.LoggerFactory.getLogger(ComputerDtoValidator.class);
+
+    public void validate(@Nullable final ComputerDto computerDTO) throws InvalidComputerDtoException {
+        if (computerDTO == null) {
+            throw new InvalidComputerDtoException(Arrays.asList(ComputerDTOProblems.NULL_DTO));
+        }
         List<ComputerDTOProblems> problems = new ArrayList<>();
         validateDto(computerDTO, problems);
         if (!problems.isEmpty()) {
@@ -20,9 +27,7 @@ public class ComputerDtoValidator {
         }
     }
 
-    Logger LOG = org.slf4j.LoggerFactory.getLogger(ComputerDtoValidator.class);
-
-    public void validateDto(final ComputerDto computerDTO, @NonNull final List<ComputerDTOProblems> problems) {
+    public void validateDto(@NonNull final ComputerDto computerDTO, @NonNull final List<ComputerDTOProblems> problems) {
 
         if (computerDTO.getName() == null || computerDTO.getName().trim().isEmpty()) {
             problems.add(ComputerDTOProblems.INVALID_NAME);

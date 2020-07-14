@@ -1,6 +1,5 @@
 package com.excilys.adapters;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,9 +20,8 @@ import com.excilys.service.InvalidComputerException;
 import com.excilys.service.SearchValidator;
 
 /**
- * Classe s'assurant que les requêtes/mises à jour liées à des instances de
- * ComputerDTO sont bien formées (i.e les instances passées en paramètre sont
- * valides) avant de réaliser ces mises à jour
+ * Classe s'assurant que les requêtes/mises à jour liées à des instances de ComputerDTO sont bien
+ * formées (i.e les instances passées en paramètre sont valides) avant de réaliser ces mises à jour
  *
  * @author jguyot2
  *
@@ -34,23 +32,13 @@ public class ComputerAdapter implements SearchValidator<ComputerDto> {
     @Autowired
     private ComputerDtoValidator dtoInstanceValidator;
 
-    private Computer getComputerFromDto(final ComputerDto dtoInstance)
-            throws InvalidComputerDtoException {
-        if (dtoInstance == null) {
-            throw new InvalidComputerDtoException(Arrays.asList(ComputerDTOProblems.NULL_DTO));
-        }
-        this.dtoInstanceValidator.validate(dtoInstance);
-        return ComputerMapper.computerDTOToComputer(dtoInstance).get();
-
-    }
+    @Autowired
+    private ComputerService computerValidator;
 
     private static List<ComputerDto> convertList(@NonNull final List<Computer> l) {
         return l.stream().map(c -> ComputerMapper.computerToDTO(c).get())
                 .collect(Collectors.toList());
     }
-
-    @Autowired
-    private ComputerService computerValidator;
 
     /**
      * Ajout d'un ordinateur dans la base à partir d'un DTO.
@@ -58,23 +46,16 @@ public class ComputerAdapter implements SearchValidator<ComputerDto> {
      * @param computerDTO
      *
      *
-     * @throws InvalidComputerDtoException      Si les champs du DTO ne sont pas des
-     *                                          valeurs valides. Contient des
-     *                                          valeurs de ComputerDTOProblems
-     *                                          décrivant les valeurs posant
-     *                                          problème
-     * @throws InvalidComputerException si les champs sont valides, mais que
-     *                                          l'instance de computer représentée
-     *                                          ne l'est pas.
-     * @return l'identifiant de l'ordinateur ajouté si la mise à jour a réussi, 0
-     *         sinon.
+     * @throws InvalidComputerDtoException Si les champs du DTO ne sont pas des valeurs valides.
+     *                                     Contient des valeurs de ComputerDTOProblems décrivant les
+     *                                     valeurs posant problème
+     * @throws InvalidComputerException    si les champs sont valides, mais que l'instance de
+     *                                     computer représentée ne l'est pas.
+     * @return l'identifiant de l'ordinateur ajouté si la mise à jour a réussi, 0 sinon.
      */
     public long addComputerDTO(@Nullable final ComputerDto computerDTO)
             throws InvalidComputerDtoException, InvalidComputerException {
 
-        if (computerDTO == null) {
-            throw new InvalidComputerDtoException(Arrays.asList(ComputerDTOProblems.NULL_DTO));
-        }
         Computer computer = getComputerFromDto(computerDTO);
         return this.computerValidator.addComputer(computer);
     }
@@ -83,8 +64,8 @@ public class ComputerAdapter implements SearchValidator<ComputerDto> {
      * Suppression d'un ordinateur de la base, dont l'id est en paramètre
      *
      * @param id
-     * @return 1 si le pc a été supprimé, 0 si pas de pc avec cet id -1 s'il y a eu
-     *         un problème dans la base
+     * @return 1 si le pc a été supprimé, 0 si pas de pc avec cet id -1 s'il y a eu un problème dans
+     *         la base
      */
     public int delete(final long id) {
         return this.computerValidator.delete(id);
@@ -131,8 +112,7 @@ public class ComputerAdapter implements SearchValidator<ComputerDto> {
     }
 
     /**
-     * Recherche du nombre d'élements de la base correspondant à la recherche en
-     * param
+     * Recherche du nombre d'élements de la base correspondant à la recherche en param
      *
      * @param search
      * @return
@@ -147,10 +127,19 @@ public class ComputerAdapter implements SearchValidator<ComputerDto> {
 
     public int updateComputer(@Nullable final ComputerDto computerValue)
             throws InvalidComputerDtoException, InvalidComputerException {
-        if (computerValue == null) {
-            throw new InvalidComputerDtoException(Arrays.asList(ComputerDTOProblems.NULL_DTO));
-        }
+
         Computer computer = getComputerFromDto(computerValue);
         return this.computerValidator.update(computer);
+    }
+
+    void setService(final ComputerService newService) {
+        this.computerValidator = newService;
+    }
+
+    private Computer getComputerFromDto(final ComputerDto dtoInstance)
+            throws InvalidComputerDtoException {
+
+        this.dtoInstanceValidator.validate(dtoInstance);
+        return ComputerMapper.computerDTOToComputer(dtoInstance).get();
     }
 }

@@ -5,8 +5,7 @@ import java.util.List;
 import org.springframework.lang.NonNull;
 
 /**
- * Exception lancée pour indiquer qu'une instance de ComputerDTO passée en
- * paramètre est invalide.
+ * Exception lancée pour indiquer qu'une instance de ComputerDTO passée en paramètre est invalide.
  *
  * @author jguyot2
  *

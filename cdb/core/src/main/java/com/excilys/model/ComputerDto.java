@@ -67,6 +67,7 @@ public final class ComputerDto {
         this.discontinued = discontinued;
     }
 
+    // TODO : builder
     public ComputerDto(final String name, final Long id, final CompanyDto company,
             final String introduced, final String discontinued) {
         this.name = name;
@@ -141,7 +142,8 @@ public final class ComputerDto {
 
     @Override
     public String toString() {
-        return "(" + this.name + ", " + this.introduced + "-" + this.discontinued + "\t" + this.id
-                + "\t" + this.company;
+        return "(" + Objects.toString(this.name, "") + ", " + Objects.toString(this.introduced, "") + "-"
+                + Objects.toString(this.introduced, "") + "\t" + Objects.toString(this.id, "")
+                + "\t" + Objects.toString(this.company, "") + ")";
     }
 }
