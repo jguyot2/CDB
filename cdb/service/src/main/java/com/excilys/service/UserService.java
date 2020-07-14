@@ -27,10 +27,7 @@ public class UserService {
 
     public boolean addUser(@Nullable final User user) throws InvalidUserException {
         this.validator.validate(user);
-        if (user == null) {
-            LOG.info("null user added in paramter");
-            return false;
-        }
+
         try {
             return this.updater.createUser(user);
         } catch (final PersistanceException e) {
@@ -50,5 +47,13 @@ public class UserService {
             LOG.error("Persistence exception found", e);
             return Optional.empty();
         }
+    }
+
+    void setSearcher(final UserSearcher newSearcher) {
+        this.searcher = newSearcher;
+    }
+
+    void setUpdater(final UserUpdater newUpdater) {
+        this.updater = newUpdater;
     }
 }
