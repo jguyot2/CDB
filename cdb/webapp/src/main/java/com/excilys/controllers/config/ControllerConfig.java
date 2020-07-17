@@ -21,7 +21,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages = "com.excilys.controllers")
+@ComponentScan(basePackages = { "com.excilys.controllers", "com.excilys.restcontrollers" })
 public class ControllerConfig implements WebMvcConfigurer {
 
     @Override
@@ -60,7 +60,7 @@ public class ControllerConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(final InterceptorRegistry registry) {
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
         localeChangeInterceptor.setParamName("lang");
         registry.addInterceptor(localeChangeInterceptor);

@@ -113,12 +113,65 @@ public class Computer implements Serializable {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (o instanceof Computer) {
-            return equals((Computer) o);
-        } else {
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.discontinued == null ? 0 : this.discontinued.hashCode());
+        result = prime * result + (this.id == null ? 0 : this.id.hashCode());
+        result = prime * result + (this.introduced == null ? 0 : this.introduced.hashCode());
+        result = prime * result + (this.manufacturer == null ? 0 : this.manufacturer.hashCode());
+        result = prime * result + (this.name == null ? 0 : this.name.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Computer other = (Computer) obj;
+        if (this.discontinued == null) {
+            if (other.discontinued != null) {
+                return false;
+            }
+        } else if (!this.discontinued.equals(other.discontinued)) {
+            return false;
+        }
+        if (this.id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!this.id.equals(other.id)) {
+            return false;
+        }
+        if (this.introduced == null) {
+            if (other.introduced != null) {
+                return false;
+            }
+        } else if (!this.introduced.equals(other.introduced)) {
+            return false;
+        }
+        if (this.manufacturer == null) {
+            if (other.manufacturer != null) {
+                return false;
+            }
+        } else if (!this.manufacturer.equals(other.manufacturer)) {
+            return false;
+        }
+        if (this.name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!this.name.equals(other.name)) {
+            return false;
+        }
+        return true;
     }
 
     public LocalDate getDiscontinuation() {
@@ -168,11 +221,10 @@ public class Computer implements Serializable {
 
     @Override
     public String toString() {
-        String representation = "";
-        representation += "name=" + this.name + "\t";
-        representation += "manufacturer=" + String.valueOf(this.manufacturer) + "\t";
-        representation += "intro=" + String.valueOf(this.introduced) + "\t";
-        representation += "dicontinuation=" + String.valueOf(this.discontinued);
-        return representation;
+        return "Computer [" + (this.discontinued != null ? "discontinued=" + this.discontinued + ", " : "")
+                + (this.id != null ? "id=" + this.id + ", " : "")
+                + (this.introduced != null ? "introduced=" + this.introduced + ", " : "")
+                + (this.manufacturer != null ? "manufacturer=" + this.manufacturer + ", " : "")
+                + (this.name != null ? "name=" + this.name : "") + "]";
     }
 }

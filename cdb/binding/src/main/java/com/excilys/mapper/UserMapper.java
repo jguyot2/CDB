@@ -12,7 +12,7 @@ public class UserMapper {
         if (dto == null) {
             return Optional.empty();
         }
-        final User user = new User();
+        User user = new User();
         user.setUsername(dto.getUsername());
         user.setPassword(dto.getPassword());
         user.setId(dto.getId());

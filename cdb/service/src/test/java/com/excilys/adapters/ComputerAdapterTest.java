@@ -40,8 +40,8 @@ public class ComputerAdapterTest {
         this.adapter.setService(this.service);
     }
 
-    Computer c1 = new Computer("pouet", null, null, null, 12);
-    Computer c2 = new Computer("plopiplop", null, null, null, 122);
+    Computer c1 = new Computer("pouet", null, null, null, 12L);
+    Computer c2 = new Computer("plopiplop", null, null, null, 122L);
     ComputerDto dto1 = new ComputerDto("pouet", 12L, (CompanyDto) null, null, null);
     ComputerDto dto2 = new ComputerDto("plopiplop", 122L, (CompanyDto) null, null, null);
     ComputerDto emptyName = new ComputerDto("", 12L, (CompanyDto) null, null, null);
@@ -116,4 +116,35 @@ public class ComputerAdapterTest {
         Assert.assertEquals(dtoList, this.adapter.fetchList(p, sortEntryList));
         Assert.assertEquals(dtoList, this.adapter.fetchList(p, search, sortEntryList));
     }
+
+    @Test
+    public void testEditComputerDtoInvalidInstances() throws InvalidComputerException {
+        try {
+            this.adapter.updateComputer(this.emptyName);
+            Assert.fail();
+        } catch (InvalidComputerDtoException e) {
+            Assert.assertTrue(e.getProblems().contains(ComputerDTOProblems.INVALID_NAME));
+        }
+        try {
+            this.adapter.updateComputer(this.nullDto);
+            Assert.fail();
+        } catch (InvalidComputerDtoException e) {
+            Assert.assertTrue(e.getProblems().contains(ComputerDTOProblems.NULL_DTO));
+
+        }
+        try {
+            this.adapter.updateComputer(this.invalidDates);
+            Assert.fail();
+        } catch (InvalidComputerDtoException e) {
+            Assert.assertTrue(e.getProblems().contains(ComputerDTOProblems.INVALID_DATE_INTRO));
+            Assert.assertTrue(e.getProblems().contains(ComputerDTOProblems.INVALID_DATE_DISCO));
+        }
+    }
+
+    @Test
+    public void testUpdateComputerDto() throws InvalidComputerException, InvalidComputerDtoException {
+        Mockito.when(this.service.update(this.c1)).thenReturn(1);
+        Assert.assertEquals(this.adapter.updateComputer(this.dto1), 1);
+    }
+
 }
