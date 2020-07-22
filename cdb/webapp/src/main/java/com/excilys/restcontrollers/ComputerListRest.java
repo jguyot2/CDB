@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.excilys.adapters.ComputerAdapter;
@@ -26,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api")
-public class ComputerList {
+public class ComputerListRest {
     private static class ComputerToJsonMapper {
         private static ObjectMapper obj = new ObjectMapper();
 
@@ -94,14 +93,12 @@ public class ComputerList {
     }
 
     @GetMapping(value = "/list", produces = "application/json")
-    @ResponseBody
     public String getList() {
         new ComputerToJsonMapper();
         return ComputerToJsonMapper.fromComputerList(this.adapter.fetchList());
     }
 
     @GetMapping(value = "/page", produces = "application/json")
-    @ResponseBody
     public ResponseEntity<String> showPage(
             @RequestParam(required = false, name = "pageLength") final Integer pageLength,
             @RequestParam(defaultValue = "0", name = "pageNumber") final Integer pageNumber,
@@ -118,6 +115,7 @@ public class ComputerList {
             return ResponseEntity.ok(JsonAnswer);
         } catch (IllegalCriterionStringException e) {
             return (ResponseEntity<String>) ResponseEntity.badRequest();
+
         } catch (DuplicatedSortEntriesException e) {
             return (ResponseEntity<String>) ResponseEntity.badRequest();
         }

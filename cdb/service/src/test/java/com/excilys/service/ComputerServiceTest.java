@@ -125,13 +125,13 @@ public class ComputerServiceTest {
     @Test
     public void deleteComputerTest() throws SQLException, PersistanceException {
         Mockito.when(this.computerUpdaterMock.deleteById(56L)).thenReturn(1);
-        Assert.assertEquals(1, this.validator.delete(56));
+        Assert.assertEquals(1, this.validator.delete(56L));
     }
 
     @Test
     public void deleteComputerDbExceptionTest() throws SQLException, PersistanceException {
         Mockito.when(this.computerUpdaterMock.deleteById(56L)).thenThrow(new PersistanceException());
-        Assert.assertEquals(-1, this.validator.delete(56));
+        Assert.assertEquals(-1, this.validator.delete(56L));
     }
 
     @Test

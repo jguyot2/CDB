@@ -59,17 +59,13 @@ public class ComputerService implements SearchValidator<Computer> {
         }
     }
 
-    /**
-     * Suppression d'un ordinateur de la base à partir de son identifiant.
-     *
-     * @param id l'identifiant de l'ordinateur à supprimer.
-     *
-     * @return 1 si l'ordi a été supprimé, 0 si l'id n'a pas été trouvé. -1 s'il y a eu une erreur
-     *         dans la bd
-     */
-    public int delete(final long id) {
+    public int delete(final Long... identifiers) {
         try {
-            return this.computerUpdater.deleteById(id);
+            int result = 0;
+            for (long id : identifiers) {
+                result += this.computerUpdater.deleteById(identifiers);
+            }
+            return result;
         } catch (PersistanceException e) {
             LOG.error("deleteComputer :" + e.getMessage(), e);
             return -1;

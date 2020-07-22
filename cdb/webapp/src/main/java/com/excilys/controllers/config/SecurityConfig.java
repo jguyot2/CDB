@@ -27,7 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/page", "/addUser")
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/addUser")
-                .permitAll();
+                .permitAll()
+                .antMatchers(HttpMethod.DELETE).permitAll();
 
         http.authorizeRequests().antMatchers("/editComputer*", "/addComputer")
                 .authenticated();

@@ -67,8 +67,8 @@ public class ComputerAdapter implements SearchValidator<ComputerDto> {
      * @return 1 si le pc a été supprimé, 0 si pas de pc avec cet id -1 s'il y a eu un problème dans
      *         la base
      */
-    public int delete(final long id) {
-        return this.computerValidator.delete(id);
+    public int delete(final Long... identifiers) {
+        return this.computerValidator.delete(identifiers);
     }
 
     @Override

@@ -98,8 +98,8 @@ public class ComputerSearcher implements Searcher<Computer> {
         return fetchList(page, Arrays.asList());
     }
 
-    private <T, U> Order getCriteriaBuilderOrderByFromSortEntry(CriteriaBuilder cb, Root<Computer> r,
-            Join<Computer, Company> j, SortEntry se) {
+    private <T, U> Order getCriteriaBuilderOrderByFromSortEntry(final CriteriaBuilder cb, final Root<Computer> r,
+            final Join<Computer, Company> j, final SortEntry se) {
         SortCriterion criterion = se.getCriteria();
         switch (criterion) {
             case COMPUTER_NAME:
@@ -140,8 +140,8 @@ public class ComputerSearcher implements Searcher<Computer> {
         return fetchList(p, search, Arrays.asList());
     }
 
-    private Order[] getCriteriaList(CriteriaBuilder cb, Root<Computer> r, Join<Computer, Company> j,
-            List<SortEntry> se) {
+    private Order[] getCriteriaList(final CriteriaBuilder cb, final Root<Computer> r, final Join<Computer, Company> j,
+            final List<SortEntry> se) {
         Order[] order = new Order[se.size() + 1];
         for (int i = 0; i < se.size(); ++i) {
             order[i] = getCriteriaBuilderOrderByFromSortEntry(cb, r, j, se.get(i));
@@ -157,9 +157,10 @@ public class ComputerSearcher implements Searcher<Computer> {
         CriteriaQuery<Computer> ct = cb.createQuery(Computer.class);
         Root<Computer> r = ct.from(Computer.class);
         Join<Computer, Company> join = r.join("manufacturer");
-        ct.select(r);
-        ct.where(cb.like(r.get("name"), "%" + search.replace("%", "\\%") + "%"));
-        ct.orderBy(getCriteriaList(cb, r, join, entries));
+        ct.multiselect(join)
+                .where(cb.like(r.get("name"), "%" + search.replace("%", "\\%") + "%"))
+
+                .orderBy(getCriteriaList(cb, r, join, entries));
         TypedQuery<Computer> q = this.em.createQuery(ct).setFirstResult(page.getOffset())
                 .setMaxResults(page.getPageLength());
         return q.getResultList();

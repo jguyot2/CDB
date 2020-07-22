@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.excilys.adapters.CompanyAdapter;
@@ -28,19 +27,8 @@ public class ComputerAddRest {
     @Autowired
     private ComputerAdapter computerValidator;
 
-    /**
-     * Ajout d'un ordi dans la base
-     *
-     * @param computerName
-     * @param introduced   Représentant la date de commercialisation, de la forme donnée dans
-     *                     DateMapper
-     * @param discontinued Date d'arrêt de production
-     * @param companyId
-     * @param m
-     * @return
-     */ // XXX : Refacto pour obtenir directement une instance de ComputerDTO
-    @PostMapping("addComputer")
-    @ResponseBody
+    // XXX : Refacto pour obtenir directement une instance de ComputerDTO
+    @PostMapping(path = "/addComputer", produces = "application/json")
     public ResponseEntity<String> addComputerToDatabase(@RequestParam(name = "computerName") final String computerName,
             @RequestParam(name = "introduced") final String introduced,
             @RequestParam(name = "discontinued") final String discontinued,
@@ -52,7 +40,8 @@ public class ComputerAddRest {
             long newIdentifier = this.computerValidator.addComputerDTO(c);
             return ResponseEntity.ok("{id:" + newIdentifier + "}");
         } catch (InvalidComputerDtoException | InvalidComputerException e) {
-            return ResponseEntity.badRequest().body("");
+            // TODO
+            return ResponseEntity.badRequest().body("{}");
         }
     }
 

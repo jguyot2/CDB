@@ -2,6 +2,7 @@ package com.excilys.persistence;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -57,19 +58,20 @@ public class ComputerUpdater {
     /**
      * Suppression d'un ordinateur de la base à partir de son identifiant.
      *
-     * @param id l'identifiant
+     * @param identifiers l'identifiant
      *
      * @return 1 si la suppression est effective, 0 sinon
      *
      * @throws SQLException
      */
     @Transactional
-    public int deleteById(final Long id) throws PersistanceException { // TODO : ajout d'un varargs
+    public int deleteById(final Long... identifiers) throws PersistanceException { // TODO : ajout
+                                                                                   // d'un varargs
         try {
             CriteriaBuilder cb = this.em.getCriteriaBuilder();
             CriteriaDelete<Computer> cd = cb.createCriteriaDelete(Computer.class);
             Root<Computer> r = cd.from(Computer.class);
-            cd.where(cb.equal(r.get("id"), id));
+            cd.where(cb.in(r.get("id")).in(Arrays.asList(identifiers)));
             int ret = this.em.createQuery(cd).executeUpdate();
             return ret;
         } catch (DataAccessException e) {

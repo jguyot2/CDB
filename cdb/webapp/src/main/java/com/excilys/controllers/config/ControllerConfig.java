@@ -35,8 +35,8 @@ public class ControllerConfig implements WebMvcConfigurer {
         return ctx;
     }
 
-    @Bean
-    public ViewResolver viewResolver() {
+    @Bean(name = "jspViewResolver")
+    public ViewResolver jspViewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setViewClass(JstlView.class);
         viewResolver.setPrefix("/WEB-INF/views/");
