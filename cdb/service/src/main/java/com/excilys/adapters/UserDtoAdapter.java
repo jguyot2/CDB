@@ -24,7 +24,7 @@ public class UserDtoAdapter implements UserDetailsService {
         if (user == null) {
             return false;
         }
-        return this.service.addUser(UserMapper.fromDto(user).get());
+        return this.service.create(UserMapper.fromDto(user).get());
     }
 
     @Override

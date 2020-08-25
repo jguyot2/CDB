@@ -1,4 +1,4 @@
-package com.excilys.controllers.config;
+package com.excilys.config;
 
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 

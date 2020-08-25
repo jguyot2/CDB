@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.excilys.mapper.ComputerMapper;
 import com.excilys.model.Computer;
 import com.excilys.model.ComputerDto;
+import com.excilys.model.NotImplementedException;
 import com.excilys.model.Page;
 import com.excilys.model.sort.DuplicatedSortEntriesException;
 import com.excilys.model.sort.SortEntry;
@@ -20,8 +21,9 @@ import com.excilys.service.InvalidComputerException;
 import com.excilys.service.SearchValidator;
 
 /**
- * Classe s'assurant que les requêtes/mises à jour liées à des instances de ComputerDTO sont bien
- * formées (i.e les instances passées en paramètre sont valides) avant de réaliser ces mises à jour
+ * Classe s'assurant que les requêtes/mises à jour liées à des instances de
+ * ComputerDTO sont bien formées (i.e les instances passées en paramètre sont
+ * valides) avant de réaliser ces mises à jour
  *
  * @author jguyot2
  *
@@ -29,117 +31,147 @@ import com.excilys.service.SearchValidator;
 @Service
 public class ComputerAdapter implements SearchValidator<ComputerDto> {
 
-    @Autowired
-    private ComputerDtoValidator dtoInstanceValidator;
+	@Autowired
+	private ComputerDtoValidator dtoInstanceValidator;
 
-    @Autowired
-    private ComputerService computerValidator;
+	@Autowired
+	private ComputerService computerValidator;
 
-    private static List<ComputerDto> convertList(@NonNull final List<Computer> l) {
-        return l.stream().map(c -> ComputerMapper.computerToDTO(c).get())
-                .collect(Collectors.toList());
-    }
+	private static List<ComputerDto> convertList(@NonNull final List<Computer> l) {
+		return l.stream().map(c -> ComputerMapper.computerToDTO(c).get()).collect(Collectors.toList());
+	}
 
-    /**
-     * Ajout d'un ordinateur dans la base à partir d'un DTO.
-     *
-     * @param computerDTO
-     *
-     *
-     * @throws InvalidComputerDtoException Si les champs du DTO ne sont pas des valeurs valides.
-     *                                     Contient des valeurs de ComputerDTOProblems décrivant les
-     *                                     valeurs posant problème
-     * @throws InvalidComputerException    si les champs sont valides, mais que l'instance de
-     *                                     computer représentée ne l'est pas.
-     * @return l'identifiant de l'ordinateur ajouté si la mise à jour a réussi, 0 sinon.
-     */
-    public long addComputerDTO(@Nullable final ComputerDto computerDTO)
-            throws InvalidComputerDtoException, InvalidComputerException {
+	/**
+	 * Ajout d'un ordinateur dans la base à partir d'un DTO.
+	 *
+	 * @param computerDTO
+	 *
+	 *
+	 * @throws InvalidComputerDtoException Si les champs du DTO ne sont pas des
+	 *                                     valeurs valides. Contient des valeurs de
+	 *                                     ComputerDTOProblems décrivant les valeurs
+	 *                                     posant problème
+	 * @throws InvalidComputerException    si les champs sont valides, mais que
+	 *                                     l'instance de computer représentée ne
+	 *                                     l'est pas.
+	 * @return l'identifiant de l'ordinateur ajouté si la mise à jour a réussi, 0
+	 *         sinon.
+	 */
+	public long addComputerDTO(@Nullable final ComputerDto computerDTO)
+			throws InvalidComputerDtoException, InvalidComputerException {
 
-        Computer computer = getComputerFromDto(computerDTO);
-        return this.computerValidator.addComputer(computer);
-    }
+		Computer computer = getComputerFromDto(computerDTO);
+		return this.computerValidator.addComputer(computer);
+	}
 
-    /**
-     * Suppression d'un ordinateur de la base, dont l'id est en paramètre
-     *
-     * @param id
-     * @return 1 si le pc a été supprimé, 0 si pas de pc avec cet id -1 s'il y a eu un problème dans
-     *         la base
-     */
-    public int delete(final Long... identifiers) {
-        return this.computerValidator.delete(identifiers);
-    }
+	/**
+	 * Suppression d'un ordinateur de la base, dont l'id est en paramètre
+	 *
+	 * @param id
+	 * @return 1 si le pc a été supprimé, 0 si pas de pc avec cet id -1 s'il y a eu
+	 *         un problème dans la base
+	 */
+	public int delete(final Long... identifiers) {
+		return this.computerValidator.delete(identifiers);
+	}
 
-    @Override
-    public List<ComputerDto> fetchList() {
-        return convertList(this.computerValidator.fetchList());
-    }
+	@Override
+	public List<ComputerDto> fetchList() {
+		return convertList(this.computerValidator.fetchList());
+	}
 
-    @Override
-    public List<ComputerDto> fetchList(@NonNull final Page page) {
-        return convertList(this.computerValidator.fetchList(page));
-    }
+	@Override
+	public List<ComputerDto> fetchList(@Nullable final Page page) {
+		if (page == null) {
+			return fetchList();
+		}
+		return convertList(this.computerValidator.fetchList(page));
+	}
 
-    public List<ComputerDto> fetchList(@NonNull final Page p,
-            @NonNull final List<SortEntry> sortEntries) throws DuplicatedSortEntriesException {
-        return convertList(this.computerValidator.fetchList(p, sortEntries));
-    }
+	public List<ComputerDto> fetchList(@Nullable final Page p, @Nullable final List<SortEntry> sortEntries)
+			throws DuplicatedSortEntriesException {
+		if (sortEntries == null || sortEntries.isEmpty()) {
+			return fetchList(p);
+		} else if (p == null) {
+			return fetchList(sortEntries);
+		}
+		return convertList(this.computerValidator.fetchList(p, sortEntries));
+	}
 
-    public List<ComputerDto> fetchList(@NonNull final Page p, @NonNull final String searchedName) {
-        return convertList(this.computerValidator.fetchList(p, searchedName));
-    }
+	List<ComputerDto> fetchList(final List<SortEntry> sortEntries) {
+		if (sortEntries == null || sortEntries.isEmpty()) {
+			return fetchList();
+		}
+		return convertList(this.computerValidator.fetchList(sortEntries));
+	}
 
-    public List<ComputerDto> fetchList(@NonNull final Page p, @NonNull final String search,
-            @NonNull final List<SortEntry> sortEntries) throws DuplicatedSortEntriesException {
-        return convertList(this.computerValidator.fetchList(p, search, sortEntries));
-    }
+	public List<ComputerDto> fetchList(@NonNull final Page p, @NonNull final String searchedName) {
+		if (searchedName == null || searchedName.isEmpty()) {
+			return fetchList(p);
+		} else if (p == null) {
+			return fetchList(searchedName);
+		}
+		return convertList(this.computerValidator.fetchList(p, searchedName));
+	}
 
-    public List<ComputerDto> fetchList(@NonNull final String search) {
-        return convertList(this.computerValidator.fetchList(search));
+	public List<ComputerDto> fetchList(@NonNull final Page p, @NonNull final String search,
+			@NonNull final List<SortEntry> sortEntries) throws DuplicatedSortEntriesException {
+		if (sortEntries == null || sortEntries.isEmpty()) {
+			return fetchList(p, search);
+		} else if (p == null) {
+			throw new NotImplementedException();
+		} else if (search == null || search.trim().isEmpty()) {
+			return fetchList(p, sortEntries);
+		}
+		return convertList(this.computerValidator.fetchList(p, search, sortEntries));
+	}
 
-    }
+	public List<ComputerDto> fetchList(@NonNull final String search) {
+		if (search == null || search.trim().isEmpty()) {
+			return fetchList();
+		}
+		return convertList(this.computerValidator.fetchList(search));
 
-    @Override
-    public Optional<ComputerDto> findById(final long id) {
-        return this.computerValidator.findById(id)
-                .map((final Computer cpt) -> ComputerMapper.computerToDTO(cpt).get());
-    }
+	}
 
-    @Override
-    public int getNumberOfElements() {
-        return this.computerValidator.getNumberOfElements();
-    }
+	@Override
+	public Optional<ComputerDto> findById(final long id) {
+		return this.computerValidator.findById(id).map((final Computer cpt) -> ComputerMapper.computerToDTO(cpt).get());
+	}
 
-    /**
-     * Recherche du nombre d'élements de la base correspondant à la recherche en param
-     *
-     * @param search
-     * @return
-     */
-    public int getNumberOfFoundElements(@Nullable final String search) {
-        if (search != null) {
-            return this.computerValidator.getNumberOfFoundElements(search);
-        } else {
-            return getNumberOfElements();
-        }
-    }
+	@Override
+	public int getNumberOfElements() {
+		return this.computerValidator.getNumberOfElements();
+	}
 
-    public int updateComputer(@Nullable final ComputerDto computerValue)
-            throws InvalidComputerDtoException, InvalidComputerException {
+	/**
+	 * Recherche du nombre d'élements de la base correspondant à la recherche en
+	 * param
+	 *
+	 * @param search
+	 * @return
+	 */
+	public int getNumberOfFoundElements(@Nullable final String search) {
+		if (search != null) {
+			return this.computerValidator.getNumberOfFoundElements(search);
+		} else {
+			return getNumberOfElements();
+		}
+	}
 
-        Computer computer = getComputerFromDto(computerValue);
-        return this.computerValidator.update(computer);
-    }
+	public int updateComputer(@Nullable final ComputerDto computerValue)
+			throws InvalidComputerDtoException, InvalidComputerException {
 
-    void setService(final ComputerService newService) {
-        this.computerValidator = newService;
-    }
+		Computer computer = getComputerFromDto(computerValue);
+		return this.computerValidator.update(computer);
+	}
 
-    private Computer getComputerFromDto(final ComputerDto dtoInstance)
-            throws InvalidComputerDtoException {
+	void setService(final ComputerService newService) {
+		this.computerValidator = newService;
+	}
 
-        this.dtoInstanceValidator.validate(dtoInstance);
-        return ComputerMapper.computerDTOToComputer(dtoInstance).get();
-    }
+	private Computer getComputerFromDto(final ComputerDto dtoInstance) throws InvalidComputerDtoException {
+		this.dtoInstanceValidator.validate(dtoInstance);
+		return ComputerMapper.computerDTOToComputer(dtoInstance).get();
+	}
 }

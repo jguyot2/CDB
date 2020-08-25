@@ -32,8 +32,8 @@ public class UserServiceTest {
     @Autowired
     UserService service;
 
-    User user = new User(1L, "pouet", "plopiplop", UserRoles.ROLE_USER);
-    User invalidUser = new User(1L, "", "pouet", UserRoles.ROLE_USER);
+    User user = new User(1L, "pouet", "plopiplop", UserRoles.USER);
+    User invalidUser = new User(1L, "", "pouet", UserRoles.USER);
 
     @Before
     public void init() {
@@ -46,13 +46,13 @@ public class UserServiceTest {
     @Test
     public void testAddUserDbException() throws PersistanceException, InvalidUserException {
         Mockito.when(this.updater.createUser(Matchers.any())).thenThrow(new PersistanceException());
-        Assert.assertFalse(this.service.addUser(this.user));
+        Assert.assertFalse(this.service.create(this.user));
     }
 
     @Test
     public void testAddUserNullValue() throws PersistanceException, InvalidUserException {
         try {
-            Assert.assertFalse(this.service.addUser(null));
+            Assert.assertFalse(this.service.create(null));
             Assert.fail();
         } catch (InvalidUserException e) {
             Assert.assertTrue(e.getProblems().contains(UserProblems.NULL_VALUE));
@@ -62,13 +62,13 @@ public class UserServiceTest {
     @Test
     public void testAddUser() throws PersistanceException, InvalidUserException {
         Mockito.when(this.updater.createUser(Matchers.any())).thenReturn(true);
-        Assert.assertTrue(this.service.addUser(this.user));
+        Assert.assertTrue(this.service.create(this.user));
     }
 
     @Test
     public void testAddInvalidUser() throws PersistanceException, InvalidUserException {
         try {
-            Assert.assertFalse(this.service.addUser(this.invalidUser));
+            Assert.assertFalse(this.service.create(this.invalidUser));
             Assert.fail();
         } catch (InvalidUserException e) {
             Assert.assertTrue(e.getProblems().contains(UserProblems.INVALID_NAME));
