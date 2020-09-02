@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -15,13 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.model.User;
 
+
 @Repository
 public class UserSearcher {
+
     @PersistenceContext
     private EntityManager em;
 
+
     @Transactional
-    public Optional<User> getUserDetails(@NonNull final String username) throws PersistanceException {
+    public Optional<User> getUserDetails(@NonNull final String username) throws DaoException {
         try {
             CriteriaBuilder cb = this.em.getCriteriaBuilder();
             CriteriaQuery<User> query = cb.createQuery(User.class);
@@ -35,8 +39,8 @@ public class UserSearcher {
 
             User user = users.get(0);
             return Optional.of(user);
-        } catch (RuntimeException e) {
-            throw new PersistanceException(e);
+        } catch (PersistenceException e) {
+            throw new DaoException(e);
         }
     }
 }

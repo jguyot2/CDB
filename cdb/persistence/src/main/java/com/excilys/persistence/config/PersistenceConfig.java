@@ -18,12 +18,15 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+
 @Configuration
 
 @EnableTransactionManagement(proxyTargetClass = true)
 @ComponentScan(basePackages = "com.excilys.persistence")
 public class PersistenceConfig {
+
     private DataSource ds;
+
 
     @Bean(destroyMethod = "")
     public DataSource dataSource() {
@@ -45,16 +48,6 @@ public class PersistenceConfig {
         return jpm;
     }
 
-    @Bean
-    public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
-        return new NamedParameterJdbcTemplate(getDataSource());
-    }
-
-    @Bean
-    public JdbcTemplate template() {
-        return new JdbcTemplate(getDataSource());
-    }
-
     @Bean(destroyMethod = "")
     public EntityManagerFactory getEntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean fb = new LocalContainerEntityManagerFactoryBean();
@@ -67,4 +60,13 @@ public class PersistenceConfig {
         return fb.getNativeEntityManagerFactory();
     }
 
+    @Bean
+    public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
+        return new NamedParameterJdbcTemplate(getDataSource());
+    }
+
+    @Bean
+    public JdbcTemplate template() {
+        return new JdbcTemplate(getDataSource());
+    }
 }

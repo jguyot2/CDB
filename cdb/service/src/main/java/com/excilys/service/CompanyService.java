@@ -1,6 +1,5 @@
 package com.excilys.service;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +14,8 @@ import com.excilys.model.Company;
 import com.excilys.model.Page;
 import com.excilys.persistence.CompanySearcher;
 import com.excilys.persistence.CompanyUpdater;
-import com.excilys.persistence.PersistanceException;
+import com.excilys.persistence.DaoException;
+
 
 /**
  * Classe vérifiant que les requêtes sur les entreprises sont bien formée et cohérentes.
@@ -34,17 +34,20 @@ public class CompanyService implements SearchValidator<Company> {
     @Autowired
     private CompanyUpdater companyUpdater;
 
+
     /**
      * Suppression d'une entreprise à partir de son identifiant
      *
      * @param companyId l'identifiant de l'entreprise à supprimer
-     * @return 1 si l'entreprise a été supprimée, 0 si l'identifiant n'existe pas, -1 s'il y a eu
-     *         une erreur dans la base
+     *
+     * @return 1 si l'entreprise a été supprimée, 0 si l'identifiant n'existe pas, -1 s'il y a eu une erreur
+     *         dans la base
      */
     public int deleteCompanyById(final long companyId) {
         try {
-            return this.companyUpdater.deleteCompany(companyId);
-        } catch (SQLException | PersistanceException e) {
+            this.companyUpdater.deleteCompany(companyId);
+            return 1;
+        } catch (DaoException e) {
             LOG.error(e.getMessage(), e);
             return -1;
         }
@@ -59,24 +62,24 @@ public class CompanyService implements SearchValidator<Company> {
     public List<Company> fetchList() {
         try {
             return this.companySearcher.fetchList();
-        } catch (PersistanceException e) {
+        } catch (DaoException e) {
             LOG.error("fetchList: " + e.getMessage(), e);
             return new ArrayList<>();
         }
     }
 
     /**
-     * Renvoie la liste des instances présentes dans la BD qui sont contenues dans la page en
-     * paramètre.
+     * Renvoie la liste des instances présentes dans la BD qui sont contenues dans la page en paramètre.
      *
      * @param page la page à afficher.
+     *
      * @return La liste des entreprises présentes dans la page.
      */
     @Override
     public List<Company> fetchList(@NonNull final Page page) {
         try {
             return this.companySearcher.fetchList(page);
-        } catch (PersistanceException e) {
+        } catch (DaoException e) {
             LOG.error("Recherche de la liste : Exception reçue. Renvoi d'une liste vide");
             return new ArrayList<>();
         }
@@ -86,15 +89,15 @@ public class CompanyService implements SearchValidator<Company> {
      * Recherche d'une entreprise à partir de son identifiant.
      *
      * @param id l'identifiant recherché
-     * @return un Optional contenant une instance de Company si une ligne correspondante a été
-     *         trouvée dans la BD ou une instance de Optional vide si aucune entreprise n'a été
-     *         trouvée
+     *
+     * @return un Optional contenant une instance de Company si une ligne correspondante a été trouvée dans la
+     *         BD ou une instance de Optional vide si aucune entreprise n'a été trouvée
      */
     @Override
     public Optional<Company> findById(final long id) {
         try {
             return this.companySearcher.fetchById(id);
-        } catch (PersistanceException e) {
+        } catch (DaoException e) {
             return Optional.empty();
         }
     }
@@ -106,7 +109,7 @@ public class CompanyService implements SearchValidator<Company> {
     public int getNumberOfElements() {
         try {
             return this.companySearcher.getNumberOfElements();
-        } catch (PersistanceException e) {
+        } catch (DaoException e) {
             LOG.error("getNbOfElements : " + e.getMessage(), e);
             return -1;
         }
