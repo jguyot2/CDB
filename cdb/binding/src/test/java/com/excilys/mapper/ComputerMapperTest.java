@@ -69,24 +69,11 @@ public class ComputerMapperTest {
             new ComputerDto("RIZ", 245L, (CompanyDto) null, strDates[3], null) };
 
 
-    @Before
-    public void init() {
-
-    }
-
     @Test
     public void computerToDTOTest() {
         for (int i = 0; i < fakeComputerList.length; ++i) {
             assertEquals(ComputerMapper.computerToDTO(fakeComputerList[i]).get(),
                     ComputerDtoList[i]);
-        }
-    }
-
-    @Test
-    public void dtoToComputerTest() {
-        for (int i = 0; i < fakeComputerList.length; ++i) {
-            assertEquals(ComputerMapper.computerDTOToComputer(ComputerDtoList[i]).get(),
-                    fakeComputerList[i]);
         }
     }
 
@@ -101,5 +88,18 @@ public class ComputerMapperTest {
                             ComputerMapper.computerToDTO(fakeComputerList[i]).get()).get(),
                     fakeComputerList[i]);
         }
+    }
+
+    @Test
+    public void dtoToComputerTest() {
+        for (int i = 0; i < fakeComputerList.length; ++i) {
+            assertEquals(ComputerMapper.computerDTOToComputer(ComputerDtoList[i]).get(),
+                    fakeComputerList[i]);
+        }
+    }
+
+    @Before
+    public void init() {
+
     }
 }

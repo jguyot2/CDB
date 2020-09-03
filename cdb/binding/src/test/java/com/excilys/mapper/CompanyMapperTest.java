@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.excilys.model.Company;
 import com.excilys.model.CompanyDto;
 
+
 public class CompanyMapperTest {
 
     private final Company[] validCompanies = { new Company("Company1", 1L),
@@ -19,6 +20,7 @@ public class CompanyMapperTest {
     private final CompanyDto[] validCompanyDtos = { new CompanyDto("Company1", 1L),
             new CompanyDto("Company2", 2L), new CompanyDto("Fromage", 543L),
             new CompanyDto("Camembert", null), new CompanyDto("pouet", 0L) };
+
 
     @Test
     public void companyToDTOTest() {

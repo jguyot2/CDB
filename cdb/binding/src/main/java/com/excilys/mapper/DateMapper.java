@@ -31,11 +31,11 @@ public final class DateMapper {
      *         DATE_PATTERN, ou Optional.empty() si le paramètre est nul
      */
     public static Optional<String> localDateToString(final LocalDate ld) {
-        LOG.trace("Conversion de localDate vers Str. localDate = " + ld);
+        DateMapper.LOG.trace("Conversion de localDate vers Str. localDate = " + ld);
         if (ld == null) {
             return Optional.empty();
         }
-        DateTimeFormatter df = DateTimeFormatter.ofPattern(DATE_PATTERN);
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(DateMapper.DATE_PATTERN);
         return Optional.of(ld.format(df));
     }
 
@@ -50,16 +50,16 @@ public final class DateMapper {
      *
      */
     public static Optional<LocalDate> stringToLocalDate(@Nullable final String dateRepr) {
-        LOG.trace("Conversion de str vers localDate. str =" + dateRepr);
+        DateMapper.LOG.trace("Conversion de str vers localDate. str =" + dateRepr);
         if (dateRepr == null) {
             return Optional.empty();
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateMapper.DATE_PATTERN);
         try {
             LocalDate date = LocalDate.parse(dateRepr, formatter);
             return Optional.of(date);
         } catch (DateTimeParseException e) {
-            LOG.debug("Date en entrée invalide");
+            DateMapper.LOG.debug("Date en entrée invalide");
             return Optional.empty();
         }
     }

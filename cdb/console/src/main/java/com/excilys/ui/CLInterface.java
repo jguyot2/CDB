@@ -17,6 +17,7 @@ import com.excilys.service.ComputerProblems;
 import com.excilys.service.ComputerService;
 import com.excilys.service.InvalidComputerException;
 
+
 /**
  * Interface utilisateur permettant l'interaction avec la BD par ligne de commande
  *
@@ -32,13 +33,15 @@ public class CLInterface {
 
     private static Scanner sc = new Scanner(System.in).useDelimiter("\n");
 
+
     private void createComputerCommand() {
         System.out.println("Entrez le nom de l'ordinateur");
 
         String computerName = sc.nextLine().trim();
         System.out.println("Nom entré:'" + computerName + "'");
 
-        System.out.println("Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
+        System.out.println(
+                "Entrez l'identifiant de la compagnie associée (ou une ligne vide pour ne rien ajouter)");
         String strCompanyId = sc.nextLine().trim();
         System.out.println("ID entré:" + strCompanyId);
 
@@ -96,7 +99,8 @@ public class CLInterface {
             }
         }
 
-        Computer createdComputer = new Computer(computerName, company, introduced, discontinued);
+        Computer createdComputer = Computer.getBuilder().setName(computerName).setManufacturer(company)
+                .setIntro(introduced).setDisco(discontinued).build();
         long newIdComputer;
         try {
             newIdComputer = this.computerValidator.addComputer(createdComputer);

@@ -31,7 +31,7 @@ public final class CompanyMapper {
      */
     public static Optional<Company> companyDTOToCompany(@Nullable final CompanyDto companyDTO) {
         if (companyDTO == null) {
-            LOG.debug("companyDTO > Company : param nul");
+            CompanyMapper.LOG.debug("companyDTO > Company : param nul");
             return Optional.empty();
         }
         String name = companyDTO.getName();
