@@ -25,14 +25,17 @@ import com.excilys.service.ComputerService;
 import com.excilys.service.InvalidComputerException;
 import com.excilys.serviceconfig.ServiceConfig;
 
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceConfig.class, PersistenceConfig.class })
 public class ComputerAdapterTest {
+
     @Mock
     ComputerService service;
 
     @Autowired
     ComputerAdapter adapter;
+
 
     @Before
     public void init() {
@@ -40,13 +43,18 @@ public class ComputerAdapterTest {
         this.adapter.setService(this.service);
     }
 
-    Computer c1 = new Computer("pouet", null, null, null, 12L);
-    Computer c2 = new Computer("plopiplop", null, null, null, 122L);
+
+    Computer c1 = Computer.getBuilder()
+            .setName("pouet").setId(12L).build();
+    Computer c2 = Computer.getBuilder()
+            .setName("plopiplop").setId(122L).build();
+
     ComputerDto dto1 = new ComputerDto("pouet", 12L, (CompanyDto) null, null, null);
     ComputerDto dto2 = new ComputerDto("plopiplop", 122L, (CompanyDto) null, null, null);
     ComputerDto emptyName = new ComputerDto("", 12L, (CompanyDto) null, null, null);
     ComputerDto nullDto = null;
     ComputerDto invalidDates = new ComputerDto("plopiplop", 12L, (CompanyDto) null, "pouet", "pouet");
+
 
     @Test
     public void testFetchList() {
@@ -146,5 +154,4 @@ public class ComputerAdapterTest {
         Mockito.when(this.service.update(this.c1)).thenReturn(1);
         Assert.assertEquals(this.adapter.updateComputer(this.dto1), 1);
     }
-
 }
