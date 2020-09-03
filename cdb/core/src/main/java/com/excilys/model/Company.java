@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+
 /**
  * Classe représentant une entreprise par son nom + son identifiant sur la base de données.
  *
@@ -29,10 +30,11 @@ public class Company implements Serializable {
     @NonNull
     private String name;
 
+
     public Company() {
     }
 
-    public void setName(String newName) {
+    public void setName(final String newName) {
         this.name = newName;
     }
 
@@ -45,6 +47,7 @@ public class Company implements Serializable {
         this.id = companyId == null ? 0 : companyId;
     }
 
+    // TODO refacto
     @Override
     public boolean equals(@Nullable final Object obj) {
         if (this == obj) {

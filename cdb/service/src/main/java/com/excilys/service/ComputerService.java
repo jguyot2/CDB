@@ -18,7 +18,7 @@ import com.excilys.model.sort.DuplicatedSortEntriesException;
 import com.excilys.model.sort.SortEntry;
 import com.excilys.persistence.ComputerSearcher;
 import com.excilys.persistence.ComputerUpdater;
-import com.excilys.persistence.PersistanceException;
+import com.excilys.persistence.DaoException;
 
 /**
  * Classe validant les requêtes/mises à jour avant de les envoyer au paquet
@@ -53,7 +53,7 @@ public class ComputerService implements SearchValidator<Computer> {
 		this.validator.validate(createdComputer);
 		try {
 			return this.computerUpdater.createComputer(createdComputer);
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("createComputer :" + e.getMessage(), e);
 			return 0;
 		}
@@ -66,7 +66,7 @@ public class ComputerService implements SearchValidator<Computer> {
 				result += this.computerUpdater.deleteById(identifiers);
 			}
 			return result;
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("deleteComputer :" + e.getMessage(), e);
 			return -1;
 		}
@@ -83,7 +83,7 @@ public class ComputerService implements SearchValidator<Computer> {
 	public List<Computer> fetchList() {
 		try {
 			return this.computerSearcher.fetchList();
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("fetchlist: " + e.getMessage(), e);
 			return new ArrayList<>();
 		}
@@ -98,7 +98,7 @@ public class ComputerService implements SearchValidator<Computer> {
 	public List<Computer> fetchList(@NonNull final Page page) {
 		try {
 			return this.computerSearcher.fetchList(page);
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("fetchListWithOffset: " + e.getMessage(), e);
 			return new ArrayList<>();
 		}
@@ -115,7 +115,7 @@ public class ComputerService implements SearchValidator<Computer> {
 		}
 		try {
 			return this.computerSearcher.fetchList(p, sortEntries);
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("Erreur lors du fetchWithOrder", e);
 			return new ArrayList<>();
 		}
@@ -124,7 +124,7 @@ public class ComputerService implements SearchValidator<Computer> {
 	public List<Computer> fetchList(@NonNull final Page p, @NonNull final String search) {
 		try {
 			return this.computerSearcher.fetchList(p, search);
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("", e);
 			return Arrays.asList();
 		}
@@ -141,7 +141,7 @@ public class ComputerService implements SearchValidator<Computer> {
 		}
 		try {
 			return this.computerSearcher.fetchList(p, search, sortEntries);
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("", e);
 			return new ArrayList<>();
 		}
@@ -150,7 +150,7 @@ public class ComputerService implements SearchValidator<Computer> {
 	public List<Computer> fetchList(@NonNull final String search) {
 		try {
 			return this.computerSearcher.searchByName(search);
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("", e);
 			return new ArrayList<>();
 		}
@@ -169,7 +169,7 @@ public class ComputerService implements SearchValidator<Computer> {
 	public Optional<Computer> findById(final long id) {
 		try {
 			return this.computerSearcher.fetchById(id);
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("", e);
 			return Optional.empty();
 		}
@@ -183,7 +183,7 @@ public class ComputerService implements SearchValidator<Computer> {
 	public int getNumberOfElements() {
 		try {
 			return this.computerSearcher.getNumberOfElements();
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("", e);
 			return -1;
 		}
@@ -192,7 +192,7 @@ public class ComputerService implements SearchValidator<Computer> {
 	public int getNumberOfFoundElements(@NonNull final String search) {
 		try {
 			return this.computerSearcher.getNumberOfFoundElements(search);
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("", e);
 			return -1;
 		}
@@ -228,7 +228,7 @@ public class ComputerService implements SearchValidator<Computer> {
 		LOG.info("Instance valide : Mise à jour de la base.");
 		try {
 			return this.computerUpdater.updateComputer(newComputervalue);
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("updateComputer :" + e.getMessage(), e);
 			return -1;
 		}
@@ -240,7 +240,7 @@ public class ComputerService implements SearchValidator<Computer> {
 		}
 		try {
 			return this.computerSearcher.fetchList(sortEntries);
-		} catch (PersistanceException e) {
+		} catch (DaoException e) {
 			LOG.error("Database error", e);
 			return new ArrayList<>();
 		}

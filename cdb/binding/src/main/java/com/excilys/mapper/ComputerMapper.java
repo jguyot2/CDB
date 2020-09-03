@@ -1,6 +1,5 @@
 package com.excilys.mapper;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -35,18 +34,19 @@ public final class ComputerMapper {
             return Optional.empty();
         }
         Company company = CompanyMapper.companyDTOToCompany(dtoComputer.getCompany()).orElse(null);
-        return computerDTOToComputer(dtoComputer, company);
+        return ComputerMapper.computerDTOToComputer(dtoComputer, company);
     }
 
     private static Optional<Computer> computerDTOToComputer(@NonNull final ComputerDto dtoComputer,
             @Nullable final Company manufacturer) {
-        Long id = dtoComputer.getId();
-        String computerName = dtoComputer.getName();
-        Optional<LocalDate> intro = DateMapper.stringToLocalDate(dtoComputer.getIntroduced());
-        Optional<LocalDate> discontinuation = DateMapper
-                .stringToLocalDate(dtoComputer.getDiscontinued());
-        return Optional.of(new Computer(computerName, manufacturer, intro.orElse(null),
-                discontinuation.orElse(null), id));
+        Computer.Builder builder = Computer.getBuilder();
+
+        builder.setId(dtoComputer.getId())
+                .setName(dtoComputer.getName())
+                .setManufacturer(manufacturer)
+                .setIntro(DateMapper.stringToLocalDate(dtoComputer.getIntroduced()).orElse(null))
+                .setDisco(DateMapper.stringToLocalDate(dtoComputer.getDiscontinued()).orElse(null));
+        return Optional.of(builder.build());
     }
 
     /**
@@ -59,7 +59,7 @@ public final class ComputerMapper {
      */
     public static Optional<ComputerDto> computerToDTO(@Nullable final Computer c) {
         if (c == null) {
-            LOG.info("computer > DTO : param nul");
+            ComputerMapper.LOG.info("computer > DTO : param nul");
             return Optional.empty();
         }
         String name = c.getName();

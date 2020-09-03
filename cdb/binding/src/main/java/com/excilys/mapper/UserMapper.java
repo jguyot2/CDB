@@ -7,7 +7,9 @@ import org.springframework.lang.Nullable;
 import com.excilys.model.User;
 import com.excilys.model.UserDto;
 
+
 public class UserMapper {
+
     public static Optional<User> fromDto(@Nullable final UserDto dto) {
         if (dto == null) {
             return Optional.empty();

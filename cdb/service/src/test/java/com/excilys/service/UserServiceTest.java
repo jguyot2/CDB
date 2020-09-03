@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.model.User;
 import com.excilys.model.UserRoles;
-import com.excilys.persistence.PersistanceException;
+import com.excilys.persistence.DaoException;
 import com.excilys.persistence.UserSearcher;
 import com.excilys.persistence.UserUpdater;
 import com.excilys.persistence.config.PersistenceConfig;
@@ -44,13 +44,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testAddUserDbException() throws PersistanceException, InvalidUserException {
-        Mockito.when(this.updater.createUser(Matchers.any())).thenThrow(new PersistanceException());
+    public void testAddUserDbException() throws DaoException, InvalidUserException {
+        Mockito.when(this.updater.createUser(Matchers.any())).thenThrow(new DaoException());
         Assert.assertFalse(this.service.create(this.user));
     }
 
     @Test
-    public void testAddUserNullValue() throws PersistanceException, InvalidUserException {
+    public void testAddUserNullValue() throws DaoException, InvalidUserException {
         try {
             Assert.assertFalse(this.service.create(null));
             Assert.fail();
@@ -60,13 +60,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testAddUser() throws PersistanceException, InvalidUserException {
+    public void testAddUser() throws DaoException, InvalidUserException {
         Mockito.when(this.updater.createUser(Matchers.any())).thenReturn(true);
         Assert.assertTrue(this.service.create(this.user));
     }
 
     @Test
-    public void testAddInvalidUser() throws PersistanceException, InvalidUserException {
+    public void testAddInvalidUser() throws DaoException, InvalidUserException {
         try {
             Assert.assertFalse(this.service.create(this.invalidUser));
             Assert.fail();
@@ -76,20 +76,20 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUserDetails() throws PersistanceException {
+    public void testUserDetails() throws DaoException {
         Mockito.when(this.searcher.getUserDetails("pouet")).thenReturn(Optional.of(this.user));
         Assert.assertEquals(Optional.of(this.user), this.service.getUserDetails("pouet"));
     }
 
     @Test
-    public void testUserDetailsWithInvalidInput() throws PersistanceException {
+    public void testUserDetailsWithInvalidInput() throws DaoException {
         Assert.assertEquals(Optional.empty(), this.service.getUserDetails(""));
         Assert.assertEquals(Optional.empty(), this.service.getUserDetails(null));
     }
 
     @Test
-    public void testUserDetailsDbException() throws PersistanceException {
-        Mockito.when(this.searcher.getUserDetails("pouet")).thenThrow(new PersistanceException());
+    public void testUserDetailsDbException() throws DaoException {
+        Mockito.when(this.searcher.getUserDetails("pouet")).thenThrow(new DaoException());
         Assert.assertEquals(Optional.empty(), this.service.getUserDetails("pouet"));
     }
 

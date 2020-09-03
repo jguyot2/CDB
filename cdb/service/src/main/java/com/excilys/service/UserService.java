@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.excilys.mapper.UserMapper;
 import com.excilys.model.User;
-import com.excilys.persistence.PersistanceException;
+import com.excilys.persistence.DaoException;
 import com.excilys.persistence.UserSearcher;
 import com.excilys.persistence.UserUpdater;
 
@@ -31,7 +31,7 @@ public class UserService {
 		this.validator.validate(user);
 		try {
 			return this.updater.createUser(user);
-		} catch (final PersistanceException e) {
+		} catch (final DaoException e) {
 			LOG.error("db error", e);
 			return false;
 		}
@@ -44,7 +44,7 @@ public class UserService {
 			} else {
 				return this.searcher.getUserDetails(username);
 			}
-		} catch (final PersistanceException e) {
+		} catch (final DaoException e) {
 			LOG.error("Persistence exception found", e);
 			return Optional.empty();
 		}
