@@ -1,13 +1,16 @@
 package com.excilys.persistence;
 
-public class PersistanceException extends Exception {
+// TODO changer le nom parce que presque la même chose que PersistenceException
+public class DaoException extends Exception {
+
     private static final long serialVersionUID = 1L;
 
-    public PersistanceException(final Throwable e) {
-        super(e);
+
+    public DaoException() {
+        super();
     }
 
-    public PersistanceException() {
-        super();
+    public DaoException(final Throwable e) {
+        super(e);
     }
 }
