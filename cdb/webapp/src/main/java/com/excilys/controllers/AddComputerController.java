@@ -22,89 +22,87 @@ import com.excilys.model.ComputerDto;
 import com.excilys.service.ComputerProblems;
 import com.excilys.service.InvalidComputerException;
 
+
 @Controller
 @RequestMapping("/addComputer")
 public class AddComputerController {
 
-	/** */
-	private static final Logger LOG = LoggerFactory.getLogger(AddComputerController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AddComputerController.class);
 
-	@Autowired
-	private CompanyAdapter companyValidator;
+    @Autowired
+    private CompanyAdapter companyValidator;
 
-	@Autowired
-	private ComputerAdapter computerValidator;
+    @Autowired
+    private ComputerAdapter computerValidator;
 
-	/**
-	 * Ajout d'un ordi dans la base
-	 *
-	 * @param computerName
-	 * @param introduced   Représentant la date de commercialisation, de la forme
-	 *                     donnée dans DateMapper
-	 * @param discontinued Date d'arrêt de production
-	 * @param companyId
-	 * @param m
-	 * @return
-	 */ // XXX : Refacto pour obtenir directement une instance de ComputerDTO
-	@PostMapping
-	public String addComputerToDatabase(@RequestParam(name = "computerName") final String computerName,
-			@RequestParam(name = "introduced") final String introduced,
-			@RequestParam(name = "discontinued") final String discontinued,
-			@RequestParam(name = "companyId") final Long companyId, final Model m) {
 
-		AddComputerController.LOG.trace("Ajout d'un ordi à la base");
-		try {
-			CompanyDto company = companyId == 0 ? null : this.companyValidator.findById(companyId).orElse(null);
-			ComputerDto c = new ComputerDto(computerName, 0L, company, introduced, discontinued);
-			long newIdentifier = this.computerValidator.addComputerDTO(c);
-			// if (newIdentifier <= 0) {
-			// m.addAttribute("errorCause", "The computer could not be added");
-			// return "500";
-			// }
-		} catch (InvalidComputerDtoException e) {
-			AddComputerController.LOG.debug("", e);
-			List<ComputerDTOProblems> problems = e.getProblems();
-			StringBuilder sb = new StringBuilder();
-			for (ComputerDTOProblems problem : problems) {
-				sb.append(problem.getExplanation() + " <br />\n");
-			}
-			AddComputerController.LOG.info("DTO invalide : " + sb.toString());
-			m.addAttribute("errorCause", sb.toString());
-			return "400";
-		} catch (InvalidComputerException e) {
-			List<ComputerProblems> problems = e.getProblems();
-			StringBuilder sb = new StringBuilder();
-			for (ComputerProblems problem : problems) {
-				sb.append(problem.getExplanation() + " <br />\n");
-			}
-			AddComputerController.LOG.info("Ordi invalide : " + sb.toString());
-			m.addAttribute("errorCause", sb.toString());
-			return "400";
-		}
-		String urlMessage = UrlEncoding.encode("L'ordinateur a bien été ajouté à la base");
-		return "redirect:/page?message=" + urlMessage;
-	}
+    /**
+     * Ajout d'un ordi dans la base
+     *
+     * @param computerName
+     * @param introduced   Représentant la date de commercialisation, de la forme donnée dans DateMapper
+     * @param discontinued Date d'arrêt de production
+     * @param companyId
+     * @param m
+     *
+     * @return
+     */ // XXX : Refacto pour obtenir directement une instance de ComputerDTO
+    @PostMapping
+    public String addComputerToDatabase(@RequestParam(name = "computerName") final String computerName,
+            @RequestParam(name = "introduced") final String introduced,
+            @RequestParam(name = "discontinued") final String discontinued,
+            @RequestParam(name = "companyId") final Long companyId, final Model m) {
 
-	public void setCompanyValidator(final CompanyAdapter dtv) {
-		this.companyValidator = dtv;
-	}
+        AddComputerController.LOG.trace("Ajout d'un ordi à la base");
+        try {
+            CompanyDto company = companyId == 0 ? null
+                    : this.companyValidator.findById(companyId).orElse(null);
+            ComputerDto c = new ComputerDto(computerName, 0L, company, introduced, discontinued);
+            this.computerValidator.addComputerDTO(c);
+        } catch (InvalidComputerDtoException e) {
+            AddComputerController.LOG.debug("", e);
+            List<ComputerDTOProblems> problems = e.getProblems();
+            StringBuilder sb = new StringBuilder();
+            for (ComputerDTOProblems problem : problems) {
+                sb.append(problem.getExplanation() + " <br />\n");
+            }
+            AddComputerController.LOG.info("DTO invalide : " + sb.toString());
+            m.addAttribute("errorCause", sb.toString());
+            return "400";
+        } catch (InvalidComputerException e) {
+            List<ComputerProblems> problems = e.getProblems();
+            StringBuilder sb = new StringBuilder();
+            for (ComputerProblems problem : problems) {
+                sb.append(problem.getExplanation() + " <br />\n");
+            }
+            AddComputerController.LOG.info("Ordi invalide : " + sb.toString());
+            m.addAttribute("errorCause", sb.toString());
+            return "400";
+        }
+        String urlMessage = UrlEncoding.encode("L'ordinateur a bien été ajouté à la base");
+        return "redirect:/page?message=" + urlMessage;
+    }
 
-	public void setComputerValidator(final ComputerAdapter dtv) {
-		this.computerValidator = dtv;
-	}
+    public void setCompanyValidator(final CompanyAdapter dtv) {
+        this.companyValidator = dtv;
+    }
 
-	/**
-	 * Affichage de la page pour ajouter un ordinateur
-	 *
-	 * @param m
-	 * @return
-	 */
-	@GetMapping
-	public String showAddComputerPage(@NonNull final Model m) {
-		AddComputerController.LOG.trace("Redirection vers le computerPage");
-		List<CompanyDto> companyList = this.companyValidator.fetchList();
-		m.addAttribute("companyList", companyList);
-		return "addComputer";
-	}
+    public void setComputerValidator(final ComputerAdapter dtv) {
+        this.computerValidator = dtv;
+    }
 
+    /**
+     * Affichage de la page pour ajouter un ordinateur
+     *
+     * @param m
+     *
+     * @return
+     */
+    @GetMapping
+    public String showAddComputerPage(@NonNull final Model m) {
+        AddComputerController.LOG.trace("Redirection vers le computerPage");
+        List<CompanyDto> companyList = this.companyValidator.fetchList();
+        m.addAttribute("companyList", companyList);
+        return "addComputer";
+    }
 }

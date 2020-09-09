@@ -15,10 +15,13 @@ import com.excilys.model.UserDto;
 import com.excilys.service.InvalidUserException;
 import com.excilys.service.UserService;
 
+
 @Service
 public class UserDtoAdapter implements UserDetailsService {
+
     @Autowired
     private UserService service;
+
 
     public boolean addUser(final UserDto user) throws InvalidUserException {
         if (user == null) {
@@ -36,7 +39,7 @@ public class UserDtoAdapter implements UserDetailsService {
         if (s.isPresent()) {
             return UserMapper.toDto(s.get()).get();
         } else {
-            throw new UsernameNotFoundException("the username was not found");
+            throw new UsernameNotFoundException("user=" + username);
         }
     }
 }

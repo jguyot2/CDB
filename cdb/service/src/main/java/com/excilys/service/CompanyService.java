@@ -53,11 +53,6 @@ public class CompanyService implements SearchValidator<Company> {
         }
     }
 
-    /**
-     * Fonction renvoyant la liste des entreprises présentes dans la BD.
-     *
-     * @return La liste des entreprises présentes dans la BD
-     */
     @Override
     public List<Company> fetchList() {
         try {
@@ -68,13 +63,6 @@ public class CompanyService implements SearchValidator<Company> {
         }
     }
 
-    /**
-     * Renvoie la liste des instances présentes dans la BD qui sont contenues dans la page en paramètre.
-     *
-     * @param page la page à afficher.
-     *
-     * @return La liste des entreprises présentes dans la page.
-     */
     @Override
     public List<Company> fetchList(@NonNull final Page page) {
         try {
@@ -115,11 +103,6 @@ public class CompanyService implements SearchValidator<Company> {
         }
     }
 
-    /**
-     * change l'instance de la couche persistance Uniquement utilisé pour les tests.
-     *
-     * @param newCompanySearcher la nouvelle
-     */
     void setCompanySearcher(final CompanySearcher newCompanySearcher) {
         this.companySearcher = newCompanySearcher;
     }

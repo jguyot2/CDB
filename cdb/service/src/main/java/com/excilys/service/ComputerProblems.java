@@ -7,6 +7,7 @@ package com.excilys.service;
  *
  */
 public enum ComputerProblems {
+
     NULL_COMPUTER("L'ordinateur est nul"),
     INVALID_DISCONTINUATION_DATE(
             "Date d'arrêt de production invalide car précédant celle de début de production"),
@@ -19,8 +20,9 @@ public enum ComputerProblems {
     OUT_OF_RANGE_DISCO_DATE(
             "La date d'arrête de prod est invalide (Les dates doivent être comprises entre 1970 et 2037)");
 
-    /** */
+
     private String explanation;
+
 
     /**
      * @param errorExplanation explication de l'erreur

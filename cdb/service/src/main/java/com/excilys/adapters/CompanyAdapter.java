@@ -17,13 +17,15 @@ import com.excilys.model.Page;
 import com.excilys.service.CompanyService;
 import com.excilys.service.SearchValidator;
 
+
 @Service
 public final class CompanyAdapter implements SearchValidator<CompanyDto> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CompanyAdapter.class);
 
     @Autowired
-    private CompanyService companyValidator;
+    private CompanyService service;
+
 
     /**
      * Récupération de la liste des valeurs.
@@ -33,7 +35,7 @@ public final class CompanyAdapter implements SearchValidator<CompanyDto> {
     @Override
     public List<CompanyDto> fetchList() {
         LOG.info("DTOCompany : fetchlist");
-        List<Company> companyList = this.companyValidator.fetchList();
+        List<Company> companyList = this.service.fetchList();
         return companyList.stream()
                 .map(c -> CompanyMapper.companyToDTO(c).orElseThrow(IllegalArgumentException::new))
                 .filter(dto -> dto != null).collect(Collectors.toList());
@@ -41,7 +43,7 @@ public final class CompanyAdapter implements SearchValidator<CompanyDto> {
 
     @Override
     public List<CompanyDto> fetchList(@NonNull final Page page) {
-        List<Company> companyList = this.companyValidator.fetchList(page);
+        List<Company> companyList = this.service.fetchList(page);
         return companyList.stream().map(c -> CompanyMapper.companyToDTO(c).orElse(null))
                 .filter(dto -> dto != null).collect(Collectors.toList());
     }
@@ -49,7 +51,7 @@ public final class CompanyAdapter implements SearchValidator<CompanyDto> {
     @Override
     public Optional<CompanyDto> findById(final long id) {
         LOG.info("Recherche de l'id " + id);
-        Optional<Company> foundCompanyOpt = this.companyValidator.findById(id);
+        Optional<Company> foundCompanyOpt = this.service.findById(id);
         if (foundCompanyOpt.isPresent()) {
             return CompanyMapper.companyToDTO(foundCompanyOpt.get());
         } else {
@@ -60,10 +62,10 @@ public final class CompanyAdapter implements SearchValidator<CompanyDto> {
 
     @Override
     public int getNumberOfElements() {
-        return this.companyValidator.getNumberOfElements();
+        return this.service.getNumberOfElements();
     }
 
     public void setCompanyValidator(final CompanyService newCompanyValidator) {
-        this.companyValidator = newCompanyValidator;
+        this.service = newCompanyValidator;
     }
 }

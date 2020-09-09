@@ -12,9 +12,12 @@ import org.springframework.stereotype.Service;
 import com.excilys.model.Company;
 import com.excilys.model.Computer;
 
+
 @Service
 public class ComputerValidator {
+
     private static final Logger LOG = LoggerFactory.getLogger(ComputerValidator.class);
+
 
     public void validate(final Computer instance) throws InvalidComputerException {
         checkComputerValidity(instance);
@@ -41,18 +44,23 @@ public class ComputerValidator {
         }
     }
 
+    private void setDateWhenIntroducedIsSet(final Computer computer, final List<ComputerProblems> problems) {
+        if (computer.getIntroduction().getYear() < 1970 || computer.getIntroduction().getYear() > 2037) {
+            problems.add(ComputerProblems.OUT_OF_RANGE_INTRO_DATE);
+        }
+        if (computer.getDiscontinuation() != null
+                && computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0) {
+            if (computer.getDiscontinuation().getYear() < 1970
+                    || computer.getDiscontinuation().getYear() > 2037) {
+                problems.add(ComputerProblems.OUT_OF_RANGE_DISCO_DATE);
+            }
+            problems.add(ComputerProblems.INVALID_DISCONTINUATION_DATE);
+        }
+    }
+    // TODO refacto possible là
     private void checkDates(final Computer computer, final List<ComputerProblems> problems) {
         if (computer.getIntroduction() != null) {
-            if (computer.getIntroduction().getYear() < 1970 || computer.getIntroduction().getYear() > 2037) {
-                problems.add(ComputerProblems.OUT_OF_RANGE_INTRO_DATE);
-            }
-            if (computer.getDiscontinuation() != null
-                    && computer.getIntroduction().compareTo(computer.getDiscontinuation()) > 0) {
-                if (computer.getDiscontinuation().getYear() < 1970 || computer.getDiscontinuation().getYear() > 2037) {
-                    problems.add(ComputerProblems.OUT_OF_RANGE_DISCO_DATE);
-                }
-                problems.add(ComputerProblems.INVALID_DISCONTINUATION_DATE);
-            }
+            setDateWhenIntroducedIsSet(computer, problems);
         } else if (computer.getDiscontinuation() != null) {
             problems.add(ComputerProblems.NULL_INTRO_WITH_NOT_NULL_DISCONTINUATION);
         }
@@ -61,8 +69,7 @@ public class ComputerValidator {
     /**
      * @param computer l'instance de Computer à tester.
      *
-     * @return Une liste contenant la liste des problèmes sur l'instance de Computer passée en
-     *         paramètre
+     * @return Une liste contenant la liste des problèmes sur l'instance de Computer passée en paramètre
      */
     private List<ComputerProblems> getComputerInstanceProblems(@NonNull final Computer computer) {
         List<ComputerProblems> problems = new ArrayList<>();

@@ -15,50 +15,54 @@ import com.excilys.persistence.DaoException;
 import com.excilys.persistence.UserSearcher;
 import com.excilys.persistence.UserUpdater;
 
+
 @Service
 public class UserService {
-	private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
-	@Autowired
-	private UserSearcher searcher;
 
-	@Autowired
-	private UserUpdater updater;
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
-	@Autowired
-	private UserValidator validator;
+    @Autowired
+    private UserSearcher searcher;
 
-	public boolean create(@Nullable final User user) throws InvalidUserException {
-		this.validator.validate(user);
-		try {
-			return this.updater.createUser(user);
-		} catch (final DaoException e) {
-			LOG.error("db error", e);
-			return false;
-		}
-	}
+    @Autowired
+    private UserUpdater updater;
 
-	public Optional<User> getUserDetails(@Nullable final String username) {
-		try {
-			if (username == null || username.isEmpty()) {
-				return Optional.empty();
-			} else {
-				return this.searcher.getUserDetails(username);
-			}
-		} catch (final DaoException e) {
-			LOG.error("Persistence exception found", e);
-			return Optional.empty();
-		}
-	}
+    @Autowired
+    private UserValidator validator;
 
-	void setSearcher(final UserSearcher newSearcher) {
-		this.searcher = newSearcher;
-	}
 
-	void setUpdater(final UserUpdater newUpdater) {
-		this.updater = newUpdater;
-	}
+    public boolean create(@Nullable final User user) throws InvalidUserException {
+        this.validator.validate(user);
+        try {
+            return this.updater.createUser(user);
+        } catch (final DaoException e) {
+            LOG.error("Failed to create an user", e);
+            return false;
+        }
+    }
 
-	public UserDetails loadUserByUsername(final String username) {
-		return UserMapper.toDto(getUserDetails(username).orElseThrow(IllegalArgumentException::new)).get();
-	}
+    public Optional<User> getUserDetails(@Nullable final String username) {
+        try {
+            if (username == null || username.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return this.searcher.getUserDetails(username);
+            }
+        } catch (final DaoException e) {
+            LOG.error("Persistence exception found", e);
+            return Optional.empty();
+        }
+    }
+
+    void setSearcher(final UserSearcher newSearcher) {
+        this.searcher = newSearcher;
+    }
+
+    void setUpdater(final UserUpdater newUpdater) {
+        this.updater = newUpdater;
+    }
+
+    public UserDetails loadUserByUsername(final String username) {
+        return UserMapper.toDto(getUserDetails(username).orElseThrow(IllegalArgumentException::new)).get();
+    }
 }
