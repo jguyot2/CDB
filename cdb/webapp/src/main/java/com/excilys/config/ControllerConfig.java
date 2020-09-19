@@ -24,11 +24,7 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan(basePackages = { "com.excilys.controllers", "com.excilys.restcontrollers" })
 public class ControllerConfig implements WebMvcConfigurer {
 
-	private static AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
 
-	public static AnnotationConfigWebApplicationContext getContext() {
-		return ControllerConfig.ctx;
-	}
 
 	@Override
 	public void addInterceptors(final InterceptorRegistry registry) {
