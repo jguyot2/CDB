@@ -49,12 +49,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
      @Override
      protected void configure(final HttpSecurity http) throws Exception {
-          http.authorizeRequests().antMatchers(HttpMethod.GET, "api//computers/**")
-                    .hasAnyAuthority("USER", "ADMIN")
+          http.authorizeRequests()
+          			.antMatchers(HttpMethod.GET, "/api/computers/**").hasAnyAuthority("USER", "ADMIN")
                     .antMatchers(HttpMethod.POST, "/api/computers/**").hasAuthority("ADMIN")
                     .antMatchers(HttpMethod.DELETE, "/api/computers/**").hasAuthority("ADMIN")
                     .antMatchers(HttpMethod.PUT, "/api/computers/**").hasAuthority("ADMIN")
                     .antMatchers(HttpMethod.POST, "/register/admin").hasAuthority("ADMIN")
+                    .antMatchers(HttpMethod.POST, "/register").permitAll()
+                    .antMatchers(HttpMethod.POST, "/authenticate/").permitAll()
+                    // .antMatchers()
                     .and().csrf().disable()
                     .exceptionHandling().authenticationEntryPoint(this.jwtAuthenticationEntryPoint).and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

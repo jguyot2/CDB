@@ -1,0 +1,22 @@
+type Query {
+	Com
+}
+
+type Computer {
+	id : ID
+	name : String
+	introduced : Date
+	discontinued: Date
+	manufacturer: Company
+}
+
+type Company {
+	id : ID
+	name : String
+}
+
+type Date {
+	day: Int
+	month: Int
+	year: Int
+}
