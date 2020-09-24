@@ -75,4 +75,6 @@ local.properties
 cdb.log
 Servers/
 
-*.properties
+cdb/persistence/src/main/resources/hikaricp.properties
+cdb/webapp/src/main/resources/private.properties
+cdb/webapp/src/main/webapp/WEB-INF/classes/log4j.properties
