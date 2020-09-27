@@ -14,11 +14,14 @@
 
 	<url>http://www.example.com</url>
 	<modules>
-		<module>core</module>
+
+	  <module>core</module>
 		<module>binding</module>
+		<module>queryparamparsing</module>
 		<module>service</module>
 		<module>console</module>
 		<module>webapp</module>
+		
 		<module>persistence</module>
 	</modules>
 

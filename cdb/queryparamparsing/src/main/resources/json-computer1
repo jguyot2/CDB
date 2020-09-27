@@ -1,0 +1,9 @@
+{
+	"$or" : [
+			{ "name" : { "$like" : "pouet" }},
+			{ "name" : { "$like" : "michel"}},
+			{ "$and": [
+						{ "id" : {"$gt" : "3"}} 
+					] }
+			]
+}
