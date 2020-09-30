@@ -6,24 +6,23 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import com.excilys.queryparamparsing.ast.typing.AtomicType;
-import com.excilys.queryparamparsing.ast.typing.ComplexType;
 
 @Component
 public class DatabaseModel {
     // TODO : récupération des noms/types de tables à partir d'un fichier de
     // config/properties
     public static DatabaseModel getCdbModel() {
-        Map<String, ComplexType> computerColumns = new HashMap<>();
-        computerColumns.put("name", ComplexType.of(AtomicType.STRING));
-        computerColumns.put("introduced", ComplexType.of(AtomicType.DATE));
-        computerColumns.put("discontinued", ComplexType.of(AtomicType.DATE));
-        computerColumns.put("id", ComplexType.of("computers"));
-        computerColumns.put("company_id", ComplexType.of("companies"));
+        Map<String, AtomicType> computerColumns = new HashMap<>();
+        computerColumns.put("name", AtomicType.STRING);
+        computerColumns.put("introduced", AtomicType.DATE);
+        computerColumns.put("discontinued", AtomicType.DATE);
+        computerColumns.put("id", AtomicType.ID);
+        computerColumns.put("company_id", AtomicType.ID);
         TableReference computerTable = new TableReference("computers", computerColumns);
 
-        Map<String, ComplexType> companyColumns = new HashMap<>();
-        companyColumns.put("name", ComplexType.of(AtomicType.STRING));
-        companyColumns.put("id", ComplexType.of("companies"));
+        Map<String, AtomicType> companyColumns = new HashMap<>();
+        companyColumns.put("name", AtomicType.STRING);
+        companyColumns.put("id", AtomicType.ID);
         TableReference companyTable = new TableReference("companies", companyColumns);
 
         Map<String, TableReference> databaseModel = new HashMap<>();

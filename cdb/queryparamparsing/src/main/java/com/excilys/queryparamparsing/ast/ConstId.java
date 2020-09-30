@@ -2,15 +2,13 @@ package com.excilys.queryparamparsing.ast;
 
 import java.util.Objects;
 
-import com.excilys.queryparamparsing.ast.typing.ComplexType;
+import com.excilys.queryparamparsing.ast.typing.AtomicType;
 
 public class ConstId extends Constant {
     Long value;
-    String tableName; // Nom de l'id de la table
 
-    public ConstId(final Long id, final String tableName) {
+    public ConstId(final Long id) {
         this.value = id;
-        this.tableName = tableName;
     }
 
     @Override
@@ -22,12 +20,12 @@ public class ConstId extends Constant {
             return false;
         }
         ConstId other = (ConstId) obj;
-        return Objects.equals(this.tableName, other.tableName) && Objects.equals(this.value, other.value);
+        return Objects.equals(this.value, other.value);
     }
 
     @Override
-    public ComplexType getType() {
-        return ComplexType.of(this.tableName);
+    public AtomicType getType() {
+        return AtomicType.ID;
     }
 
     public Long getValue() {
@@ -36,7 +34,7 @@ public class ConstId extends Constant {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.tableName, this.value);
+        return Objects.hash(this.value);
     }
 
     @Override

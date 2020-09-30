@@ -18,7 +18,7 @@ import com.excilys.queryparamparsing.ast.Expression;
 import com.excilys.queryparamparsing.ast.LogicalOperator;
 import com.excilys.queryparamparsing.ast.SimplePredicate;
 import com.excilys.queryparamparsing.ast.TableReference;
-import com.excilys.queryparamparsing.ast.typing.ComplexType;
+import com.excilys.queryparamparsing.ast.typing.AtomicType;
 import com.excilys.queryparamparsing.ast.typing.TypingException;
 
 @Component
@@ -74,7 +74,7 @@ public class OrdsJsonQueryParamParser {
         String value = finalOperator.getString(opName);
 
         TableReference tref = this.model.getTableRef(this.tableName);
-        ComplexType typ = tref.getColumnType(columnName);
+        AtomicType typ = tref.getColumnType(columnName);
 
         Expression e = Constant.of(typ, value);
 

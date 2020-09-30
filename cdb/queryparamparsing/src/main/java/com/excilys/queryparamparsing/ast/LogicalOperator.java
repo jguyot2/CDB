@@ -4,7 +4,7 @@ public enum LogicalOperator {
     AND, OR;
 
     public static LogicalOperator getFromString(final String s) {
-        switch (s) {
+        switch (s.toLowerCase()) {
         case "$and":
         case "and":
             return AND;

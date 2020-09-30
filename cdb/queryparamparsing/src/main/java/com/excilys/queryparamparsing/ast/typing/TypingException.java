@@ -6,16 +6,16 @@ public class TypingException extends Exception {
     private static final long serialVersionUID = 1L;
 
     private final Expression exp;
-    private final ComplexType expectedType;
-    private final ComplexType foundType;
+    private final AtomicType expectedType;
+    private final AtomicType foundType;
 
-    public TypingException(final Expression e, final ComplexType expected, final ComplexType found) {
+    public TypingException(final Expression e, final AtomicType expected, final AtomicType found) {
         this.exp = e;
         this.expectedType = expected;
         this.foundType = found;
     }
 
-    public ComplexType getExpected() {
+    public AtomicType getExpected() {
         return this.expectedType;
     }
 
@@ -23,7 +23,7 @@ public class TypingException extends Exception {
         return this.exp;
     }
 
-    public ComplexType getFound() {
+    public AtomicType getFound() {
         return this.foundType;
     }
 }

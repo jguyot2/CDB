@@ -1,8 +1,8 @@
 package com.excilys.sqlastparsing;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 import org.json.JSONObject;
@@ -24,10 +24,8 @@ public class MainTest {
     }
 
     public void printFile() throws IOException, TypingException {
-        String s = Files.lines(new File("src/main/resources/json-computer1").toPath())
-                .collect(Collectors.joining("\n"));
+        String s = Files.lines(Paths.get("src/main/resources/json-computer1.json")).collect(Collectors.joining("\n"));
         JSONObject o = new JSONObject(s);
-        System.out.println("SELECT * FROM COMPUTER WHERE ");
         System.out.println(this.parser.parseJSon(o));
     }
 

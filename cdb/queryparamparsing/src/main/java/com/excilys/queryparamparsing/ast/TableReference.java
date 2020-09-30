@@ -3,18 +3,18 @@ package com.excilys.queryparamparsing.ast;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.excilys.queryparamparsing.ast.typing.ComplexType;
+import com.excilys.queryparamparsing.ast.typing.AtomicType;
 
 public class TableReference {
-    private Map<String, ComplexType> columnTypes;
+    private Map<String, AtomicType> columnTypes;
     private String tableName;
 
-    public TableReference(final String tableName, final Map<String, ComplexType> t) {
+    public TableReference(final String tableName, final Map<String, AtomicType> t) {
         this.columnTypes = new HashMap<>(t);
         this.tableName = tableName;
     }
 
-    public ComplexType getColumnType(final String columnName) {
+    public AtomicType getColumnType(final String columnName) {
         return this.columnTypes.get(columnName);
     }
 

@@ -3,7 +3,6 @@ package com.excilys.queryparamparsing.ast;
 import java.util.Objects;
 
 import com.excilys.queryparamparsing.ast.typing.AtomicType;
-import com.excilys.queryparamparsing.ast.typing.ComplexType;
 
 /**
  * Opérateurs logiques sur les
@@ -14,48 +13,48 @@ import com.excilys.queryparamparsing.ast.typing.ComplexType;
 public enum BinaryOperator {
     LIKE {
         @Override
-        public boolean isCorrectInput(final ComplexType left, final ComplexType right) {
-            return left.getType() == AtomicType.STRING && right.getType() == AtomicType.STRING;
+        public boolean isCorrectInput(final AtomicType left, final AtomicType right) {
+            return left == AtomicType.STRING && right == AtomicType.STRING;
         }
     },
     EQ {
         @Override
-        public boolean isCorrectInput(final ComplexType left, final ComplexType right) {
+        public boolean isCorrectInput(final AtomicType left, final AtomicType right) {
             return Objects.equals(left, right);
         }
     },
     GT {
         @Override
-        public boolean isCorrectInput(final ComplexType left, final ComplexType right) {
+        public boolean isCorrectInput(final AtomicType left, final AtomicType right) {
             return Objects.equals(left, right);
         }
     },
     LT {
         @Override
-        public boolean isCorrectInput(final ComplexType left, final ComplexType right) {
+        public boolean isCorrectInput(final AtomicType left, final AtomicType right) {
             return Objects.equals(left, right);
         }
     },
     GTE {
         @Override
-        public boolean isCorrectInput(final ComplexType left, final ComplexType right) {
+        public boolean isCorrectInput(final AtomicType left, final AtomicType right) {
             return Objects.equals(left, right);
         }
     },
     LTE {
         @Override
-        public boolean isCorrectInput(final ComplexType left, final ComplexType right) {
+        public boolean isCorrectInput(final AtomicType left, final AtomicType right) {
             return Objects.equals(left, right);
         }
     },
     INSTR {
         @Override
-        public boolean isCorrectInput(final ComplexType left, final ComplexType right) {
-            return left.getType() == AtomicType.STRING && right.getType() == AtomicType.STRING;
+        public boolean isCorrectInput(final AtomicType left, final AtomicType right) {
+            return left == AtomicType.STRING && right == AtomicType.STRING;
         }
     };
 
-    public static BinaryOperator getOperatorFromString(final String str) {
+    public static BinaryOperator getOperatorFromString(final String str) throws IllegalArgumentException {
         switch (str) {
 
         case "$eq":
@@ -81,5 +80,5 @@ public enum BinaryOperator {
         return AtomicType.BOOLEAN;
     }
 
-    public abstract boolean isCorrectInput(final ComplexType leftInputType, final ComplexType rightInputType);
+    public abstract boolean isCorrectInput(final AtomicType leftInputType, final AtomicType rightInputType);
 }

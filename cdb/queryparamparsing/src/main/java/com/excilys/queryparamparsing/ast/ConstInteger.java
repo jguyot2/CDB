@@ -3,7 +3,6 @@ package com.excilys.queryparamparsing.ast;
 import java.util.Objects;
 
 import com.excilys.queryparamparsing.ast.typing.AtomicType;
-import com.excilys.queryparamparsing.ast.typing.ComplexType;
 
 public class ConstInteger extends Constant {
     Integer value;
@@ -25,8 +24,8 @@ public class ConstInteger extends Constant {
     }
 
     @Override
-    public ComplexType getType() {
-        return ComplexType.of(AtomicType.INTEGER);
+    public AtomicType getType() {
+        return AtomicType.INTEGER;
     }
 
     public Integer getValue() {

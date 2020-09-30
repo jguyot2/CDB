@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.excilys.queryparamparsing.ast.typing.AtomicType;
-import com.excilys.queryparamparsing.ast.typing.ComplexType;
 import com.excilys.queryparamparsing.ast.typing.TypingException;
 
 /**
@@ -39,8 +38,8 @@ public class ComplexPredicate extends Expression {
     }
 
     @Override
-    public ComplexType getType() {
-        return ComplexType.of(AtomicType.BOOLEAN);
+    public AtomicType getType() {
+        return AtomicType.BOOLEAN;
     }
 
     @Override
@@ -57,10 +56,9 @@ public class ComplexPredicate extends Expression {
     @Override
     public void type() throws TypingException {
         Optional<Expression> notBooleanExpression = this.subExpressions.stream()
-                .filter(e -> !e.getType().equals(ComplexType.of(AtomicType.BOOLEAN)))
-                .findFirst();
+                .filter(e -> e.getType() != AtomicType.BOOLEAN).findFirst();
         if (notBooleanExpression.isPresent()) {
-            throw new TypingException(notBooleanExpression.get(), ComplexType.of(AtomicType.BOOLEAN),
+            throw new TypingException(notBooleanExpression.get(), AtomicType.BOOLEAN,
                     notBooleanExpression.get().getType());
         }
     }

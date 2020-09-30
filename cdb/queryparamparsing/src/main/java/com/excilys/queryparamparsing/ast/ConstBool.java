@@ -3,7 +3,6 @@ package com.excilys.queryparamparsing.ast;
 import java.util.Objects;
 
 import com.excilys.queryparamparsing.ast.typing.AtomicType;
-import com.excilys.queryparamparsing.ast.typing.ComplexType;
 
 public class ConstBool extends Constant {
 
@@ -26,8 +25,8 @@ public class ConstBool extends Constant {
     }
 
     @Override
-    public ComplexType getType() {
-        return ComplexType.of(AtomicType.BOOLEAN);
+    public AtomicType getType() {
+        return AtomicType.BOOLEAN;
     }
 
     public boolean getValue() {
