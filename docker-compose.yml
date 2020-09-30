@@ -1,0 +1,20 @@
+version: "3.5"
+
+
+services:
+  cdb:
+    build: .
+    ports:
+      - "80:8080"
+  mysqlcdb:
+    build: ./Dockerfiles/mysql/
+    environment:
+      - MYSQL_USER=admincdb
+      - MYSQL_PASSWORD=qwerty1234
+      - MYSQL_DATABASE=computer-database-db
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+
+
+
+
+
