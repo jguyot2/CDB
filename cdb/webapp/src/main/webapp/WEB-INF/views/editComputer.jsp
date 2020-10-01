@@ -18,7 +18,7 @@ Attributs de requête nécessaires
 
 
 <!DOCTYPE html>
-<html>
+<html lang="${pageContext.request.locale.language}" >
 <head>
 <title><spring:message code="cdb.appName" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

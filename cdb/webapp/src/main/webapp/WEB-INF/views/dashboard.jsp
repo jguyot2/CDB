@@ -14,7 +14,7 @@
 <c:set value="${requestScope.urlSearch}" var="searchUrl" />
 <c:set value="${requestScope.sortParameterValue}" var="sortUrl" />
 <!DOCTYPE html>
-<html>
+<html lang="${pageContext.request.locale.language}">
 <head> 
 <title><spring:message code="cdb.appName"/></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,14 +76,14 @@
 				<tr>
 					<!-- Variable declarations for passing labels as parameters -->
 					<!-- Table header for Computer Name -->
-					<th class="editMode" style="width: 60px; height: 22px;"><input
+					<th id="editMode" class="editMode" style="width: 60px; height: 22px;"><input
 						type="checkbox" id="selectall" /> <span
 						style="vertical-align: top;"> - <a href="#"
 							id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
 								class="fa fa-trash-o fa-lg"></i>
 						</a>
 					</span></th>
-					<th><spring:message code="cdb.computerName"/> <a
+					<th id="computerName"><spring:message code="cdb.computerName"/> <a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 						<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -108,7 +108,7 @@
 					</c:url>
 						style="font-size: xx-large">&#8595; </a>
 					</th>
-					<th><spring:message code="cdb.introduced"/> <a
+					<th id="introduced"><spring:message code="cdb.introduced"/> <a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -132,7 +132,7 @@
 					</c:url>
 						style="font-size: xx-large">&#8595; </a></th>
 					<!-- Table header for Discontinued Date -->
-					<th><spring:message code="cdb.discontinued"/> <a
+					<th id="discontinued"> <spring:message code="cdb.discontinued"/> <a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />

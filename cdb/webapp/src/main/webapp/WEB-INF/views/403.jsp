@@ -7,7 +7,7 @@
 	Attributs (optionnels) :
 		errorCause : Description de l'erreur rencontrée
  -->
-<html>
+<html lang="${pageContext.request.locale.language}" >
 <head>
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

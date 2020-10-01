@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <%--
 	Attributs (optionnels) :
 		errorCause : Description de l'erreur 
@@ -11,7 +11,8 @@
 <%
     response.setStatus(400);
 %>
-<html>
+<!DOCTYPE html />
+<html lang="${pageContext.request.locale.language}" >
 <head>
 <title> <spring:message code="cdb.err400title"/> </title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

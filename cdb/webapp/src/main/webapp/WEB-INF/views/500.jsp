@@ -5,10 +5,11 @@
 --%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ page isELIgnored="false"%>
+
 <!DOCTYPE html>
 
-<%@ page isELIgnored="false"%>
-<html>
+<html lang="${pageContext.request.locale.language}">
 <head>
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
