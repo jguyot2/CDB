@@ -6,7 +6,7 @@ Attributs de requête nécessaires
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 
 <%@ page isELIgnored="false"%>
@@ -18,7 +18,7 @@ Attributs de requête nécessaires
 
 
 <!DOCTYPE html>
-<html lang="${pageContext.request.locale.language}" >
+<html lang="${pageContext.request.locale.language}">
 <head>
 <title><spring:message code="cdb.appName" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +32,8 @@ Attributs de requête nécessaires
 <link href="${bootstrapStyle}" rel="stylesheet" media="screen">
 <link href="${fontAweSomeStyle}" rel="stylesheet" media="screen">
 <link href="${mainCss}" rel="stylesheet" media="screen">
-<link rel="shortcut icon" href="http://icons.iconarchive.com/icons/musett/coffee-shop/64/Croissant-icon.png">
+<link rel="shortcut icon"
+	href="http://icons.iconarchive.com/icons/musett/coffee-shop/64/Croissant-icon.png">
 
 </head>
 <body>
@@ -54,6 +55,9 @@ Attributs de requête nécessaires
 					<form:form action="editComputer" method="POST">
 						<input type="hidden" value="${computer.id}" id="id" name="id" />
 						<fieldset>
+							<legend>
+								<spring:message code=cdb.computerName"></spring:message>
+							</legend>
 							<div class="form-group">
 								<label for="computerName"><spring:message
 										code="cdb.computerName" /></label> <input type="text"

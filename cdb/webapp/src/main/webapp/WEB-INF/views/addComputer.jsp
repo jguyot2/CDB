@@ -6,29 +6,32 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <%@ page import="com.excilys.model.CompanyDto,java.util.List"%>
-<%@ page isELIgnored="false" %>
+<%@ page isELIgnored="false"%>
 
 <c:set value="${requestScope.companyList}" var="companyList" />
 
 <!DOCTYPE html>
 <html lang="${pageContext.request.locale.language}">
 <head>
-<title><spring:message code="cdb.appName"/></title>
+<title><spring:message code="cdb.appName" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 
-<spring:url value="/resources/css/bootstrap.min.css" var="bootstrapStyle" />
-<spring:url value="/resources/css/font-awesome.css" var="fontAweSomeStyle" />
+<spring:url value="/resources/css/bootstrap.min.css"
+	var="bootstrapStyle" />
+<spring:url value="/resources/css/font-awesome.css"
+	var="fontAweSomeStyle" />
 <spring:url value="/resources/css/main.css" var="mainCss" />
 
 <link href="${bootstrapStyle}" rel="stylesheet" media="screen">
 <link href="${fontAweSomeStyle}" rel="stylesheet" media="screen">
 <link href="${mainCss}" rel="stylesheet" media="screen">
 
-<link rel="shortcut icon" href="http://icons.iconarchive.com/icons/musett/coffee-shop/64/Croissant-icon.png">
+<link rel="shortcut icon"
+	href="http://icons.iconarchive.com/icons/musett/coffee-shop/64/Croissant-icon.png">
 <script>
 	function validateForm() {
 		var form = document.forms["addComputer"];
@@ -65,45 +68,60 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="page"> <spring:message code="cdb.appName"/> </a>
+			<a class="navbar-brand" href="page"> <spring:message
+					code="cdb.appName" />
+			</a>
 		</div>
 	</header>
 	<section id="main">
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<h1><spring:message code="cdb.addComputer"/></h1>
+					<h1>
+						<spring:message code="cdb.addComputer" />
+					</h1>
 					<form:form name="addComputer" action="addComputer" method="POST"
 						onsubmit="return validateForm()">
 						<fieldset>
+							<legend>
+								<spring:message code="cdb." />
+							</legend>
+
 							<div class="form-group">
-								<label for="computerName"><spring:message code="cdb.computerName"/></label> <input
-									type="text" class="form-control" id="computerName"
-									name="computerName" placeholder="<spring:message code="cdb.computerName"/>">
+								<label for="computerName"><spring:message
+										code="cdb.computerName" /></label> <input type="text"
+									class="form-control" id="computerName" name="computerName"
+									placeholder="<spring:message code="cdb.computerName"/>">
 							</div>
 							<div class="form-group">
-								<label for="introduced"><spring:message code="cdb.introduced"/></label> <input
-									type="date" class="form-control" id="introduced"
-									name="introduced" placeholder="<spring:message code="cdb.introduced"/>">
+								<label for="introduced"><spring:message
+										code="cdb.introduced" /></label> <input type="date"
+									class="form-control" id="introduced" name="introduced"
+									placeholder="<spring:message code="cdb.introduced"/>">
 							</div>
 							<div class="form-group">
-								<label for="discontinued"><spring:message code="cdb.discontinued"/></label> <input
-									type="date" class="form-control" id="discontinued"
-									name="discontinued" placeholder="<spring:message code="cdb.discontinued"/>">
+								<label for="discontinued"><spring:message
+										code="cdb.discontinued" /></label> <input type="date"
+									class="form-control" id="discontinued" name="discontinued"
+									placeholder="<spring:message code="cdb.discontinued"/>">
 							</div>
 							<div class="form-group">
-								<label for="companyId"><spring:message code="cdb.company"/></label> <select
-									class="form-control" id="companyId" name="companyId">
+								<label for="companyId"><spring:message
+										code="cdb.company" /></label> <select class="form-control"
+									id="companyId" name="companyId">
 									<option value="0">--</option>
 									<c:forEach items="${companyList}" var="company">
-									<option value="${company.id}">${company.name}</option>
+										<option value="${company.id}">${company.name}</option>
 									</c:forEach>
 								</select>
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-		 					<input type="submit" value="<spring:message code="cdb.add"/>"class="btn btn-primary">
-							<spring:message code="cdb.or"/> <a href="page" class="btn btn-default"><spring:message code="cdb.cancel"/></a>
+							<input type="submit" value="<spring:message code="cdb.add"/>"
+								class="btn btn-primary">
+							<spring:message code="cdb.or" />
+							<a href="page" class="btn btn-default"><spring:message
+									code="cdb.cancel" /></a>
 						</div>
 					</form:form>
 				</div>

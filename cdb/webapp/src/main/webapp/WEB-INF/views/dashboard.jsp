@@ -15,29 +15,34 @@
 <c:set value="${requestScope.sortParameterValue}" var="sortUrl" />
 <!DOCTYPE html>
 <html lang="${pageContext.request.locale.language}">
-<head> 
-<title><spring:message code="cdb.appName"/></title>
+<head>
+<title><spring:message code="cdb.appName" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
 
-<spring:url value="/resources/css/bootstrap.min.css" var="bootstrapStyle" />
-<spring:url value="/resources/css/font-awesome.css" var="fontAweSomeStyle" />
+<spring:url value="/resources/css/bootstrap.min.css"
+	var="bootstrapStyle" />
+<spring:url value="/resources/css/font-awesome.css"
+	var="fontAweSomeStyle" />
 <spring:url value="/resources/css/main.css" var="mainCss" />
 
 <link href="${bootstrapStyle}" rel="stylesheet" media="screen">
 <link href="${fontAweSomeStyle}" rel="stylesheet" media="screen">
 <link href="${mainCss}" rel="stylesheet" media="screen">
 
-<link rel="shortcut icon" href="http://icons.iconarchive.com/icons/musett/coffee-shop/64/Croissant-icon.png">
+<link rel="shortcut icon"
+	href="http://icons.iconarchive.com/icons/musett/coffee-shop/64/Croissant-icon.png">
 
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="page"> <spring:message code="cdb.appName"/> </a>
+			<a class="navbar-brand" href="page"> <spring:message
+					code="cdb.appName" />
+			</a>
 		</div>
-	</header> 
+	</header>
 	<section id="main">
 		<c:if test="${not empty message}">
 			<div class="container">
@@ -48,7 +53,9 @@
 		</c:if>
 	</section>
 	<div class="container">
-		<h1 id="homeTitle">${currentPage.totalNumberOfElements}<spring:message code="cdb.computersFound"/></h1>
+		<h1 id="homeTitle">${currentPage.totalNumberOfElements}<spring:message
+				code="cdb.computersFound" />
+		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
 				<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -69,21 +76,23 @@
 	<form id="deleteForm" action="#" method="POST">
 		<input type="hidden" name="selection" value="">
 	</form>
-
+ 
 	<div class="container" style="margin-top: 10px;">
 		<table class="table table-striped table-bordered">
+			<caption>computer list</caption>
 			<thead>
 				<tr>
 					<!-- Variable declarations for passing labels as parameters -->
 					<!-- Table header for Computer Name -->
-					<th id="editMode" class="editMode" style="width: 60px; height: 22px;"><input
-						type="checkbox" id="selectall" /> <span
-						style="vertical-align: top;"> - <a href="#"
-							id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
-								class="fa fa-trash-o fa-lg"></i>
+					<th id="editMode" class="editMode"
+						style="width: 60px; height: 22px;"><input type="checkbox"
+						id="selectall" /> <span style="vertical-align: top;"> - <a
+					 		href="#" id="deleteSelected" onclick="$.fn.deleteSelected();">
+								<em class="fa fa-trash-o fa-lg"></em>
 						</a>
 					</span></th>
-					<th id="computerName"><spring:message code="cdb.computerName"/> <a
+					<th id="computerName"><spring:message code="cdb.computerName" />
+						<a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 						<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -106,9 +115,8 @@
 						<c:param name="sort" value="${sortUrl}" />
 					</c:if>		<c:param name="newSortParam" value="name-desc"/>
 					</c:url>
-						style="font-size: xx-large">&#8595; </a>
-					</th>
-					<th id="introduced"><spring:message code="cdb.introduced"/> <a
+						style="font-size: xx-large">&#8595; </a></th>
+					<th id="introduced"><spring:message code="cdb.introduced" /> <a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -132,7 +140,8 @@
 					</c:url>
 						style="font-size: xx-large">&#8595; </a></th>
 					<!-- Table header for Discontinued Date -->
-					<th id="discontinued"> <spring:message code="cdb.discontinued"/> <a
+					<th id="discontinued"><spring:message code="cdb.discontinued" />
+						<a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />
@@ -156,7 +165,7 @@
 					</c:url>
 						style="font-size: xx-large">&#8595; </a></th>
 					<!-- Table header for Company -->
-					<th><spring:message code="cdb.company"/> <a
+					<th id="manufacturer"><spring:message code="cdb.company" /> <a
 						href=<c:url value="page">
 						<c:param name ="pageNumber" value="0" />
 					<c:param name="pageLength" value="${currentPage.pageLength}" />
