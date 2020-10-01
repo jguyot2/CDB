@@ -5,32 +5,24 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Matchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.model.User;
 import com.excilys.model.UserRoles;
 import com.excilys.persistence.DaoException;
 import com.excilys.persistence.UserSearcher;
 import com.excilys.persistence.UserUpdater;
-import com.excilys.persistence.config.PersistenceConfig;
-import com.excilys.serviceconfig.ServiceConfig;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceConfig.class, PersistenceConfig.class })
 public class UserServiceTest {
-    @Mock
+
     private UserSearcher searcher;
-    @Mock
+
     private UserUpdater updater;
 
-    @Autowired
-    UserService service;
+    private UserValidator validator = new UserValidator();
+
+    UserService service = new UserService();
 
     User user = new User(1L, "pouet", "plopiplop", UserRoles.USER);
     User invalidUser = new User(1L, "", "pouet", UserRoles.USER);
@@ -39,6 +31,8 @@ public class UserServiceTest {
     public void init() {
         this.searcher = Mockito.mock(UserSearcher.class);
         this.updater = Mockito.mock(UserUpdater.class);
+        this.service = new UserService();
+        this.service.setValidator(this.validator);
         this.service.setSearcher(this.searcher);
         this.service.setUpdater(this.updater);
     }

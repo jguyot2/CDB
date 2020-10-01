@@ -17,7 +17,6 @@ import com.excilys.model.Page;
 import com.excilys.service.CompanyService;
 import com.excilys.service.SearchValidator;
 
-
 @Service
 public final class CompanyAdapter implements SearchValidator<CompanyDto> {
 
@@ -25,7 +24,6 @@ public final class CompanyAdapter implements SearchValidator<CompanyDto> {
 
     @Autowired
     private CompanyService service;
-
 
     /**
      * Récupération de la liste des valeurs.

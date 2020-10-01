@@ -10,14 +10,8 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Matchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.model.Company;
 import com.excilys.model.Computer;
@@ -28,12 +22,7 @@ import com.excilys.model.sort.SortEntry;
 import com.excilys.persistence.ComputerSearcher;
 import com.excilys.persistence.ComputerUpdater;
 import com.excilys.persistence.DaoException;
-import com.excilys.persistence.config.PersistenceConfig;
-import com.excilys.serviceconfig.ServiceConfig;
 
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceConfig.class, PersistenceConfig.class })
 public class ComputerServiceTest {
 
     private static final LocalDate[] localDates = { LocalDate.of(1985, 1, 1), LocalDate.of(1985, 1, 19),
@@ -82,23 +71,21 @@ public class ComputerServiceTest {
                     .build()
     };
 
-    @Mock
     private ComputerSearcher computerSearcherMock;
-    @Mock
     private ComputerUpdater computerUpdaterMock;
 
-    @Autowired
-    private ComputerService validator;
+    private ComputerValidator validator = new ComputerValidator();
 
+    private ComputerService service;
 
     @Test // TODO refacto cette fonction de test
     public void createComputerTest() throws SQLException, DaoException {
         Mockito.when(this.computerUpdaterMock.createComputer(Matchers.any(Computer.class))).thenReturn(24L);
-        System.out.println(this.validator);
+        System.out.println(this.service);
         System.out.println(fakeComputerList);
         for (Computer c : fakeComputerList) {
             try {
-                Assert.assertEquals(24L, this.validator.addComputer(c));
+                Assert.assertEquals(24L, this.service.addComputer(c));
             } catch (InvalidComputerException e) {
                 System.out.println(c);
                 e.printStackTrace();
@@ -110,7 +97,7 @@ public class ComputerServiceTest {
         for (int i = 0; i < 2; ++i) {
             Computer c = invalidComputerInstanceList[i];
             try {
-                this.validator.addComputer(c);
+                this.service.addComputer(c);
                 Assert.fail();
             } catch (InvalidComputerException exn) {
                 Assert.assertEquals(exn.getProblems().size(), 1);
@@ -120,7 +107,7 @@ public class ComputerServiceTest {
 
         Computer c2 = invalidComputerInstanceList[2];
         try {
-            this.validator.addComputer(c2);
+            this.service.addComputer(c2);
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
@@ -129,7 +116,7 @@ public class ComputerServiceTest {
 
         Computer c3 = invalidComputerInstanceList[3];
         try {
-            this.validator.addComputer(c3);
+            this.service.addComputer(c3);
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
@@ -138,7 +125,7 @@ public class ComputerServiceTest {
         }
         Computer c4 = invalidComputerInstanceList[4];
         try {
-            this.validator.addComputer(c4);
+            this.service.addComputer(c4);
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);
@@ -148,7 +135,7 @@ public class ComputerServiceTest {
         }
         Computer c5 = invalidComputerInstanceList[5];
         try {
-            this.validator.addComputer(c5);
+            this.service.addComputer(c5);
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);
@@ -160,13 +147,13 @@ public class ComputerServiceTest {
     @Test
     public void deleteComputerTest() throws SQLException, DaoException {
         Mockito.when(this.computerUpdaterMock.deleteById(56L)).thenReturn(1);
-        Assert.assertEquals(1, this.validator.delete(56L));
+        Assert.assertEquals(1, this.service.delete(56L));
     }
 
     @Test
     public void deleteComputerDbExceptionTest() throws SQLException, DaoException {
         Mockito.when(this.computerUpdaterMock.deleteById(56L)).thenThrow(new DaoException());
-        Assert.assertEquals(-1, this.validator.delete(56L));
+        Assert.assertEquals(-1, this.service.delete(56L));
     }
 
     @Test
@@ -176,7 +163,7 @@ public class ComputerServiceTest {
             computerList.add(c);
         }
         Mockito.when(this.computerSearcherMock.fetchList()).thenReturn(computerList);
-        List<Computer> l = this.validator.fetchList();
+        List<Computer> l = this.service.fetchList();
         Assert.assertEquals(l.size(), fakeComputerList.length);
         for (Computer comp : fakeComputerList) {
             Assert.assertTrue(l.contains(comp));
@@ -186,7 +173,7 @@ public class ComputerServiceTest {
     @Test
     public void fetchListDbExceptionTest() throws DaoException {
         Mockito.when(this.computerSearcherMock.fetchList()).thenThrow(new DaoException());
-        List<Computer> l = this.validator.fetchList();
+        List<Computer> l = this.service.fetchList();
         Assert.assertTrue(l.isEmpty());
     }
 
@@ -201,14 +188,14 @@ public class ComputerServiceTest {
 
         Mockito.when(this.computerSearcherMock.fetchList(p)).thenReturn(computerList);
 
-        Assert.assertEquals(this.validator.fetchList(p), computerList);
+        Assert.assertEquals(this.service.fetchList(p), computerList);
     }
 
     @Test
     public void fetchWithOffsetDbExceptionTest() throws DaoException {
         Page p = new Page(fakeComputerList.length);
         Mockito.when(this.computerSearcherMock.fetchList(p)).thenThrow(new DaoException());
-        Assert.assertTrue(this.validator.fetchList(p).isEmpty());
+        Assert.assertTrue(this.service.fetchList(p).isEmpty());
     }
 
     @Test
@@ -220,8 +207,8 @@ public class ComputerServiceTest {
         Mockito.when(this.computerSearcherMock.fetchById(c.getId())).thenReturn(computerOpt);
         Mockito.when(this.computerSearcherMock.fetchById(0)).thenReturn(emptyComputer);
 
-        Assert.assertEquals(computerOpt, this.validator.findById(c.getId()));
-        Assert.assertEquals(emptyComputer, this.validator.findById(0));
+        Assert.assertEquals(computerOpt, this.service.findById(c.getId()));
+        Assert.assertEquals(emptyComputer, this.service.findById(0));
 
     }
 
@@ -229,25 +216,29 @@ public class ComputerServiceTest {
     public void findByIdDbExceptionTest() throws DaoException {
         Computer c = fakeComputerList[0];
         Mockito.when(this.computerSearcherMock.fetchById(c.getId())).thenThrow(new DaoException());
-        Assert.assertEquals(Optional.empty(), this.validator.findById(c.getId()));
+        Assert.assertEquals(Optional.empty(), this.service.findById(c.getId()));
     }
 
     @Test
     public void getNumberOfElementsTest() throws DaoException {
         Mockito.when(this.computerSearcherMock.getNumberOfElements()).thenReturn(523);
-        Assert.assertEquals(this.validator.getNumberOfElements(), 523);
+        Assert.assertEquals(this.service.getNumberOfElements(), 523);
     }
 
     @Test
     public void getNumberOfElementsDbExceptionTest() throws DaoException {
         Mockito.when(this.computerSearcherMock.getNumberOfElements()).thenThrow(new DaoException());
-        Assert.assertEquals(this.validator.getNumberOfElements(), -1);
+        Assert.assertEquals(this.service.getNumberOfElements(), -1);
     }
 
     @Before
     public void init() {
-        MockitoAnnotations.initMocks(this);
-        this.validator.setComputerSearcher(this.computerSearcherMock, this.computerUpdaterMock);
+        this.computerUpdaterMock = Mockito.mock(ComputerUpdater.class);
+        this.computerSearcherMock = Mockito.mock(ComputerSearcher.class);
+        this.service = new ComputerService();
+        this.service.setComputerSearcher(this.computerSearcherMock, this.computerUpdaterMock);
+        this.service.setValidator(this.validator);
+
     }
 
     @Test // TODO refacto de cette fonction
@@ -259,7 +250,7 @@ public class ComputerServiceTest {
         }
         for (Computer c : fakeComputerList) {
             try {
-                Assert.assertEquals(1, this.validator.update(c));
+                Assert.assertEquals(1, this.service.update(c));
             } catch (InvalidComputerException e) {
                 Assert.fail();
             }
@@ -268,7 +259,7 @@ public class ComputerServiceTest {
         for (int i = 0; i < 2; ++i) {
             Computer c = invalidComputerInstanceList[i];
             try {
-                this.validator.update(c);
+                this.service.update(c);
                 Assert.fail();
             } catch (InvalidComputerException exn) {
                 Assert.assertEquals(exn.getProblems().size(), 1);
@@ -278,7 +269,7 @@ public class ComputerServiceTest {
 
         Computer c2 = invalidComputerInstanceList[2];
         try {
-            this.validator.update(c2);
+            this.service.update(c2);
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
@@ -287,7 +278,7 @@ public class ComputerServiceTest {
 
         Computer c3 = invalidComputerInstanceList[3];
         try {
-            this.validator.update(c3);
+            this.service.update(c3);
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 1);
@@ -296,7 +287,7 @@ public class ComputerServiceTest {
         }
         Computer c4 = invalidComputerInstanceList[4];
         try {
-            this.validator.update(c4);
+            this.service.update(c4);
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);
@@ -306,7 +297,7 @@ public class ComputerServiceTest {
         }
         Computer c5 = invalidComputerInstanceList[5];
         try {
-            this.validator.update(c5);
+            this.service.update(c5);
             Assert.fail();
         } catch (InvalidComputerException exn) {
             Assert.assertEquals(exn.getProblems().size(), 2);
@@ -321,7 +312,7 @@ public class ComputerServiceTest {
                 Matchers.any()))
                 .thenReturn(Arrays.asList(fakeComputerList));
         Assert.assertEquals(Arrays.asList(fakeComputerList),
-                this.validator.fetchList(new Page(), "", Arrays.asList()));
+                this.service.fetchList(new Page(), "", Arrays.asList()));
     }
 
     @Test
@@ -331,7 +322,7 @@ public class ComputerServiceTest {
         Mockito.when(
                 this.computerSearcherMock.fetchList(Matchers.any(Page.class), Matchers.any(), Matchers.any()))
                 .thenThrow(new DaoException());
-        Assert.assertEquals(Arrays.asList(), this.validator.fetchList(new Page(), "", Arrays.asList()));
+        Assert.assertEquals(Arrays.asList(), this.service.fetchList(new Page(), "", Arrays.asList()));
 
     }
 
@@ -343,7 +334,7 @@ public class ComputerServiceTest {
         SortEntry sortParam1 = new SortEntry(SortCriterion.COMPUTER_NAME, true);
         SortEntry sortParam2 = new SortEntry(SortCriterion.COMPUTER_NAME, false);
         try {
-            this.validator.fetchList(new Page(), "", Arrays.asList(sortParam1, sortParam2));
+            this.service.fetchList(new Page(), "", Arrays.asList(sortParam1, sortParam2));
             Assert.fail();
         } catch (DuplicatedSortEntriesException e) {
 
@@ -353,7 +344,7 @@ public class ComputerServiceTest {
     @Test
     public void addComputerDbExceptionTest() throws DaoException, InvalidComputerException {
         Mockito.when(this.computerUpdaterMock.createComputer(Matchers.any())).thenThrow(new DaoException());
-        Assert.assertEquals(0, this.validator.addComputer(fakeComputerList[0]));
+        Assert.assertEquals(0, this.service.addComputer(fakeComputerList[0]));
     }
 
     @Test
@@ -361,7 +352,7 @@ public class ComputerServiceTest {
             throws DaoException, DuplicatedSortEntriesException {
         Mockito.when(this.computerSearcherMock.fetchList(Matchers.any(Page.class), Matchers.anyList()))
                 .thenThrow(new DaoException());
-        Assert.assertEquals(Arrays.asList(), this.validator.fetchList(new Page(), Arrays.asList()));
+        Assert.assertEquals(Arrays.asList(), this.service.fetchList(new Page(), Arrays.asList()));
     }
 
     @Test
@@ -370,7 +361,7 @@ public class ComputerServiceTest {
         Mockito.when(this.computerSearcherMock.fetchList(Matchers.any(Page.class), Matchers.anyList()))
                 .thenReturn(Arrays.asList(fakeComputerList));
         Assert.assertEquals(Arrays.asList(fakeComputerList),
-                this.validator.fetchList(new Page(), Arrays.asList()));
+                this.service.fetchList(new Page(), Arrays.asList()));
     }
 
     @Test
@@ -382,7 +373,7 @@ public class ComputerServiceTest {
         Mockito.when(this.computerSearcherMock.fetchList(Matchers.any(Page.class), Matchers.anyList()))
                 .thenReturn(Arrays.asList());
         try {
-            this.validator.fetchList(new Page(), Arrays.asList(s1, s2));
+            this.service.fetchList(new Page(), Arrays.asList(s1, s2));
             Assert.fail();
         } catch (DuplicatedSortEntriesException e) {
 

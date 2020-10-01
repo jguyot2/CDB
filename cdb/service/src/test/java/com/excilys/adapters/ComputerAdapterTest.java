@@ -7,12 +7,7 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.model.CompanyDto;
 import com.excilys.model.Computer;
@@ -20,29 +15,26 @@ import com.excilys.model.ComputerDto;
 import com.excilys.model.Page;
 import com.excilys.model.sort.DuplicatedSortEntriesException;
 import com.excilys.model.sort.SortEntry;
-import com.excilys.persistence.config.PersistenceConfig;
 import com.excilys.service.ComputerService;
 import com.excilys.service.InvalidComputerException;
-import com.excilys.serviceconfig.ServiceConfig;
 
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceConfig.class, PersistenceConfig.class })
 public class ComputerAdapterTest {
 
-    @Mock
-    ComputerService service;
+    ComputerService service = Mockito.mock(ComputerService.class);
 
-    @Autowired
+    // TODO mock + test de ce truc là dans un autre fichier
+    ComputerDtoValidator validator;
+
     ComputerAdapter adapter;
-
 
     @Before
     public void init() {
+        this.adapter = new ComputerAdapter();
         this.service = Mockito.mock(ComputerService.class);
+        this.validator = new ComputerDtoValidator();
         this.adapter.setService(this.service);
+        this.adapter.setValidator(this.validator);
     }
-
 
     Computer c1 = Computer.getBuilder()
             .setName("pouet").setId(12L).build();
@@ -54,7 +46,6 @@ public class ComputerAdapterTest {
     ComputerDto emptyName = new ComputerDto("", 12L, (CompanyDto) null, null, null);
     ComputerDto nullDto = null;
     ComputerDto invalidDates = new ComputerDto("plopiplop", 12L, (CompanyDto) null, "pouet", "pouet");
-
 
     @Test
     public void testFetchList() {

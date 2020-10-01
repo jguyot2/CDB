@@ -15,7 +15,6 @@ import com.excilys.persistence.DaoException;
 import com.excilys.persistence.UserSearcher;
 import com.excilys.persistence.UserUpdater;
 
-
 @Service
 public class UserService {
 
@@ -30,6 +29,9 @@ public class UserService {
     @Autowired
     private UserValidator validator;
 
+    void setValidator(final UserValidator userValidator) {
+        this.validator = userValidator;
+    }
 
     public boolean create(@Nullable final User user) throws InvalidUserException {
         this.validator.validate(user);

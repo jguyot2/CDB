@@ -20,9 +20,9 @@ import com.excilys.persistence.ComputerSearcher;
 import com.excilys.persistence.ComputerUpdater;
 import com.excilys.persistence.DaoException;
 
-
 /**
- * Classe validant les requêtes/mises à jour avant de les envoyer au paquet persistance.
+ * Classe validant les requêtes/mises à jour avant de les envoyer au paquet
+ * persistance.
  *
  * @author jguyot2
  */
@@ -40,13 +40,17 @@ public class ComputerService implements SearchValidator<Computer> {
     @Autowired
     private ComputerUpdater computerUpdater;
 
+    void setValidator(final ComputerValidator v) {
+        this.validator = v;
+    }
 
     /**
      * Ajout d'un ordinateur dans la base.
      *
      * @param createdComputer l'ordinateur ajouté.
      *
-     * @return 0 si la création n'a pas pu se faire dans la BD, ou le nouvel identifiant qui vient d'être créé
+     * @return 0 si la création n'a pas pu se faire dans la BD, ou le nouvel
+     *         identifiant qui vient d'être créé
      *
      * @throws InvalidComputerException si l'instance en paramètre
      */
@@ -74,9 +78,11 @@ public class ComputerService implements SearchValidator<Computer> {
     }
 
     /**
-     * Recherche de la liste de tous les ordinateurs présents dans la base de données.
+     * Recherche de la liste de tous les ordinateurs présents dans la base de
+     * données.
      *
-     * @return La liste des ordinateurs présents dans la base de données, ou une liste vide en cas d'erreur.
+     * @return La liste des ordinateurs présents dans la base de données, ou une
+     *         liste vide en cas d'erreur.
      */
     @Override
     public List<Computer> fetchList() {
@@ -161,12 +167,13 @@ public class ComputerService implements SearchValidator<Computer> {
     }
 
     /**
-     * Recherche d'une instance de Computer dans la base à partir de son identifiant.
+     * Recherche d'une instance de Computer dans la base à partir de son
+     * identifiant.
      *
      * @param id l'identifiant du computer recherché dans la base de donné
      *
-     * @return Optional.empty() si la recherche a échoué, ou un Optional contenant la valeur de l'identifiant
-     *         recherché sinon
+     * @return Optional.empty() si la recherche a échoué, ou un Optional contenant
+     *         la valeur de l'identifiant recherché sinon
      */
     @Override
     public Optional<Computer> findById(final long id) {
@@ -202,8 +209,8 @@ public class ComputerService implements SearchValidator<Computer> {
     }
 
     /**
-     * Changement des attributs associés à la persistance, uniquement utilisé pour des tests avec des classes
-     * mock.
+     * Changement des attributs associés à la persistance, uniquement utilisé pour
+     * des tests avec des classes mock.
      *
      * @param newComputerSearcher
      * @param newComputerUpdater
@@ -217,9 +224,11 @@ public class ComputerService implements SearchValidator<Computer> {
     /**
      * Mise à jour de l'instance de Computer passée en paramètre.
      *
-     * @param newComputervalue la nouvelle valeur de l'instance, avec un identifiant défini.
+     * @param newComputervalue la nouvelle valeur de l'instance, avec un identifiant
+     *                         défini.
      *
-     * @return -1 si exception lors de la requête, 0 si pas de mise à jour, ou 1 si la mise à jour a eu lieu
+     * @return -1 si exception lors de la requête, 0 si pas de mise à jour, ou 1 si
+     *         la mise à jour a eu lieu
      *
      * @throws InvalidComputerException Si l'instance en paramètre n'est pas valide
      */

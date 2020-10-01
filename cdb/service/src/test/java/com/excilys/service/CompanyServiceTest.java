@@ -10,12 +10,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.model.Company;
 import com.excilys.model.Page;
@@ -25,8 +22,7 @@ import com.excilys.persistence.DaoException;
 import com.excilys.persistence.config.PersistenceConfig;
 import com.excilys.serviceconfig.ServiceConfig;
 
-
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(BlockJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceConfig.class, PersistenceConfig.class })
 public class CompanyServiceTest {
 
@@ -34,14 +30,11 @@ public class CompanyServiceTest {
             new Company("J'AIME L'OCA", 2L),
             new Company("Café Oz", 5L), new Company("Chocolatine", 10L) };
 
-    @Mock
-    private CompanySearcher companySearcherMock;
-    @Mock
-    private CompanyUpdater companyUpdaterMock;
+    private CompanySearcher companySearcherMock = Mockito.mock(CompanySearcher.class);
 
-    @Autowired
-    private CompanyService companyValidator;
+    private CompanyUpdater companyUpdaterMock = Mockito.mock(CompanyUpdater.class);
 
+    private CompanyService companyValidator = new CompanyService();
 
     @Test
     public void deleteCompanyTest() throws SQLException, DaoException {
@@ -52,7 +45,7 @@ public class CompanyServiceTest {
 
     @Before
     public void init() {
-        MockitoAnnotations.initMocks(this);
+
         this.companyValidator = new CompanyService();
         this.companyValidator.setCompanySearcher(this.companySearcherMock);
         this.companyValidator.setCompanyUpdater(this.companyUpdaterMock);
