@@ -1,0 +1,6 @@
+projectKey=computer-database
+serverUrl=http://localhost:9000
+serverVersion=8.4.2.36762
+dashboardUrl=http://localhost:9000/dashboard?id=computer-database
+ceTaskId=AXTjeEuP4Ana2IcoefBq
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AXTjeEuP4Ana2IcoefBq

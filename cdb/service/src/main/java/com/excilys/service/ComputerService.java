@@ -108,10 +108,12 @@ public class ComputerService implements SearchValidator<Computer> {
 
 	public List<Computer> fetchList(@Nullable final Page p, @Nullable final List<SortEntry> sortEntries)
 			throws DuplicatedSortEntriesException {
+		if (sortEntries == null || sortEntries.isEmpty()) {
+			return fetchList(p);
+		}
 		try {
 			if (areSortEntriesValid(sortEntries)) {
-				return this.computerSearcher.fetchList(p == null ? new Page() : p,
-						sortEntries == null ? Arrays.asList() : sortEntries);
+				return this.computerSearcher.fetchList(sortEntries);
 			} else {
 				throw new DuplicatedSortEntriesException();
 			}
