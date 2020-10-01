@@ -31,7 +31,7 @@
 		<mysqlconn.version>8.0.19</mysqlconn.version>
 		<slf4j.version>1.7.5</slf4j.version>
 		<jstl.version>1.2</jstl.version>
-		<mockito.version>1.10.19</mockito.version> 
+		<mockito.version>1.10.19</mockito.version>
 		<junit.version>4.12</junit.version>
 		<tomcat.version>9.0.31</tomcat.version>
 		<spring.version>5.2.5.RELEASE</spring.version>
@@ -39,10 +39,10 @@
 		<jxb.version>2.3.2</jxb.version>
 		<spring-security.version>5.3.3.RELEASE</spring-security.version>
 		<jwt.version>0.9.1</jwt.version>
+		<odata.version>4.6.0</odata.version>
 	</properties>
 
 	<dependencies>
-
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -102,7 +102,6 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<reporting>
