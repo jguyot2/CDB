@@ -34,7 +34,7 @@
 		<mockito.version>1.10.19</mockito.version>
 		<junit.version>4.12</junit.version>
 		<tomcat.version>9.0.31</tomcat.version>
-		<spring.version>5.2.5.RELEASE</spring.version>
+		<spring.version>5.3.14</spring.version>
 		<hibernate.version>5.1.17.Final</hibernate.version>
 		<jxb.version>2.3.2</jxb.version>
 		<spring-security.version>5.3.3.RELEASE</spring-security.version>
